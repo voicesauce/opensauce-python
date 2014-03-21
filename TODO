@@ -1,8 +1,15 @@
 Documentation
 * ...write it
-* Quickstart guide
+* TODO Quickstart guide
 
 Installation
+* TODO setup.py
+http://stackoverflow.com/questions/1471994/what-is-setup-py
+https://wiki.python.org/moin/Distutils/Tutorial
+https://github.com/bookieio/Bookie/blob/develop/setup.py
+
+dependencies:
+
 
 Infrastructure
 * get batch processing working

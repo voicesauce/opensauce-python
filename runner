@@ -1,0 +1,3 @@
+#!/usr/local/bin/python
+import opensauce.process
+opensauce.process.start()
