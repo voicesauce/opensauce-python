@@ -1,10 +1,11 @@
 # Documentation
-* ...write it
 * TODO Quickstart guide
-* TODO use sphinx http://sphinx-doc.org/index.html
+* TODO guide to what each setting corresponds to
+* TODO find references (i.e. academic papers) corresponding to each of the algorithms + summary
+* sphinx http://sphinx-doc.org/index.html
 
 # Distribution
-* TODO write script for regenerating tarball or find a better way
+* TODO Test on Linux, Windows and fix accordingly
 * [distutils tutorial](https://wiki.python.org/moin/Distutils/Tutorial)
 
 # Infrastructure
