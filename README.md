@@ -19,7 +19,7 @@ This Quickstart guide assumes you're using Mac OSX or Linux (tested on Ubuntu), 
 
 To run OpenSauce, open a new Terminal window and type the following:
 
-        $ cd ~/opensauce-python-0.0.0
+        $ cd ~/opensauce-python
 
 In order to take measurements, OpenSauce needs a directory of wave files, a directory where it can store the output of measurements, a settings file, and a parameters file. The settings file stores extra information that the measurement algorithms use to carry out calculations (e.g. the maximum value to consider for f0 candidates, voiced/unvoiced threshold, etc.). The parameters file is where you can specify the measurements that you want OpenSauce to take. To turn a measurement "on" in the parameters file, change the "0" next to the measurement label to a "1", e.g.
 
