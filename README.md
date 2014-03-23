@@ -19,6 +19,12 @@ A Python port of Voicesauce/OpenSauce. A set of command-line tools for taking au
 
         $ python runner [directory of audio files] [directory for output]
 
+## Dependencies
+
+OpenSauce depends on the following Python libraries:
+* [Scipy](http://www.scipy.org/)
+
+
 # Quickstart
 
 # Contributing
