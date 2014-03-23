@@ -9,29 +9,10 @@ NOTE that OpenSauce depends on the following Python libraries:
 
 Install these first before proceeding (I recommend installing [Anaconda](https://store.continuum.io/cshop/anaconda/).
 
-1. [Download the tarball](https://github.com/voicesauce/opensauce-python/blob/master/opensauce-python-0.0.0.tar.gz)
+Clone the repository (see HACKING.md for instructions) and then try:
 
-2. Open a new Terminal window.
-
-3. Unpack the tarball:
-
-        $ tar xzf opensauce-python-0.0.0.tar.gz
-
-4. Run installation command:
-
-        $ cd opensauce-python-0.0.0
-        $ sudo python setup.py install
-
-5. Test it out:
-
-        $ ./test.sh
-
-If step 5 doesn't work, try:
-
-        $ chmod u+x test.sh
-        $ ./test.sh
-
-And if THAT doesn't work, submit a bug report in the Issue tracker.
+        $ cd opensauce-python
+        $ python test
 
 # Quickstart
 This Quickstart guide assumes you're using Mac OSX or Linux (tested on Ubuntu), Python 2.7, and that you've installed OpenSauce in directory that is an immediate descendant of your home directory (e.g. ~/opensauce-python-0.0.0).

@@ -7,6 +7,7 @@
 # Distribution
 * TODO Test on Linux, Windows and fix accordingly
 * TODO tarball doesn't unpack on Ubuntu
+* TODO fix setup.py so that the "defaults" folder is included in the tarball
 * [distutils tutorial](https://wiki.python.org/moin/Distutils/Tutorial)
 
 # Infrastructure
