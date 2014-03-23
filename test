@@ -1,0 +1,8 @@
+import os
+
+indir = "defaults/sounds"
+outdir = "defaults/output"
+
+os.system("python runner "+indir+" "+outdir)
+
+print "Success!"

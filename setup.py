@@ -12,6 +12,6 @@ setup(name = "opensauce-python",
       url="here",
       packages=['opensauce'],
       package_data = {'opensauce': files},
-      scripts = ["runner"],
+      scripts = ["runner", "test"],
       long_description = """ stuff """
       )
