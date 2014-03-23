@@ -1,3 +1,4 @@
+# Workflow
 To contribute code/edit/etc:
 
 1. [Install git](http://git-scm.com/book/en/Getting-Started-Installing-Git) (if you haven't already)
@@ -27,3 +28,6 @@ In order to sync your version of the repo with the master copy, use "git pull":
 
 
 If something breaks or anything is confusing, e-mail me: ksilvers at umass dot edu
+
+# Projects
+Check the Issue tracker and TODO.md for ideas.
