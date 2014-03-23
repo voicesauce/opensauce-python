@@ -6,6 +6,7 @@
 
 # Distribution
 * TODO Test on Linux, Windows and fix accordingly
+* TODO tarball doesn't unpack on Ubuntu
 * [distutils tutorial](https://wiki.python.org/moin/Distutils/Tutorial)
 
 # Infrastructure
@@ -14,3 +15,4 @@
 * TODO Output procedure
 
 # Algorithms
+* See stuff in Issue tracker under "measurements" label

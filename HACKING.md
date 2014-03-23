@@ -12,7 +12,7 @@ To contribute code/edit/etc:
 
 4. Write code, edit code, test code. To track files, use "git add":
 
-        $ git add opensauce-python/path/to/file
+        $ git add path/to/file
 
 5. Once you're ready to commit your changes, use "git commit":
 
