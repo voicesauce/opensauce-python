@@ -1,0 +1,16 @@
+F0 (Straight)|0
+F0 (Snack)|1
+F0 (Praat)|0
+F0 (SHR)|0
+F0 (Other)|0
+F1, F2, F3, F4 (Snack)|0
+F1, F2, F3, F4 (Praat)|0
+F1, F2, F3, F4 (Other)|0
+H1, H2, H4|0
+A1, A2, A3|0
+H1*-H2*, H2*-H4*|0
+H1*-A1*, H1*-A2*, H1*-A3*|0
+Energy|0
+CPP|0
+Harmonic to Noise Ratios - HNR|0
+Subharmonic to Harmonic Ratio - SHR|0

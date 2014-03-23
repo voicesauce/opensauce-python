@@ -1,0 +1,39 @@
+name,value
+sid,settings0
+verbose,0
+textgrid_dir,''
+useTextGrid,1
+process16khz,0
+showWaveForm,0
+F0algorithm,'F0 (Snack)'
+maxF0,500
+minF0,40
+SHRmax,500
+SHRmin,40
+SHRThreshold,0.4
+praat_minF0,40
+praat_maxF0,500
+praat_silthres,0.03
+praat_voicethres,0.45
+praat_voiunvoicost,0.14
+praat_octavecost,0.01
+praat_octavejumpcost,0.35
+praat_smooth,0
+praat_smoothing_bandwidth,5
+praat_kill_octave_jumps,0
+praat_interpolate,0
+praat_method,'ac'
+FMTalgorithm,'F1 F2 F3 F4 (Snack)'
+preemphasis,0.96
+windowsize,25
+frameshift,1
+NotANumber, 'NA'
+Nperiods,3
+Nperiods_EC,5
+TextgridIgnoreList,'""|" "|"SIL"'
+TextgridTierNumber,1
+EGGheaders,'CQ|CQ_H|CQ_PM|CQ_HT|peak_Vel|peak_Vel_Time|min_Vel|min_Vel_Time|SQ2-SQ1|SQ4-SQ3|ratio'
+EGGtimelabel,'Frame'
+dirdelimiter,'/'
+frame_precision,1
+tbuffer,25

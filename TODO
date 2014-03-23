@@ -5,6 +5,8 @@ Documentation
 
 
 Infrastructure
-* TODO get batch processing working
+* TODO batch processing + TextGrids
+* TODO refactor settings, params to reprocess input files to JSON format
+* TODO Output procedure
 
 Algorithms

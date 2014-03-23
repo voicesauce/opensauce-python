@@ -1,80 +1,60 @@
 __author__ = 'kate'
 import sys
 import os
-import scipy.io.wavfile as sio
-import math
+import argparse
+import measure
+import helpers
 
-class Instance:
-    def __init__(self, wavfile, matfile, data, samplerate, data_len):
-        self.wavfile = wavfile
-        self.matfile = matfile
-        self.data = data
-        self.samplerate = samplerate
-        self.data_len = data_len
+measurements = measure.measurements
 
-def get_params(parameter_file):
-    return None
+def process(indir, outdir, settingsfile, paramfile):
+    '''
+    Main sound file processing procedure. Finds all wave files in 'indir', reads them in one by one, and applies functions corresponding to each parameter in the parameters file. If no parameters file is specified, the default is "defaults/parameters/default.csv". If no settings file is specified, the default is "defaults/settings/default.csv" 
+    '''
+    params = helpers.get_parameters(paramfile)
+    settings = helpers.get_settings(settingsfile)
 
-def get_settings(settings_file):
-    return None
+    frameshift = int(settings['frameshift'])
+    print indir, outdir
 
-def dummy(instance):
-    print "hi from dummy"
-
-# dict of pointers to functions that call the measurement functions
-measurements = {
-    "dummy": dummy
-}
-
-
-
-def start():
-    usage = "usage: python runner [input directory] [output directory]"
-    print "starting OpenSauce..."
-    if len(sys.argv) != 3:
-        print usage
-    indir = sys.argv[1]
-    outdir = sys.argv[2]
-    process(indir, outdir)
-
-def init(indir, outdir):
-    return None
-
-def process(indir, outdir):
-    print "processing..."
-    # TODO getSettings
-    # TODO getParamlist
-    params = ['dummy']
-    # params = get_params(parameter_file)
-    # settings = get_settings(settings_file)
-    frameshift = 1
-    print indir
-    print outdir
     # make a list of wav files
     # TODO fix this so it uses absolute file paths (os.getenv)
     if indir[-1] != '/':
         indir = indir + '/'
     filelist = [indir+f for f in os.listdir(indir) if f.endswith('.wav')]
-    print filelist
+
     for wav in filelist:
         print "Processing ", wav
         matfile = wav[:-3]+"mat"
         # TODO TextGrid stuff
-        # read in wave file
-        # Fs = sample rate, data = channel data
-        Fs, data = sio.read(wav)
-        data_len = math.floor(len(data) / Fs * 1000 / frameshift)
-        instance = Instance(wav, matfile, data, Fs, data_len)
-        # TODO paramlist
-        # TODO doFunction
+
+        # build SoundFile object
+        soundfile = helpers.SoundFile(settings, wav)
+
+        # run the measurements
         for param in params:
-            measurements[param](instance)
+            soundfile.measurements[param] = measurements[param](soundfile) # it is what it is...
+
     print "Done processing."
 
-
-
-
-
+def start():
+    ''' Parses command line arguments and passes them to process() '''
+    settings = "defaults/settings/default.csv"
+    params = "defaults/parameters/default.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("indir", help="input soundfile directory")
+    parser.add_argument("outdir", help="directory where output should be stored")
+    parser.add_argument("-s", "--settings", help="settings file")
+    parser.add_argument("-p", "--parameters", help="parameters file")
+    args = parser.parse_args()
+    indir = args.indir
+    outdir = args.outdir
+    if args.settings:
+        settings = args.settings
+    if args.parameters:
+        params = args.parameters
+    print "args: ", indir, outdir, settings, params
+    process(indir, outdir, settings, params)
 
 if __name__ == "__main__":
     start()

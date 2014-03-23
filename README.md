@@ -17,7 +17,7 @@ A Python port of Voicesauce/OpenSauce. A set of command-line tools for taking au
 
 4. Try it out
 
-        $ python runner [directory of audio files] [directory for output]
+        $ python runner [directory with audio files] [directory where output files should go]
 
 ## Dependencies
 
