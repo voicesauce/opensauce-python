@@ -31,15 +31,21 @@ Fun: medium
 Octave code: 
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetCPP.m
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_pickpeaks.m
+
 Coding difficulty: medium (requires either writing code or finding existing Python packages to do peak finding/optimization, e.g. Scipy.optimize)
+
 Phonetics difficulty: medium (we've talked about the cepstrum in class)
+
 Fun: definitely
 
 ## Energy: Port acoustic energy algorithm
 Octave code: 
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetEnergy.m
-Coding difficulty: easy
+
+Coding difficulty: easy   
+
 Phonetics difficulty: medium
+
 Fun: probably
 
 
@@ -49,15 +55,21 @@ Octave code:
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetH1H2_H2H4.m
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetH1A1_H1A2_H1A3.m
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetA1A2A3.m
+
 Coding difficulty: medium/challenge -- these different measurements can be broken down into multiple projects. 
+
 Phonetics difficulty: medium
+
 Fun: probably
 
 ## Harmonics to noise ratio
 Octave code:
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetHNR.m
+
 Coding difficulty: medium
+
 Phonetics difficulty: medium
+
 Fun: probably
 
 ## Visualizations
