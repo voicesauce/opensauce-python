@@ -8,8 +8,11 @@ All projects require the following deliverables:
 Octave code: 
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetSHRP.m
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/shrp.m
+
 Coding difficulty: medium/challenge
+
 Phonetics difficulty: medium/challenge
+
 Fun: extreme
 
 ## f0 tracking: Port Praat f0 algorithm from Praat source code
