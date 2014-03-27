@@ -4,6 +4,11 @@ All projects require the following deliverables:
 2. Paper illustrating algorithm use case and demonstrating knowledge of how the algorithm works (you have to read the primary sources associated with each algorithm).
 3. Final project presentation
 
+Assignees:   
+Lizzy - Cepstral Peak Prominence(CPP)   
+Luke - Harmonics (GetH1_H2_H4)   
+Helene - Harmonics to noise ratio (HNR)   
+
 ## f0 tracking: Port subharmonic-to-harmonic ratio algorithm
 Octave code: 
 * https://github.com/voicesauce/opensauce/blob/master/algos/functions/func_GetSHRP.m
