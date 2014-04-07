@@ -18,3 +18,4 @@
 # Algorithms
 * See stuff in Issue tracker under "measurements" label
 * H4-2k
+* ishi creak detector: https://github.com/covarep/covarep/blob/master/glottalsource/creaky_voice_detection/private/ishi_creak_detection.m
