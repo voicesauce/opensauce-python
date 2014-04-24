@@ -1,9 +1,10 @@
 import scipy.io.wavfile as sio
 import math
 import helpers
+import hnr
 
 def dummy(soundfile):
-    print soundfile.wavfile
+    #print soundfile.wavfile
     print "hi from dummy"
 
 def f0_snack(soundfile):
@@ -12,6 +13,14 @@ def f0_snack(soundfile):
     dependencies:
     '''
     print "Not yet implemented: Snack F0"
+    return []
+    
+def do_hnr(soundfile):
+    y = soundfile.data
+    Fs = soundfile.samplerate
+    F0 = f0_snack(soundfile)
+    settings = soundfile.settings
+    hnr.run(y, Fs, F0, settings)
 
 # dict of pointers to functions that call the measurement functions
 measurements = {
@@ -30,7 +39,7 @@ measurements = {
     'H1*-A1*, H1*-A2*, H1*-A3*': None,
     'Energy': None,
     'CPP': None,
-    'Harmonic to Noise Ratios - HNR': None,
+    'Harmonic to Noise Ratios - HNR': do_hnr,
     'Subharmonic to Harmonic Ratio - SHR': None
 }
 
@@ -54,7 +63,8 @@ def test(param_label):
     Example usage: test('F0 (Snack)')
     '''
     testfile = generate_test_file("../defaults/sounds/cant_c5_19a.wav")
+    #print testfile.settings
     return measurements[param_label](testfile)
 
-
+test('Harmonic to Noise Ratios - HNR')
 
