@@ -5,10 +5,10 @@ import math
 class SoundFile:
     def __init__(self, settings, wavfile):
         self.settings = settings
-        self.wavfile = wavfile
+        self.wavfile = wavfile # path to wavfile
         self.matfile = None
-        self.data = None
-        self.samplerate = None
+        self.y = None
+        self.samplerate = None # corresponds to Fs in opensauce
         self.data_len = None
         self.measurements = {}
         self.build()
