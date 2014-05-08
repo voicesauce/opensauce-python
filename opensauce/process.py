@@ -38,22 +38,26 @@ def process(indir, outdir, settingsfile, paramfile):
     print "Done processing."
 
 def start():
-    ''' Parses command line arguments and passes them to process() '''
-    settings = "defaults/settings/default.csv"
-    params = "defaults/parameters/default.csv"
-    parser = argparse.ArgumentParser()
-    parser.add_argument("indir", help="input soundfile directory")
-    parser.add_argument("outdir", help="directory where output should be stored")
-    parser.add_argument("-s", "--settings", help="settings file")
-    parser.add_argument("-p", "--parameters", help="parameters file")
-    args = parser.parse_args()
-    indir = args.indir
-    outdir = args.outdir
-    if args.settings:
-        settings = args.settings
-    if args.parameters:
-        params = args.parameters
-    print "args: ", indir, outdir, settings, params
+    # ''' Parses command line arguments and passes them to process() '''
+    # settings = "defaults/settings/default.csv"
+    # params = "defaults/parameters/default.csv"
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("indir", help="input soundfile directory")
+    # parser.add_argument("outdir", help="directory where output should be stored")
+    # parser.add_argument("-s", "--settings", help="settings file")
+    # parser.add_argument("-p", "--parameters", help="parameters file")
+    # args = parser.parse_args()
+    # indir = args.indir
+    # outdir = args.outdir
+    # if args.settings:
+    #     settings = args.settings
+    # if args.parameters:
+    #     params = args.parameters
+    # print "args: ", indir, outdir, settings, params
+    indir = "../defaults/sounds"
+    outdir = "../defaults/sounds"
+    settings = "../defaults/settings/default.csv"
+    params = "../defaults/parameters/default.csv"
     process(indir, outdir, settings, params)
 
 if __name__ == "__main__":
