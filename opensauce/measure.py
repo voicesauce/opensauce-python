@@ -2,6 +2,7 @@ import scipy.io.wavfile as sio
 import math
 import helpers
 import snack_ks
+import hnr
 # import algorithms.H1H2H4
 # import algorithms.func_GetA1A2A4
 
@@ -26,12 +27,12 @@ def f0_snack(soundfile):
 #     y = soundfile.y
 #     func_GetA1A2A4(y)
 
-# def hnr(soundfile):
-#     y = soundfile.data
-#     Fs = soundfile.samplerate
-#     f0 = f0_snack(soundfile)
-#     settings = soundfile.settings
-#     hnr.run(y, Fs, f0, settings)
+def do_hnr(soundfile):
+    y = soundfile.data
+    Fs = soundfile.samplerate
+    soundfile.f0 = f0_snack(soundfile)
+    settings = soundfile.settings
+    hnr.run(y, Fs, soundfile.f0, settings)
 
 
 
@@ -53,7 +54,7 @@ measurements = {
     'H1*-A1*, H1*-A2*, H1*-A3*': None, # LP
     'Energy': None,
     'CPP': None, # LS
-    'Harmonic to Noise Ratios - HNR': None, # HG
+    'Harmonic to Noise Ratios - HNR': do_hnr, # HG
     'Subharmonic to Harmonic Ratio - SHR': None
 }
 
@@ -62,8 +63,8 @@ def generate_test_file(wavfile):
     Generates a file from a wave file in defaults/sounds to use for testing purposes
     '''
     global tester
-    sf = "defaults/settings/default.csv"
-    pf = "defaults/parameters/default.csv"
+    sf = "../defaults/settings/default.csv"
+    pf = "../defaults/parameters/default.csv"
     settings = helpers.get_settings(sf)
     params = helpers.get_parameters(pf)
     Fs, data = sio.read(wavfile)
@@ -76,10 +77,10 @@ def test(param_label):
     Test a measurement function.
     Example usage: test('F0 (Snack)')
     '''
-    testfile = generate_test_file("defaults/sounds/cant_c5_19a.wav")
+    testfile = generate_test_file("../defaults/sounds/cant_c5_19a.wav")
     return measurements[param_label](testfile)
 
 # print test("F0 (Snack)")
-# test('Harmonic to Noise Ratios - HNR')
+test('Harmonic to Noise Ratios - HNR')
 # test('A1, A2, A3')
 
