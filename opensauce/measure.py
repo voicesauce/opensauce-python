@@ -21,7 +21,6 @@ def f0_snack(soundfile):
     return f0
 
 
-
 # def a1_a2_a4(soundfile):
 # y = soundfile.y
 # func_GetA1A2A4(y)
@@ -32,8 +31,6 @@ def do_hnr(soundfile):
     soundfile.f0 = f0_snack(soundfile)
     settings = soundfile.settings
     hnr.run(y, Fs, soundfile.f0, settings)
-
-
 
 def A1A2A3(soundfile):
     y = soundfile.y
