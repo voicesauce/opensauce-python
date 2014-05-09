@@ -1,17 +1,74 @@
 import scipy.io.wavfile as sio
 import math
 import helpers
+import snack_ks
+import hnr
+from algorithms import *
 
 def dummy(soundfile):
-    print soundfile.wavfile
+    #print soundfile.wavfile
     print "hi from dummy"
 
 def f0_snack(soundfile):
     '''
     Measures f0 using the Snack algorithm.
-    dependencies:
     '''
-    print "Not yet implemented: Snack F0"
+    f0 = snack_ks.get_snack_f0(soundfile)
+    if not soundfile.measurements.has_key("F0 (Snack)"):
+        soundfile.measurements["F0 (Snack)"] = f0
+    else:
+        print "Already calculated Snack F0 ?"
+    return f0
+
+
+
+# def a1_a2_a4(soundfile):
+# y = soundfile.y
+# func_GetA1A2A4(y)
+
+def do_hnr(soundfile):
+    y = soundfile.data
+    Fs = soundfile.samplerate
+    soundfile.f0 = f0_snack(soundfile)
+    settings = soundfile.settings
+    hnr.run(y, Fs, soundfile.f0, settings)
+
+
+
+def A1A2A3(soundfile):
+    y = soundfile.y
+    Fs = soundfile.Fs
+    F0 = soundfile.F0
+    F1 = soundfile.F1
+    F2 = soundfile.F2
+    F3 = soundfile.F3
+    variables = soundfile.settings
+    func_GetA1A2A3.getA1A2A3(y, Fs, F0, F1, F2, F3, variables)
+
+def H1H2H4(soundfile):
+    y = soundfile.y
+    Fs = soundfile.Fs
+    F0 = soundfile.F0
+    func_GetH1H2H3.getH1_H2_H4(y, Fs, F0, variables)
+
+def H1H2_H2H4(soundfile):
+    y = soundfile.y
+    Fs = soundfile.Fs
+    F0 = soundfile.F0
+    F1 = soundfile.F1
+    F2 = soundfile.F2
+    func_GetH1H2_H2H4.getH1H2_H2H4(H1, H2, H4, Fs, F0, F1, F2)
+
+def H1A1_H1A2_H1A3(soundfile):
+    y = soundfile.y
+    Fs = soundfile.Fs
+    F0 = soundfile.F0
+    F1 = soundfile.F1
+    F2 = soundfile.F2
+    F3 = soundfile.F3
+    func_GetH1A1_H1A2_H1A3.getH1A1_H1A2_H1A3(H1, A1, A2, A3, Fs, F0, F1, F2, F3)
+    
+
 
 # dict of pointers to functions that call the measurement functions
 measurements = {
@@ -24,13 +81,13 @@ measurements = {
     'F1, F2, F3, F4 (Snack)': None,
     'F1, F2, F3, F4 (Praat)': None,
     'F1, F2, F3, F4 (Other)': None,
-    'H1, H2, H4': None,
-    'A1, A2, A3': None,
-    'H1*-H2*, H2*-H4*': None,
-    'H1*-A1*, H1*-A2*, H1*-A3*': None,
+    'H1, H2, H4': H1H2H4,
+    'A1, A2, A3': A1A2A3,
+    'H1*-H2*, H2*-H4*': H1H2_H2H4,
+    'H1*-A1*, H1*-A2*, H1*-A3*': H1A1_H1A2_H1A3,
     'Energy': None,
     'CPP': None,
-    'Harmonic to Noise Ratios - HNR': None,
+    'Harmonic to Noise Ratios - HNR': do_hnr, # HG
     'Subharmonic to Harmonic Ratio - SHR': None
 }
 
@@ -57,4 +114,4 @@ def test(param_label):
     return measurements[param_label](testfile)
 
 
-
+test('A1, A2, A3')
