@@ -3,7 +3,7 @@ import math
 import helpers
 import snack_ks
 import hnr
-from algorithms import *
+from algorithms import func_GetH1_H2_H4
 
 def dummy(soundfile):
     #print soundfile.wavfile
@@ -27,7 +27,7 @@ def f0_snack(soundfile):
 
 def do_hnr(soundfile):
     y = soundfile.data
-    Fs = soundfile.samplerate
+    Fs = soundfile.Fs
     soundfile.f0 = f0_snack(soundfile)
     settings = soundfile.settings
     hnr.run(y, Fs, soundfile.f0, settings)
@@ -35,7 +35,7 @@ def do_hnr(soundfile):
 def A1A2A3(soundfile):
     y = soundfile.y
     Fs = soundfile.Fs
-    F0 = soundfile.F0
+    F0 = soundfile.f0
     F1 = soundfile.F1
     F2 = soundfile.F2
     F3 = soundfile.F3
@@ -45,24 +45,27 @@ def A1A2A3(soundfile):
 def H1H2H4(soundfile):
     y = soundfile.y
     Fs = soundfile.Fs
-    F0 = soundfile.F0
-    func_GetH1H2H3.getH1_H2_H4(y, Fs, F0, variables)
+    F0 = soundfile.f0
+    variables = soundfile.settings
+    func_GetH1_H2_H4.getH1_H2_H4(y, Fs, F0, variables)
 
 def H1H2_H2H4(soundfile):
     y = soundfile.y
     Fs = soundfile.Fs
-    F0 = soundfile.F0
+    F0 = soundfile.f0
     F1 = soundfile.F1
     F2 = soundfile.F2
+    variables = soundfile.settings
     func_GetH1H2_H2H4.getH1H2_H2H4(H1, H2, H4, Fs, F0, F1, F2)
 
 def H1A1_H1A2_H1A3(soundfile):
     y = soundfile.y
     Fs = soundfile.Fs
-    F0 = soundfile.F0
+    F0 = soundfile.f0
     F1 = soundfile.F1
     F2 = soundfile.F2
     F3 = soundfile.F3
+    variables = soundfile.settings
     func_GetH1A1_H1A2_H1A3.getH1A1_H1A2_H1A3(H1, A1, A2, A3, Fs, F0, F1, F2, F3)
     
 
@@ -111,4 +114,4 @@ def test(param_label):
     return measurements[param_label](testfile)
 
 
-test('A1, A2, A3')
+test('H1, H2, H4')

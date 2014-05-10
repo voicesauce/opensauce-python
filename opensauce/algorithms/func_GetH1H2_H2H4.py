@@ -14,7 +14,7 @@ def getH1H2_H2H4(H1, H2, H4, Fs, F0, F1, F2, B1 = None, B2 = None):
     # Also note that the bandwidths from the formant trackers are not currently
     # used due to the variability of those measurements.
     #
-    # Author: Yen-Liang Shue, Speech Processing and Auditory Perception Laboratory, UCLA
+    # A4uthor: Yen-Liang Shue, Speech Processing and Auditory Perception Laboratory, UCLA
     # Copyright UCLA SPAPL 2009
 
 

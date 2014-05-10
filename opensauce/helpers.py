@@ -8,7 +8,7 @@ class SoundFile:
         self.wavfile = wavfile # path to wavfile
         self.matfile = None
         self.y = None
-        self.samplerate = None # corresponds to Fs in opensauce
+        self.Fs = None # corresponds to Fs in opensauce
         self.data_len = None
         self.f0 = None
         self.measurements = {}

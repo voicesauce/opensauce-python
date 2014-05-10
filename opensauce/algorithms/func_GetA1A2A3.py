@@ -1,5 +1,8 @@
-import numpy, math
 from __future__ import division
+import numpy, math
+
+# Note.  This file contains untranslated Octave code.  I hope to debug it
+# Once we havbe
 
 def getA1A2A3(y, Fs, F0, F1, F2, F3, variables, textgridfile=None):
     N_periods = variables['Nperiods']
@@ -37,9 +40,9 @@ def getA1A2A3(y, Fs, F0, F1, F2, F3, variables, textgridfile=None):
                 A2_, fmax = ana_GetMagnitudeMax(yseg, F2[k], Fs, 8192)
                 A3_, fmax = ana_GetMagnitudeMax(yseg, F3[k], Fs, 8192)
 
-                A1(k) = A1_
-                A2(k) = A2_
-                A3(k) = A3_
+                A1[k] = A1_
+                A2[k] = A2_
+                A3[k] = A3_
 
     return A1, A2, A3
 
@@ -64,7 +67,7 @@ def ana_GetMagnitudeMax(x, Fx, Fs, fftlen):
     for i in range(1, fftlen/2):
         X[i] = 20 * numpy.log10(factor*abs(X[i]))
     fstep = Fs / fftlen
-    lowf = Fx-0.1*Fx
+    lowf = (Fx-0.1)*Fx
     if lowf < 0:
         lowf = 0
     highf = Fx + 0.1*Fx
@@ -72,8 +75,14 @@ def ana_GetMagnitudeMax(x, Fx, Fs, fftlen):
         highf = Fs/2-fstep
 
     for cnt in range(0,length(Fx)):
-        M[cnt],pos = max(X(1+round(lowf(cnt)/fstep):1+round(highf(cnt)/fstep), :))
-        fmax(cnt) = (pos-1+round(lowf(cnt)/fstep))*fstep
+##        if X[cnt] == max(X):
+##            break
+        pos = cnt
+        M = None   # This is a dummy value, see below
+
+        # The code following the equals sign is untranslated Octave Code
+        # M[cnt],pos = max(X(1+round(lowf[cnt]/fstep):1+round(highf(cnt)/fstep), :))
+        fmax[cnt] = (pos-1+round(lowf(cnt)/fstep))*fstep
         
     return M, fmax
 

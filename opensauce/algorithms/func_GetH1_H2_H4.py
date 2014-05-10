@@ -18,7 +18,10 @@ def getH1_H2_H4(y, Fs, F0, variables, textgridfile=None):
         # Modified by KS 2013-08-05
 
     N_periods = variables['Nperiods']
-    sampleshift = (Fs / 1000 * variables['frameshift'])
+    if variables['frameshift'] == None or Fs == None:
+        sampleshift = None
+    else:
+        sampleshift = (Fs / 1000 * variables['frameshift'])
 
     H1 = numpy.zeros(len(F0), 1) * float('NaN')
     H2 = numpy.zeros(len(F0), 1) * float('NaN')
