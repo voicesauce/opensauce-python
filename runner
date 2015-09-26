@@ -1,2 +1,0 @@
-import opensauce.process
-opensauce.process.start()
