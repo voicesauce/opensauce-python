@@ -9,17 +9,18 @@ NOTE that OpenSauce depends on the following Python libraries:
 
 Install these first before proceeding (I recommend installing [Anaconda](https://store.continuum.io/cshop/anaconda/).
 
-Clone the repository (see HACKING.md for instructions) and then try:
+In addition, you may need to install Tcl/Tk and Snack. If you're on a Debian machine, try:
 
-        $ cd opensauce-python
-        $ python test
+	$ sudo apt-get install tk8.4
+	$ sudo apt-get install libsnack2
+
+Finally, clone this repository.
 
 # Quickstart
-This Quickstart guide assumes you're using Mac OSX or Linux (tested on Ubuntu), Python 2.7, and that you've installed OpenSauce in directory that is an immediate descendant of your home directory (e.g. ~/opensauce-python-0.0.0).
+To run OpenSauce, open a new Terminal window, `cd` into the directory where you cloned `opensauce-python`, and set the `VS_ROOT` environment variable:
 
-To run OpenSauce, open a new Terminal window and type the following:
-
-        $ cd ~/opensauce-python
+        $ cd /path/to/opensauce-python
+        $ export VS_ROOT=$PWD
 
 In order to take measurements, OpenSauce needs a directory of wave files, a directory where it can store the output of measurements, a settings file, and a parameters file. The settings file stores extra information that the measurement algorithms use to carry out calculations (e.g. the maximum value to consider for f0 candidates, voiced/unvoiced threshold, etc.). The parameters file is where you can specify the measurements that you want OpenSauce to take. To turn a measurement "on" in the parameters file, change the "0" next to the measurement label to a "1", e.g.
 
@@ -29,11 +30,9 @@ Default files for settings and parameters are in the folder "defaults/settings/d
 
 To run OpenSauce using the default setup, type the following in Terminal:
 
-        $ python runner defaults/sounds defaults/output
+        $ ./run.sh
 
-To change the parameters and settings, I recommend that you copy the defaults as new files and edit the copies. In order to run OpenSauce using these new files, use the "--settings" and "--parameters" options:
-
-        $ python runner indir outdir --settings path/to/settings/file --parameters path/to/params/file
+To change the parameters and settings, I recommend that you copy the defaults as new files and edit the copies. You'll also need to modify the corresponding paths in `run.sh`.
 
 # Contributing
 See HACKING.

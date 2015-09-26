@@ -114,4 +114,4 @@ def test(param_label):
     return measurements[param_label](testfile)
 
 
-test('H1, H2, H4')
+# test('H1, H2, H4')
