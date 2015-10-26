@@ -16,6 +16,9 @@ In addition, you may need to install Tcl/Tk and Snack. If you're on a Debian mac
 
 Finally, clone this repository.
 
+Note that the code will probably work with a later versions of tk; it has been
+tested with tk8.4 and tk8.5 on linux.
+
 # Quickstart
 To run OpenSauce, open a new Terminal window, `cd` into the directory where you cloned `opensauce-python`, and set the `VS_ROOT` environment variable:
 

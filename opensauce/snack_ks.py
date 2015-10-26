@@ -27,7 +27,7 @@ def get_snack_f0(soundfile):
     maxF0 = 400
     minF0 = 90
 
-    cmd1 = 'wish8.4'
+    cmd1 = 'tclsh'
     f = open(tclfile, 'w')
     cmd = '#!/bin/bash\n'
     cmd += '# the next line restarts with wish \\\n'
