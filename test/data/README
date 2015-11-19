@@ -1,7 +1,8 @@
-These input files and output files were supplied by Kristine.  They were
-produced using VoiceSauce X.Y.Z.
+Most of these input files and output files were supplied by Kristine.  They
+were produced using VoiceSauce X.Y.Z.
 
-Kristine's notes:
+Kristine's notes
+----------------
 
 Here are some output files I generated from running VoiceSauce at default
 settings for the sample input files.
@@ -58,3 +59,10 @@ so there's one measurement estimated every 1 ms), in the audio file.)
     output-shrf0-1ms.txt. Using shr f0 for parameter estimation, no subsegments.
 
     output-shrf0-9seg.txt. Using shr f0 for parameter estimation, 9 subsegments.
+
+
+Other files
+-----------
+
+cant_c5_19a.f0      File produced by snack, computing f0 on the wav file in
+                    the default directory.
