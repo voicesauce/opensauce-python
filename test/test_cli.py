@@ -1,12 +1,11 @@
 import filecmp
 import os
-import unittest
 from shutil import copytree
 from subprocess import Popen, PIPE
 
-from test.support import TemporaryDirectory, data_file_path
+from test.support import TestCase, TemporaryDirectory, data_file_path
 
-class TestCLI(unittest.TestCase):
+class TestCLI(TestCase):
 
     def test_default_setup(self):
         with TemporaryDirectory() as tmp:

@@ -1,4 +1,5 @@
 import os
+import unittest
 
 try:
     from tempfile import TemporaryDirectory
@@ -40,3 +41,14 @@ data_path = os.path.join(os.path.dirname(__file__), 'data')
 
 def data_file_path(fn):
     return os.path.join(data_path, fn)
+
+
+# My past experience is that I eventually write helpers that wrap unittest
+# resources and use them in a number of test cases.  These helpers need access
+# to the underlying unittest.TestCase, so it is easiest to write them as
+# methods on a subclass.  So, I'll create a subclass now that doesn't have any
+# extra methods, to make it easy to add them later without having to touch all
+# the then-existing test cases.
+
+class TestCase(unittest.TestCase):
+    pass
