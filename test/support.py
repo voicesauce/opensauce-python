@@ -1,3 +1,4 @@
+import csv
 import os
 import unittest
 
@@ -41,6 +42,26 @@ data_path = os.path.join(os.path.dirname(__file__), 'data')
 
 def data_file_path(fn):
     return os.path.join(data_path, fn)
+
+wav_fns = [data_file_path(fn) for fn in os.listdir(data_path)
+                              if fn.endswith('.wav')]
+
+def get_test_data(fn, label, f0_base, sample):
+    """Get column 'label' from output file named with f0_base and sample.
+
+    That is, given fn as input, return the data from the column labeled 'label'
+    that came from that input file, taking from the output file whose name has
+    f0_base (sf0, pf0, shrf0, strf0) and sample (1ms, 9seg) in it.
+    """
+    in_name = os.path.splitext(os.path.basename(fn))[0]
+    fn = os.path.join(data_path, 'output-' + f0_base + '-' + sample + '.txt')
+    res = []
+    with open(fn) as f:
+        c = csv.DictReader(f, dialect=csv.excel_tab)
+        for row in c:
+            if row['Filename'].startswith(in_name):
+                res.append(float(row[label]))
+    return res
 
 
 # My past experience is that I eventually write helpers that wrap unittest
