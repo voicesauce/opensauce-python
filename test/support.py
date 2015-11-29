@@ -2,6 +2,8 @@ import csv
 import os
 import unittest
 
+from opensauce.textgrid import TextGrid
+
 try:
     from tempfile import TemporaryDirectory
 except ImportError:
@@ -46,12 +48,15 @@ def data_file_path(fn):
 wav_fns = [data_file_path(fn) for fn in os.listdir(data_path)
                               if fn.endswith('.wav')]
 
-def get_test_data(fn, label, f0_base, sample):
-    """Get column 'label' from output file named with f0_base and sample.
+def get_test_data(fn, col_name, f0_base, sample):
+    """Get frame and col_name data from output file named by f0_base and sample.
 
-    That is, given fn as input, return the data from the column labeled 'label'
-    that came from that input file, taking from the output file whose name has
-    f0_base (sf0, pf0, shrf0, strf0) and sample (1ms, 9seg) in it.
+    That is, given fn as input, return the data produced from that input file
+    (the filenames appear in the first column), taking the data from the output
+    file whose name has f0_base (sf0, pf0, shrf0, strf0) and sample (1ms, 9seg)
+    in it.  Return a list of tuples consisting of the frame offset (t_ms) and
+    the data from the column named by col_name, converted to floats.
+
     """
     in_name = os.path.splitext(os.path.basename(fn))[0]
     fn = os.path.join(data_path, 'output-' + f0_base + '-' + sample + '.txt')
@@ -60,8 +65,13 @@ def get_test_data(fn, label, f0_base, sample):
         c = csv.DictReader(f, dialect=csv.excel_tab)
         for row in c:
             if row['Filename'].startswith(in_name):
-                res.append(float(row[label]))
+                res.append(( float(row['t_ms']), float(row[col_name])))
     return res
+
+def get_text_grid(fn):
+    in_name = os.path.splitext(os.path.basename(fn))[0]
+    tg_fn = data_file_path(in_name + '.TextGrid')
+    return TextGrid.load(tg_fn)
 
 
 # My past experience is that I eventually write helpers that wrap unittest
