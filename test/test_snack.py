@@ -8,6 +8,8 @@ from support import TestCase, wav_fns, get_test_data
 
 class TestSnack(TestCase):
 
+    longMessage = True
+
     def test_defaults(self):
         # XXX I think these are the voicesauce defaults (vs expresses them
         # in ms, but snack expects seconds).
@@ -36,10 +38,11 @@ class TestSnack(TestCase):
                 os_data.append(round(F0[ms], 3))
                 vs_data.append(fs0)
             # XXX debug prints.
-            #for i in range(len(os_data)):
-            #    print((i, os_data[i], voicesauce_data[i]))
+            for i in range(len(os_data)):
+                print((i, os_data[i], voicesauce_data[i]))
+            print(fn)
             for i in range(len(os_data)):
                 if (abs(os_data[i] - vs_data[i]) >= 40
                        and (os_data[i]==0 or vs_data[i]==0)):
                     continue
-                self.assertLess(abs(os_data[i] - vs_data[i]), 0.6)
+                self.assertLess(abs(os_data[i] - vs_data[i]), 0.6, "row %s" % i)

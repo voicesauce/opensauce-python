@@ -45,8 +45,8 @@ data_path = os.path.join(os.path.dirname(__file__), 'data')
 def data_file_path(fn):
     return os.path.join(data_path, fn)
 
-wav_fns = [data_file_path(fn) for fn in os.listdir(data_path)
-                              if fn.endswith('.wav')]
+wav_fns = sorted([data_file_path(fn) for fn in os.listdir(data_path)
+                                     if fn.endswith('.wav')])
 
 def get_test_data(fn, col_name, f0_base, sample):
     """Get frame and col_name data from output file named by f0_base and sample.
