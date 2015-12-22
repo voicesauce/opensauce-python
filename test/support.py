@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import unittest
 
@@ -48,10 +49,22 @@ def data_file_path(fn):
 wav_fns = sorted([data_file_path(fn) for fn in os.listdir(data_path)
                                      if fn.endswith('.wav')])
 
+def sample_data_fn(fn, col_name, f0_base, sample):
+    """Return the filename corresponding to fn, col_name, f0_base, and sample.
+
+    Which is those components separated by dashes, with '.json' appended,
+    with the data_file_path as prefix.
+    """
+    fn = os.path.splitext(os.path.basename(fn))[0]
+    fn = '-'.join(('sample', fn, col_name, f0_base, sample))
+    fn = os.path.join(data_path, fn) + '.json'
+    return fn
+
+
 def get_test_data(fn, col_name, f0_base, sample):
     """Get frame and col_name data from output file named by f0_base and sample.
 
-    That is, given fn as input, return the data produced from that input file
+    That is, given fn, return the data produced from that input file
     (the filenames appear in the first column), taking the data from the output
     file whose name has f0_base (sf0, pf0, shrf0, strf0) and sample (1ms, 9seg)
     in it.  Return a list of tuples consisting of the frame offset (t_ms) and
@@ -67,6 +80,24 @@ def get_test_data(fn, col_name, f0_base, sample):
             if row['Filename'].startswith(in_name):
                 res.append(( float(row['t_ms']), float(row[col_name])))
     return res
+
+
+def save_sample_data(data, *args):
+    """Dump data in json format to sample_data_fn(*args).
+
+    This is a utility routine for creating sample data data.  There should
+    be nothing calling it in the committed code base.
+    """
+    with open(sample_data_fn(*args), 'w') as f:
+        f.write(json.dumps(data))
+
+
+def get_sample_data(*args):
+    """Return sample python data from sample_data_fn(*args).
+    """
+    with open(sample_data_fn(*args)) as f:
+        return json.loads(f.read())
+
 
 def get_text_grid(fn):
     in_name = os.path.splitext(os.path.basename(fn))[0]
