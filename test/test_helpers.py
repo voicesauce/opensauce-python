@@ -7,10 +7,10 @@ from test.support import TestCase, data_file_path
 
 class TestSupport(TestCase):
 
-    def test_wavfile(self):
+    def test_wavread(self):
         fn = data_file_path('beijing_f3_50_a.wav')
         samples, Fs = wavread(fn)
-        expected = loadmat(data_file_path('beijing_f3_50_a-wavfile-expected.mat'),
+        expected = loadmat(data_file_path('beijing_f3_50_a-wavread-expected.mat'),
                            squeeze_me=True)
         self.assertEqual(Fs, expected['Fs'])
         # XXX may need to use allclose here instead of array_equal.
