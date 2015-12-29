@@ -18,6 +18,13 @@ functions actually used by the voicesauce func_GetSHRP function.
 # XXX This is a work in progress, working from the bottommost functions up.
 # Function definitions are ordered the same as in the matlab source.
 
+# ---- ethreshold -----
+# Although present in the matlab source this function is not used.
+
+def ethreshold(frames):
+    """Determine energy threshold for silence."""
+    raise NotImplementedError
+
 
 # ---- toframes ----
 
