@@ -4,6 +4,8 @@ import json
 import os
 import unittest
 
+import scipy.io
+
 from opensauce.textgrid import TextGrid
 
 try:
@@ -98,6 +100,10 @@ def get_sample_data(*args):
     """
     with open(sample_data_fn(*args)) as f:
         return json.loads(f.read())
+
+def loadmat(fn):
+    """Load the matlab sample .mat file fn using scipy.io.loadmat."""
+    return scipy.io.loadmat(data_file_path(fn) + '.mat', squeeze_me=True)
 
 
 def get_text_grid(fn):

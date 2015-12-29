@@ -1,11 +1,11 @@
 import numpy as np
 
-from opensauce.shrp import window
+from opensauce.shrp import window, toframes
 
-from test.support import TestCase, parameterize
+from test.support import TestCase, parameterize, loadmat
 
 @parameterize
-class TestSHRP(TestCase):
+class TestWindow(TestCase):
 
     window_params = dict(
         rect10=('rect', 10, None, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]),
@@ -55,3 +55,14 @@ class TestSHRP(TestCase):
     def test_kais_not_implemented(self):
         with self.assertRaises(NotImplementedError):
             window(10, 'kais', 0)
+
+
+class TestToframes(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('toframes_data')
+        res = toframes(data['input'],
+                       data['curpos'].astype(int)-1,
+                       int(data['segmentlen']),
+                       'hamm')
+        np.testing.assert_array_almost_equal(res, data['frames'])

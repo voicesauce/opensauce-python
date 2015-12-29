@@ -11,19 +11,45 @@ using subharmonic-to-harmonic ratio" To appear in the Proc. of ICASSP2002,
 Orlando, Florida, May 13 -17, 2002.  For update information, please check
 http://mel.speech.nwu.edu/sunxj/pda.htm.
 
-This is not a full re-implementation of shrp.m: it only implements those
+XXX: This is not a full re-implementation of shrp.m: it only implements those
 functions actually used by the voicesauce func_GetSHRP function.
 
 """
-
 # XXX This is a work in progress, working from the bottommost functions up.
+# Function definitions are ordered the same as in the matlab source.
 
+
+# ---- toframes ----
+
+def toframes(samples, curpos, segmentlen, window_type):
+    last_index = len(samples) - 1
+    num_frames = len(curpos)
+    start = curpos - int(round(segmentlen/2))
+    offset = np.arange(segmentlen)
+    index_start = np.nonzero(start < 1)[0]
+    start[index_start] = 0
+    endpos = start + segmentlen - 1
+    index = np.nonzero(endpos > last_index)[0]
+    endpos[index] = last_index
+    start[index] = last_index + 1 - segmentlen
+    frames = samples[
+        (np.tile(np.expand_dims(start, 1), (1, segmentlen))
+         + np.tile(offset, (num_frames, 1)))]
+    window_vector = np.tile(window(segmentlen, window_type), (num_frames, 1))
+    return np.multiply(frames, window_vector)
+
+
+# ---- voicing ----
+# func_Get_SHRP does not use these, because CHECK_VOICING is always 0, so we
+# are skipping implementing them for now.
+
+def postvda(segment, curf0, Fs, r_threshold):
+    raise NotImplementedError
 
 def zcr(x, dur):
-    # func_Get_SHRP does not use this, because CHECK_VOICING is always 0.
-    raise NotImplemented
+    raise NotImplementedError
 
-
+# ---- window -----
 def _pi_arange(width):
     return 2*np.pi*np.arange(width)/(width-1)
 
