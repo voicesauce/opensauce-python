@@ -17,6 +17,43 @@ functions actually used by the voicesauce func_GetSHRP function.
 """
 # XXX This is a work in progress, working from the bottommost functions up.
 # Function definitions are ordered the same as in the matlab source.
+# Comments in quotes are copied from the matlab source.
+
+
+# ---- twomax -----
+
+def two_max(x, lowerbound, upperbound, unit_len):
+    """Return up to two successive maximum peaks and their indices in x.
+
+    Return the magnitudes of the peaks and the indices as two lists.
+    If the first maximum is less than zero, just return it.  Otherwise
+    look to the right of the first maximum, and if there is a second
+    maximum that is greater than zero, add that to the returned lists.
+
+    """
+    # XXX The above description is not completely accurate: there's a window to
+    # the search for the second peak, but I don't understand the goal well
+    # enough to describe it better, and the original comments are less precise.
+    max_index = min(upperbound, len(x)-1)
+    # "find the maximum value"
+    mag = np.array([np.amax(x[lowerbound:upperbound])])
+    index = np.where(x == mag)[0]
+    if mag < 0:
+        return mag, index
+    harmonics=2
+    limit=0.0625; # "1/8 octave"
+    startpos = index[0] + round(np.log2(harmonics-limit)/unit_len)
+    if startpos <= max_index:
+        # "for example, 100hz-200hz is one octave, 200hz-250hz is 1/4octave"
+        endpos = index[0] + round(np.log2(harmonics + limit)/unit_len)
+        endpos = min(max_index, endpos)
+        # "find the maximum value at right side of last maximum"
+        mag2 = np.amax(x[startpos:endpos+1])
+        index2 = np.where(x[startpos:] == mag2)[0][0] + startpos
+        if mag2 > 0:
+            mag = np.append(mag, mag2)
+            index = np.append(index, index2)
+    return mag, index
 
 
 # ---- vda -----

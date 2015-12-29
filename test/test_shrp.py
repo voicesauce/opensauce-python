@@ -1,6 +1,6 @@
 import numpy as np
 
-from opensauce.shrp import window, toframes
+from opensauce.shrp import window, toframes, two_max
 
 from test.support import TestCase, parameterize, loadmat
 
@@ -66,3 +66,29 @@ class TestToframes(TestCase):
                        int(data['segmentlen']),
                        'hamm')
         np.testing.assert_array_almost_equal(res, data['frames'])
+
+
+class Test_two_max(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('twomax_data')
+        mag, index = two_max(data['x'],
+                             int(data['lowerbound'])-1,
+                             int(data['upperbound'])-1,
+                             data['unitlen'])
+        np.testing.assert_array_almost_equal(mag, data['mag'])
+        np.testing.assert_array_almost_equal(index, int(data['index'])-1)
+
+    def test_second_peak_index(self):
+        data = loadmat('twomax_data')
+        x = data['x']
+        for i in range(142, 146):
+            # Zap the values in the second peak range to excercise the bug.
+            x[i] = 0.0001*i
+        mag, index = two_max(x,
+                             int(data['lowerbound'])-1,
+                             int(data['upperbound'])-1,
+                             data['unitlen'])
+        np.testing.assert_array_almost_equal(mag,
+                                             np.append(data['mag'], 0.0145))
+        np.testing.assert_array_almost_equal(index, [int(data['index'])-1, 145])
