@@ -18,6 +18,13 @@ functions actually used by the voicesauce func_GetSHRP function.
 # XXX This is a work in progress, working from the bottommost functions up.
 # Function definitions are ordered the same as in the matlab source.
 
+
+# ---- vda -----
+# func_Get_SHRP does not use this, because CHECK_VOICING is always 0
+def vda(x, segmentdur, noisefloor, minzcr):
+    raise NotImplementedError
+
+
 # ---- ethreshold -----
 # Although present in the matlab source this function is not used.
 
@@ -47,8 +54,7 @@ def toframes(samples, curpos, segmentlen, window_type):
 
 
 # ---- voicing ----
-# func_Get_SHRP does not use these, because CHECK_VOICING is always 0, so we
-# are skipping implementing them for now.
+# func_Get_SHRP does not use these, because CHECK_VOICING is always 0
 
 def postvda(segment, curf0, Fs, r_threshold):
     raise NotImplementedError
