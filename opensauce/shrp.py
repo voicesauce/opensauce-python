@@ -20,6 +20,60 @@ functions actually used by the voicesauce func_GetSHRP function.
 # Comments in quotes are copied from the matlab source.
 
 
+# ---- ComputeSHR -----
+def compute_shr(log_spectrum, min_bin, startpos, endpos, lowerbound, upperbound,
+                n, shift_units, shr_threshold):
+    """ "compute subharmonic-to-harmonic ratio for a short-term signal"
+
+       returns peak_index = -1 if frame appears to be unvoiced.
+    """
+    len_spectrum = len(log_spectrum)
+    total_len = shift_units + len_spectrum
+    # "initialize the subharmonic shift matrix; each row corresponds to a shift
+    # version"
+    shshift = np.zeros((n, total_len))
+    # "place the spectrum at the right end of the first row"
+    shshift[0, total_len-len_spectrum:total_len] = log_spectrum
+    # "note that here startpos and endpos has n-1 rows, so we start from 2"
+    # "the first row in shshift is the original log spectrum"
+    # Actually we start from 1 since python is zero-origined.
+    for i in range(1, n):
+        # "store each shifted sequence"
+        shshift[i, startpos[i-1]:endpos[i-1]+1] = (
+            log_spectrum[:endpos[i-1]-startpos[i-1]+1])
+    # "we don't need the stuff smaller than shift_units"
+    shshift = shshift[:, shift_units:total_len]
+    # odd and even are reversed from matlab due to different origin
+    shseven = sum(shshift[0:n:2, :], 0)
+    shsodd = sum(shshift[1:n-1:2, :], 0)
+    difference = shsodd - shseven
+    # "peak picking process"
+    shr = 0
+    # "only find two maxima"
+    mag, index = two_max(difference, lowerbound, upperbound, min_bin)
+    # "first mag is always the maximum, the second, if there is, is the second
+    # max"
+    num_pitch_candidates = len(mag)
+    if num_pitch_candidates == 1:
+        # "this is possible, mainly due to we put a constraint on search region,
+        # i.e., f0 range"
+        if mag <= 0:
+            # this must be an unvoiced frame
+            peak_index = -1;
+            return peak_index, shr, shshift, index
+        peak_index = index
+        shr = 0
+    else:
+        shr = (mag[1]-mag[2]) / (mag[1]+mag[2])
+        if shr <= shr_threshold:
+            # "subharmonic is weak, so favor the harmonic"
+            peak_index = index[2]
+        else:
+            # "subharmonic is strong, so favor the subharmonic as F0"
+            peak_index = index[1]
+    return peak_index, shr, shshift, index
+
+
 # ---- twomax -----
 
 def two_max(x, lowerbound, upperbound, unit_len):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from opensauce.shrp import window, toframes, two_max
+from opensauce.shrp import window, toframes, two_max, compute_shr
 
 from test.support import TestCase, parameterize, loadmat
 
@@ -83,7 +83,7 @@ class Test_two_max(TestCase):
         data = loadmat('twomax_data')
         x = data['x']
         for i in range(142, 146):
-            # Zap the values in the second peak range to excercise the bug.
+            # Zap the values in the second peak range to exercise the branch.
             x[i] = 0.0001*i
         mag, index = two_max(x,
                              int(data['lowerbound'])-1,
@@ -91,4 +91,25 @@ class Test_two_max(TestCase):
                              data['unitlen'])
         np.testing.assert_array_almost_equal(mag,
                                              np.append(data['mag'], 0.0145))
-        np.testing.assert_array_almost_equal(index, [int(data['index'])-1, 145])
+        np.testing.assert_array_equal(index, [int(data['index'])-1, 145])
+
+
+class Test_compute_shr(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('ComputeSHR_data')
+        peak_index, shr, shshift, index = compute_shr(
+            data['log_spectrum'],
+            data['min_bin'],
+            data['startpos'].astype(int)-1,
+            data['endpos'].astype(int)-1,
+            int(data['lowerbound'])-1,
+            int(data['upperbound'])-1,
+            int(data['N']),
+            int(data['shift_units']),
+            data['SHR_Threshold'])
+        np.testing.assert_array_equal(peak_index,
+                                             int(data['peak_index'])-1)
+        np.testing.assert_array_almost_equal(shr, data['SHR'])
+        np.testing.assert_array_almost_equal(shshift, data['shshift'])
+        np.testing.assert_array_almost_equal(index, data['index']-1)
