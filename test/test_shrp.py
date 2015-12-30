@@ -1,6 +1,7 @@
 import numpy as np
 
-from opensauce.shrp import window, toframes, two_max, compute_shr
+from opensauce.shrp import (window, toframes, two_max, compute_shr,
+                            get_log_spectrum)
 
 from test.support import TestCase, parameterize, loadmat
 
@@ -113,3 +114,17 @@ class Test_compute_shr(TestCase):
         np.testing.assert_array_almost_equal(shr, data['SHR'])
         np.testing.assert_array_almost_equal(shshift, data['shshift'])
         np.testing.assert_array_almost_equal(index, data['index']-1)
+
+
+class Test_get_log_spectrum(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('GetLogSpectrum_data')
+        interp_amplitude = get_log_spectrum(
+            data['segment'],
+            data['fftlen'],
+            data['limit'],
+            data['logf'],
+            data['interp_logf'])
+        np.testing.assert_array_almost_equal(interp_amplitude,
+                                             data['interp_amplitude'])

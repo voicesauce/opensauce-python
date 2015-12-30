@@ -1,6 +1,8 @@
 from __future__ import division
 
 import numpy as np
+from scipy.fftpack import fft
+from scipy.interpolate import interp1d
 
 """
 SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic Ratio.
@@ -20,7 +22,21 @@ functions actually used by the voicesauce func_GetSHRP function.
 # Comments in quotes are copied from the matlab source.
 
 
+# ---- GetLogSpectrum -----
+
+def get_log_spectrum(segment, fftlen, limit, logf, interp_logf):
+    spectra = fft(segment, fftlen)
+    # "fftlen is always even here."
+    amplitude = np.abs(spectra[0:fftlen/2+1])
+    # "ignore the zero frequency component"
+    amplitude = amplitude[1:limit+1]
+    interp_amplitude = interp1d(logf, amplitude)(interp_logf)
+    interp_amplitude = interp_amplitude - min(interp_amplitude)
+    return interp_amplitude
+
+
 # ---- ComputeSHR -----
+
 def compute_shr(log_spectrum, min_bin, startpos, endpos, lowerbound, upperbound,
                 n, shift_units, shr_threshold):
     """ "compute subharmonic-to-harmonic ratio for a short-term signal"
@@ -58,7 +74,7 @@ def compute_shr(log_spectrum, min_bin, startpos, endpos, lowerbound, upperbound,
         # "this is possible, mainly due to we put a constraint on search region,
         # i.e., f0 range"
         if mag <= 0:
-            # this must be an unvoiced frame
+            # "this must be an unvoiced frame"
             peak_index = -1;
             return peak_index, shr, shshift, index
         peak_index = index
