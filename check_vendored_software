@@ -1,0 +1,37 @@
+#!/usr/bin/python
+
+# Make sure the code we have grabbed from other projects (where we only need a
+# small bit of code so we don't want to depend on the entire project) is up to
+# date with the code in the project's repo.
+
+import difflib
+import os
+try:
+    from urllib.client import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
+import opensauce
+
+software = [
+    [
+        "textgrid.py",
+         "https://github.com/nltk/nltk_contrib/raw/master/"
+             "nltk_contrib/textgrid.py"
+         ],
+    ]
+
+project_root = os.path.dirname(opensauce.__file__)
+
+for local, remote in software:
+    with open(os.path.join(project_root, local)) as f:
+        l = f.read().splitlines(True)
+    try:
+        u = urlopen(remote)
+        r = u.read().splitlines(True)
+    finally:
+        u.close()
+    if l !=  r:
+        print("\n{} does not match {}:".format(local, remote))
+        delta = difflib.unified_diff(l, r, fromfile=local, tofile=remote)
+        print(''.join(list(delta)))
