@@ -64,5 +64,8 @@ so there's one measurement estimated every 1 ms), in the audio file.)
 Other files
 -----------
 
-cant_c5_19a.f0      File produced by snack, computing f0 on the wav file in
-                    the default directory.
+cant_c5_19a.f0          File produced by snack, computing f0 on the wav file in
+                        the default directory.
+
+beijing_f3_50_a-y.mat   The y vector from octave's wavread function applied
+                        to beijing_f3_50_a.wav, saved as a .mat file.
