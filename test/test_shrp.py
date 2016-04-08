@@ -1,7 +1,7 @@
 import numpy as np
 
 from opensauce.shrp import (window, toframes, two_max, compute_shr,
-                            get_log_spectrum)
+                            get_log_spectrum, shrp)
 
 from test.support import TestCase, parameterize, loadmat
 
@@ -69,10 +69,13 @@ class TestToframes(TestCase):
         np.testing.assert_array_almost_equal(res, data['frames'])
 
 
+@parameterize
 class Test_two_max(TestCase):
 
-    def test_with_matlab_data(self):
-        data = loadmat('twomax_data')
+    matlab_fn_params = ('twomax_data', 'two_max_183')
+
+    def matlab_fn_as_matlab_input_data(self, filename):
+        data = loadmat(filename)
         mag, index = two_max(data['x'],
                              int(data['lowerbound'])-1,
                              int(data['upperbound'])-1,
@@ -95,10 +98,13 @@ class Test_two_max(TestCase):
         np.testing.assert_array_equal(index, [int(data['index'])-1, 145])
 
 
+@parameterize
 class Test_compute_shr(TestCase):
 
-    def test_with_matlab_data(self):
-        data = loadmat('ComputeSHR_data')
+    matlab_fn_params = ('ComputeSHR_data', 'compute_shr_183')
+
+    def matlab_fn_as_matlab_input_data(self, filename):
+        data = loadmat(filename)
         peak_index, shr, shshift, index = compute_shr(
             data['log_spectrum'],
             data['min_bin'],
@@ -115,6 +121,9 @@ class Test_compute_shr(TestCase):
         np.testing.assert_array_almost_equal(shshift, data['shshift'])
         np.testing.assert_array_almost_equal(index, data['index']-1)
 
+    # XXX Need test data that exercises each of the if branches.  The
+    # one above has only one peak.  Test_shrp exercises more.
+
 
 class Test_get_log_spectrum(TestCase):
 
@@ -123,8 +132,36 @@ class Test_get_log_spectrum(TestCase):
         interp_amplitude = get_log_spectrum(
             data['segment'],
             data['fftlen'],
-            data['limit'],
+            data['limit'] - 1,
             data['logf'],
             data['interp_logf'])
         np.testing.assert_array_almost_equal(interp_amplitude,
                                              data['interp_amplitude'])
+
+
+class Test_shrp(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('shrp_data')
+        f0_time, f0_value, shr, f0_candidates = shrp(
+            data['Y'],
+            int(data['Fs']),
+            [int(x) for x in data['F0MinMax']],
+            int(data['frame_length']),
+            int(data['timestep']),
+            data['SHR_Threshold'],
+            data['ceiling'],
+            data['med_smooth'],
+            data['CHECK_VOICING'])
+        np.testing.assert_array_almost_equal(f0_time, data['f0_time'])
+        #temp = f0_value
+        #edata = data['f0_value']
+        #x = len(temp)
+        #for i in range(x):
+        #        print("{}: {} {} {}".format(
+        #            i, temp[i], edata[i],
+        #            '=' if temp[i] == edata[i] else '!'))
+        np.testing.assert_array_almost_equal(f0_value, data['f0_value'])
+        np.testing.assert_array_almost_equal(shr, data['SHR'])
+        np.testing.assert_array_almost_equal(f0_candidates,
+                                             data['f0_candidates'])
