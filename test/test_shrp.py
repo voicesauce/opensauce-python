@@ -1,9 +1,10 @@
 import numpy as np
 
 from opensauce.shrp import (window, toframes, two_max, compute_shr,
-                            get_log_spectrum, shrp)
+                            get_log_spectrum, shrp, shrp_pitch)
+from opensauce.helpers import wavread
 
-from test.support import TestCase, parameterize, loadmat
+from test.support import TestCase, parameterize, loadmat, data_file_path
 
 @parameterize
 class TestWindow(TestCase):
@@ -154,14 +155,17 @@ class Test_shrp(TestCase):
             data['med_smooth'],
             data['CHECK_VOICING'])
         np.testing.assert_array_almost_equal(f0_time, data['f0_time'])
-        #temp = f0_value
-        #edata = data['f0_value']
-        #x = len(temp)
-        #for i in range(x):
-        #        print("{}: {} {} {}".format(
-        #            i, temp[i], edata[i],
-        #            '=' if temp[i] == edata[i] else '!'))
         np.testing.assert_array_almost_equal(f0_value, data['f0_value'])
         np.testing.assert_array_almost_equal(shr, data['SHR'])
         np.testing.assert_array_almost_equal(f0_candidates,
                                              data['f0_candidates'])
+
+
+class Test_shrp_pitch(TestCase):
+
+    def test_with_matlab_data(self):
+        data = loadmat('shrp_pitch_data')
+        wav_data, fps = wavread(data_file_path('beijing_f3_50_a.wav'))
+        shr, f0 = shrp_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
+        np.testing.assert_array_almost_equal(f0, data['F0'])
+        np.testing.assert_array_almost_equal(shr, data['SHR'])

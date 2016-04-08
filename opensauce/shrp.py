@@ -1,15 +1,110 @@
+"""
+SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic Ratio.
+
+"""
+
 from __future__ import division
 
 import numpy as np
 from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 
-"""
-SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic Ratio.
+# Comments in quotes are copied from the matlab source.
 
-"""
 
-# Based on the shrp.m from voicesauce v1.25.
+# ---- func_GetSHRP ----
+
+# Based func_GetSHRP.m from voicesauce v1.25, by Kristine Yu, which in turn was
+# based on func_PraatPitch.m by Yen-Liang Shue.
+
+def shrp_pitch(wav_data, fps, window_length=None, frame_shift=None,
+               min_pitch=None, max_pitch=None, shr_threshold=None,
+               frame_precision=None, datalen=None):
+    """Return a list of Subharmonic ratios and F0 values computed from wav_data.
+
+    wav_data        a vector of data read from a wav file
+    fps             frames rate of the wav file
+    windows_length  width of analysis window
+    frame_shift     distance to move window for each analysis iteration
+    min_pitch       minimum pitch in Hz used in SHR estimation
+    max_pitch       maximum pitch in Hz used in SHR estimation
+    shr_threshold   subharmonic-to-harmonic ratio threshold in the range of
+                        [0,1].  If the estimated SHR is greater than the
+                        threshold, the subharmonic is regarded as F0 candidate.
+                        Otherwise, the harmonic is favored.
+    frame_precision maximum number of frames the time alignment can be off
+                        by when selecting values for output
+    datalen         the number of values in the output vector; leftover
+                        input data is dropped, and the vector is padded
+                        with NaNs when no input data corresponds to
+                        the output frame time.
+
+    """
+    # XXX the octave code produces 201 output points given a datalen
+    # of 200.  Presumably a but in the matlab code.  But we'll emulate it.
+    datalen += 1
+    kw = {}
+    # XXX This is awkward, fix it in refactoring later.
+    if len(filter(None, (min_pitch, max_pitch))) == 1:
+        raise ValueError('none or both of min_pitch, max_pitch must be specified')
+    elif min_pitch:
+        kw['F0MinMax'] = (min_pitch, max_pitch)
+    if window_length is not None:
+        kw['frame_length'] = window_length
+    if frame_shift is not None:
+        kw['timestep'] = frame_shift
+    if shr_threshold is not None:
+        kw['SHR_Threshold'] = shr_threshold
+    f0_time, f0_value, shr_value, f0_candidates = shrp(wav_data, fps, **kw)
+
+    # "Postprocess subharmonic-harmonic ratios and f0 tracks"
+
+    # "Initialize F0 and subharmonic-harmonic ratio values"
+    F0 = np.zeros(datalen) * float('NaN')
+    SHR = np.zeros(datalen) * float('NaN')
+
+    # "time locations rounded to nearest ms"
+    #
+    # XXX numpy uses round-half-even, while matlab appears to use
+    # round-away-from-zero.  We can emulate this in python2 by using
+    # python2 round function instead of numpy's, but in python3 the
+    # rounding will have to take a detour through the Decimal module,
+    # which fortunately in python3 has a C accelerator.  Or perhaps
+    # we can ultimately just use round-half-even, if it turns out
+    # not to affect the results.  (This matters here because the time
+    # intervals produced by shrp are normally x.5 values.)
+    import sys
+    if sys.version_info.major > 2:
+        raise NotImplementedError("python3 rounding will produce bad results")
+    t = np.vectorize(round)(f0_time)
+
+    # "Like timecoures from Praat, we might have missing values so pad with NaNs at
+    # beginning and end if necessary."
+    # RDM XXX note that it looks to me like after the leading NaN padding this
+    # actually ends up padding with frame_precision copies of the first frame
+    # that comes within the precision window, and then offsets all of the
+    # others by frame_precision*frame_shift.  This algorithm could use a lot of
+    # improvement I think.  But for now, we are emulating the voicesauce code.
+    start = 0
+    finish = t[-1]
+    increment = frame_shift
+    for k in np.arange(start, finish, increment):
+        # "try to find the closest value"
+        dabs = np.abs(t - k)
+        inx = dabs.argmin()
+        if dabs[inx] > frame_precision * frame_shift:
+            # "no valid value found"
+            continue
+        n = round(k / frame_shift) + 1
+        if n < 0 or n >= datalen:
+            continue
+        F0[n] = f0_value[inx]
+        SHR[n] = shr_value[inx]
+        # "I eventually would like to get candidates as well"
+    return SHR, F0
+
+
+# Remainder based on the shrp.m from voicesauce v1.25.
 # XXX: This is not a full re-implementation of shrp.m: it only implements those
 # functions actually used by the voicesauce func_GetSHRP function.
 
@@ -37,7 +132,6 @@ SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic Ratio.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Function definitions are ordered the same as in the matlab source.
-# Comments in quotes are copied from the matlab source.
 
 
 # ---- shrp -----
@@ -54,7 +148,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
                             quick solutions:
                                 for male speech: [50 250]
                                 for female speech: [120 400]
-        frame_length    length of each frame in millisecond (default: 40 ms)
+        frame_length    length of each frame in milliseconds (default: 40 ms)
         TimeStep        interval for updating short-term analysis in
                             millisecond (default: 10 ms)
         SHR_Threshold   subharmonic-to-harmonic ratio threshold in the range of
