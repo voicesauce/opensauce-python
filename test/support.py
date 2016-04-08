@@ -208,3 +208,13 @@ def parameterize(cls):
     for key, value in testfuncs.items():
         setattr(cls, key, value)
     return cls
+
+
+# Debugging helper.
+def adiff(a1, a2):
+    """Print a detailed difference for a1 versus a2 (must be same shape)."""
+    x = len(a1)
+    for i in range(x):
+            print("{}: {} {} {}".format(
+                i, a1[i], a2[i],
+                '=' if a1[i] == a2[i] else '!'))
