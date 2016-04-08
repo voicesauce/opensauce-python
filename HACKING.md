@@ -62,8 +62,11 @@ Check the Issue tracker and TODO.md for ideas.
 
    where list-of-variables is the complete list of variables used
    to call the function as well as all the variables it returns.
+   (Check to make sure the arguments aren't modified in the body of
+   the function; if they are you will have to make copies of the original
+   values and save those as well.)
 
-2. Call the opensauce-octave such that your algorithm of interest
+2. Call opensauce-octave such that your algorithm of interest
    gets called.  (XXX: need to flesh this out.)
 
 3. Copy the data.mat file to test/data as <funcname>.mat, where funcname
