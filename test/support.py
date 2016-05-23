@@ -112,16 +112,17 @@ def get_text_grid(fn):
     return TextGrid.load(tg_fn)
 
 
-# My past experience is that I eventually write helpers that wrap unittest
-# resources and use them in a number of test cases.  These helpers need access
-# to the underlying unittest.TestCase, so it is easiest to write them as
-# methods on a subclass.  So, I'll create a subclass now that doesn't have any
-# extra methods, to make it easy to add them later without having to touch all
-# the then-existing test cases.
-
 class TestCase(unittest.TestCase):
 
     longMessage = True
+
+    def tmpdir(self):
+        tmpdir = TemporaryDirectory()
+        self.addCleanup(tmpdir.cleanup)
+        return tmpdir.name
+
+    # Python3 compat
+    assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
 
 
 def parameterize(cls):
