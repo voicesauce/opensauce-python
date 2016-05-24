@@ -45,7 +45,7 @@ def shrp_pitch(wav_data, fps, window_length=None, frame_shift=None,
     datalen += 1
     kw = {}
     # XXX This is awkward, fix it in refactoring later.
-    if len(filter(None, (min_pitch, max_pitch))) == 1:
+    if len(list(filter(None, (min_pitch, max_pitch)))) == 1:
         raise ValueError('none or both of min_pitch, max_pitch must be specified')
     elif min_pitch:
         kw['F0MinMax'] = (min_pitch, max_pitch)

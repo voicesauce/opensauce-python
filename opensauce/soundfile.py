@@ -10,7 +10,7 @@ import os
 from opensauce.helpers import wavread
 from opensauce.textgrid import TextGrid
 
-class SoundFile:
+class SoundFile(object):
 
     def __init__(self, wavpath, tgdir=None, tgfn=None):
         """Load sound data from wavpath and TextGrid from tgdir+tgfn.
@@ -59,16 +59,18 @@ class SoundFile:
         return self._wavdata()[1]
 
     def _wavdata(self):
-        self.wavdata, self.fs = wavread(self.wavpath)
-        return self.wavdata, self.fs
+        data, fs = wavread(self.wavpath)
+        self.__dict__['wavdata'], self.__dict__['fs'] = data, fs
+        return data, fs
 
     @property
     def textgrid(self):
         if os.path.exists(self.tgpath):
-            self.textgrid = TextGrid.load(self.tgpath)
+            res = TextGrid.load(self.tgpath)
         else:
-            self.textgrid = None
-        return self.textgrid
+            res = None
+        self.__dict__['textgrid'] = res
+        return res
 
     @property
     def textgrid_intervals(self):
@@ -80,5 +82,5 @@ class SoundFile:
                 continue
             for start, stop, label in tier.simple_transcript:
                 res.append((label, float(start), float(stop)))
-        self.textgrid_intervals = res
+        self.__dict__['textgrid_intervals'] = res
         return res

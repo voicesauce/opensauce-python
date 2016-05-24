@@ -73,7 +73,7 @@ class TestToframes(TestCase):
 @parameterize
 class Test_two_max(TestCase):
 
-    matlab_fn_params = ('twomax_data', 'two_max_183')
+    matlab_fn_params = (['twomax_data'], ['two_max_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
         data = loadmat(filename)
@@ -102,7 +102,7 @@ class Test_two_max(TestCase):
 @parameterize
 class Test_compute_shr(TestCase):
 
-    matlab_fn_params = ('ComputeSHR_data', 'compute_shr_183')
+    matlab_fn_params = (['ComputeSHR_data'], ['compute_shr_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
         data = loadmat(filename)
