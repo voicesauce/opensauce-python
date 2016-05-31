@@ -5,6 +5,9 @@ the sound data and, if it exists, associated textgrid annotation information.
 
 """
 
+from __future__ import division
+
+import math
 import os
 
 from opensauce.helpers import wavread
@@ -23,6 +26,7 @@ class SoundFile(object):
 
             wavpath                 The original path specified in the
                                         constructor.
+            wavfn                   The filename component of wavpath.
             wavdata                 An ndarray of the wavfile samples
             fs                      The number of samples per second
             tgpath                  Full path to the textgrid file.
@@ -44,6 +48,7 @@ class SoundFile(object):
         """
         open(wavpath).close()   # Generate an error if the file doesn't exist.
         self.wavpath = wavpath
+        self.wavfn = os.path.split(self.wavpath)[1]
         if tgfn is None:
             tgfn = os.path.splitext(os.path.basename(wavpath))[0] + '.TextGrid'
         if tgdir is None:
@@ -62,6 +67,12 @@ class SoundFile(object):
         data, fs = wavread(self.wavpath)
         self.__dict__['wavdata'], self.__dict__['fs'] = data, fs
         return data, fs
+
+    @property
+    def ms_len(self):
+        ms_len = math.floor(len(self.wavdata) / self.fs * 1000)
+        self.__dict__['ms_len'] = ms_len
+        return ms_len
 
     @property
     def textgrid(self):
