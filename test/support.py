@@ -1,8 +1,14 @@
+import contextlib
 import csv
 import collections
 import json
 import os
+import sys
 import unittest
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import scipy.io
 
@@ -43,6 +49,7 @@ except ImportError:
         def __del__(self):
             self.cleanup()
 
+py2 = sys.version_info[0] < 3
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -123,6 +130,18 @@ class TestCase(unittest.TestCase):
 
     # Python3 compat
     assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
+
+    @contextlib.contextmanager
+    def captured_output(self, stream_name):
+        """Return a context manager that temporarily replaces the sys stream
+        *stream_name* with a StringIO and returns it."""
+        orig_stdout = getattr(sys, stream_name)
+        setattr(sys, stream_name, StringIO())
+        try:
+            yield getattr(sys, stream_name)
+        finally:
+            setattr(sys, stream_name, orig_stdout)
+
 
 
 def parameterize(cls):

@@ -174,7 +174,7 @@ class CLI(argparse.Namespace):
     # analyze.
     parser.add_argument('wavfiles', nargs="+", metavar='wavfile',
                         help="wav file to analyze")
-    # These options control where we get our setting and measurements.
+    # These options control where we get our settings and measurements.
     parser.add_argument('-s', '--settings',
                         help="Path to settings file.  Defaults to the first"
                              " of {} that is found.  Command line arguments"
