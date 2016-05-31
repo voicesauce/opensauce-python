@@ -43,20 +43,23 @@ class TestCLI(TestCase):
                   )
         out, err = p.communicate()
         self.assertEqual(out, '')
+        # XXX assumes python is python2.  Fix?
         self.assertIn('too few arguments', err)
         self.assertEqual(p.returncode, 2)
 
-    def test_snackF0(self):
+    def _CLI_output(self, args):
         tmp = self.tmpdir()
         outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             data_file_path('beijing_f3_50_a.wav')]
-            ).process()
-        # XXX eventually we should test against the voicesauce data instead,
-        # when that is working.
+        CLI(args + ['-o', outfile]).process()
         with open(outfile) as f:
             lines = f.readlines()
+        return lines
+
+    def test_snackF0(self):
+        lines = self._CLI_output([
+             data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
         self.assertEqual(len([x for x in lines if 'V1' in x]), 209)
@@ -64,15 +67,11 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
 
     def test_ignore_label(self):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             '--ignore-label', 'C2',
-             data_file_path('beijing_f3_50_a.wav')]
-            ).process()
-        with open(outfile) as f:
-            lines = f.readlines()
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--ignore-label', 'C2',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
         self.assertEqual(len(lines), 589 - 119)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
         self.assertEqual(len([x for x in lines if 'V1' in x]), 209)
@@ -80,16 +79,12 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
 
     def test_ignore_multiple_labels(self):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             '--ignore-label', 'C2',
-             '--ignore-label', 'V1',
-             data_file_path('beijing_f3_50_a.wav')]
-            ).process()
-        with open(outfile) as f:
-            lines = f.readlines()
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--ignore-label', 'C2',
+            '--ignore-label', 'V1',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
         self.assertEqual(len(lines), 589 - 119 - 209)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
         self.assertEqual(len([x for x in lines if 'V1' in x]), 0)
@@ -97,28 +92,20 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
 
     def test_include_empty_lables(self):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             '--include-empty-labels',
-             data_file_path('beijing_f3_50_a.wav')]
-            ).process()
-        with open(outfile) as f:
-            lines = f.readlines()
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--include-empty-labels',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
         self.assertEqual(len(lines), 2347)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
 
     def test_no_textgrid(self):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             '--no-textgrid',
-             data_file_path('beijing_f3_50_a.wav')]
-            ).process()
-        with open(outfile) as f:
-            lines = f.readlines()
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--no-textgrid',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
         # The textgrid output has a repeated frame offset at the end and
         # beginning of each block.  Since there are six blocks (including the
         # ones with blank labels) in this sample, there are five more records
@@ -131,17 +118,13 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
 
     def test_multiple_input_files(self):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--measurements', 'snackF0',
-             '-o', outfile,
-             '--include-empty-labels',
-             data_file_path('beijing_f3_50_a.wav'),
-             data_file_path('beijing_m5_17_c.wav'),
-             data_file_path('hmong_f4_24_d.wav'),
-             ]).process()
-        with open(outfile) as f:
-            lines = f.readlines()
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--include-empty-labels',
+            data_file_path('beijing_f3_50_a.wav'),
+            data_file_path('beijing_m5_17_c.wav'),
+            data_file_path('hmong_f4_24_d.wav'),
+            ])
         self.assertEqual(len(lines), 6121)
         # The first of these is one less than the number lines in the single
         # file equivalent test above because there we were counting the header
