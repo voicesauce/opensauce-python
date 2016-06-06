@@ -151,3 +151,17 @@ class TestCLI(TestCase):
         with self.assertArgparseError(['too few arguments'],
                 ['required', 'wavfile']):
             CLI([])
+
+    def test_settings(self):
+        tmp = self.tmpdir()
+        settingsfn = os.path.join(tmp, 'settings')
+        with open(settingsfn, 'w') as f:
+            f.write('include-empty-labels\n')
+            f.write('ignore-label C2\n')
+        lines = self._CLI_output([
+            '--settings', settingsfn,
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+            ])
+        self.assertEqual(len(lines), 2347 - 119)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 0)

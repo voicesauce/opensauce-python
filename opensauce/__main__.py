@@ -26,49 +26,52 @@ measurements_locs = ('./opensauce.measurements',
 
 
 
-class CLI(argparse.Namespace):
+class CLI(object):
 
     def __init__(self, args=None):
-        args = self.parser.parse_args(args)
-        if args.measurements and args.default_measurements_file:
-            raise CmdError("Cannot specify both --measurements and"
-                           " -m/--default-measurements-file")
-        if args.settings:
-            self._load_settings(args, args.settings)
+        ns, _ = self.settings_option_parser.parse_known_args(args)
+        if ns.settings:
+            settings = self._settings_from_file(ns.settings)
         else:
-            self._load_default_settings()
-        self.__dict__.update(args.__dict__)
-        if self.default_measurements_file:
-            self._load_default_measurements_file(self.default_measurements_file)
-        elif not self.measurements:
-            self._load_default_measurements()
+            settings = self._settings_from_default_file()
+        args = sys.argv[1:] if args is None else args
+        self.args = self.parser.parse_args(settings + args)
+        if not self.args.measurements:
+            if self.args.default_measurements_file:
+                self.args.measurements = self._measurements_from_file(
+                                            self.args.default_measurements_file)
+            else:
+                self.args.measurements = self._measurements_from_default_file()
         self._cached_results = {}
 
-    def _load_settings_file(self, filepath):
-        cp = configparser.ConfigParser()
+    def _settings_from_file(self, filepath):
         with open(filepath) as fp:
-            cp.readfp(fp)
-        args = sum([['--' + k] + shlex.split(v)
-                    for k, v in cp.defaults.values()], [])
-        args, argv = self.parser.parse_known_args(args)
-        if args.measurements:
-            argv.extend(['--measurements'] + args.measurements)
-        if args.settings:
-            argv.extend(['--settings', args.settings])
-        if argv:
+            lines = [shlex.split(x) for x in fp.readlines()]
+        # XXX this abbreviation check is a bit fragile in the face of a new
+        # option starting with --me being added, but I haven't come up with a
+        # better solution.
+        lastoptname = lines[-1][0].lstrip('-')[1:]
+        if lastoptname and 'easurements'.startswith(lastoptname):
+            raise CmdError('"--measurements" may not be the last line'
+                           ' in settings file {!r}'.format(filepath))
+        # The strip and add of '--' makes '--' optional in the settings
+        # file but ensures the '--' is there for parsing by argparse.
+        settings = sum([['--' + tokens[0].lstrip('-')] + tokens[1:]
+                       for tokens in lines], [])
+        if any(x.startswith('--settings') for x in settings):
             raise CmdError(
-                "Unrecognized options in settings file {!r}: {}".format(
-                    filepath, argv))
-        self.__dict__.update(args.__dict__)
+                'invalid option "--settings" in settings file {!r}'.format(
+                    filepath))
+        return settings
 
-    def _load_default_settings(self):
+    def _settings_from_default_file(self):
         for filepath in settings_locs:
             if os.path.isfile(filepath):
-                self._load_settings_file(filepath)
-                return
+                return self._load_settings_file(filepath)
+        return []
 
-    def _load_default_measurements_file(self, filepath):
-        self.measurements = []
+    def _measurements_from_file(self, filepath):
+        measurements = []
         with open(filepath) as f:
             for i, line in enumerate(f):
                 m = line.strip()
@@ -76,13 +79,14 @@ class CLI(argparse.Namespace):
                     raise CmdError(
                         "Unknown measurement {} on line"
                         "{} of {!r}".format(m, i, filepath))
-                self.measurements.append(m)
+                measurements.append(m)
+        return measurements
 
-    def _load_default_measurements(self):
+    def _measurements_from_default_file(self):
         for filepath in measurements_locs:
             if os.path.isfile(filepath):
-                self._load_default_measurements_file(filepath)
-                return
+                return self._load_default_measurements_file(filepath)
+        return []
 
     def _algorithm(self, name):
         return getattr(self, 'DO_' + name)
@@ -90,57 +94,57 @@ class CLI(argparse.Namespace):
 
     def _assemble_fields(self, filename, textgrid_data, offset, f0, data):
         return ([filename]
-                + (textgrid_data if self.use_textgrid else [])
+                + (textgrid_data if self.args.use_textgrid else [])
                 + [offset]
-                + ([f0] if self.include_f0_column else [])
+                + ([f0] if self.args.include_f0_column else [])
                 + data)
 
     def _get_value(self, vector, index):
         try:
             res = vector[index]
         except IndexError:
-            res = self.NaN
+            res = self.args.NaN
         else:
             res = format(res, '.3f')
         return res
 
     def process(self):
-        with open(self.output_filepath, 'w') as of:
+        with open(self.args.output_filepath, 'w') as of:
             output = csv.writer(of, dialect=csv.excel_tab)
             output.writerow(
                 self._assemble_fields(
                     filename='Filename',
                     textgrid_data=['Label', 'seg_Start', 'seg_End'],
                     offset='t_ms',
-                    f0=self.f0,
-                    data=self.measurements
+                    f0=self.args.f0,
+                    data=self.args.measurements
                 ))
-            for wavfile in self.wavfiles:
+            for wavfile in self.args.wavfiles:
                 self._cached_results.clear()
                 soundfile = SoundFile(wavfile)
                 results = {}
-                results[self.f0] = self._algorithm(self.f0)(soundfile)
-                for measurement in self.measurements:
+                results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
+                for measurement in self.args.measurements:
                     compute_measurement = self._algorithm(measurement)
                     results[measurement] = compute_measurement(soundfile)
-                if self.use_textgrid and soundfile.textgrid:
+                if self.args.use_textgrid and soundfile.textgrid:
                     intervals = soundfile.textgrid_intervals
                 else:
-                    if self.use_textgrid:
+                    if self.args.use_textgrid:
                         # XXX covert this to use logging.
                         print("Found no TextGrid for {}, reporting all"
                                " data".format(soundfile.wavfn))
                     intervals = (('no textgrid', 0,
-                                  int(soundfile.ms_len//self.frame_shift)),)
-                frame_shift = self.frame_shift
+                                  int(soundfile.ms_len//self.args.frame_shift)),)
+                frame_shift = self.args.frame_shift
                 for (label, start, stop) in intervals:
-                    if label in self.ignore_label:
+                    if label in self.args.ignore_label:
                         continue
-                    if not label.strip() and not self.include_empty_labels:
+                    if not label.strip() and not self.args.include_empty_labels:
                         continue
                     fstart = int(round(start*1000/frame_shift))
                     fstop = min(int(round(stop*1000/frame_shift)),
-                                int(soundfile.ms_len//self.frame_shift))
+                                int(soundfile.ms_len//self.args.frame_shift))
                     start_str = format(start, '.3f')
                     stop_str = format(stop, '.3f')
                     for s in range(fstart, fstop+1):
@@ -149,9 +153,9 @@ class CLI(argparse.Namespace):
                                 filename=soundfile.wavfn,
                                 textgrid_data=[label, start_str, stop_str],
                                 offset=format(s * frame_shift, '.3f'),
-                                f0=self._get_value(results[self.f0], s),
+                                f0=self._get_value(results[self.args.f0], s),
                                 data=[self._get_value(results[x], s)
-                                      for x in self.measurements]
+                                      for x in self.args.measurements]
                             ))
 
     def DO_snackF0(self, soundfile):
@@ -159,27 +163,38 @@ class CLI(argparse.Namespace):
             return self._cached_results['snackF0']
         from .snack import snack_pitch
         F0, V = snack_pitch(soundfile.wavpath,
-                            frame_length=self.frame_shift/1000,
-                            window_length=self.window_size/1000,
-                            min_pitch=self.min_F0,
-                            max_pitch=self.max_F0,
+                            frame_length=self.args.frame_shift/1000,
+                            window_length=self.args.window_size/1000,
+                            min_pitch=self.args.min_F0,
+                            max_pitch=self.args.max_F0,
                             )
         self._cached_results['snackF0'] = F0
         return F0
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
 
+    # Special parser used to get the settings file name so we can read that
+    # first before doing the main CLI parse.
+    _settings_op_args = (('-s', '--settings'), dict(
+                         help="Path to settings file.  Defaults to the first"
+                              " of {} that is found.  Command line arguments"
+                              " override file-based settings.".format(
+                                 settings_locs)))
+    settings_option_parser = argparse.ArgumentParser()
+    settings_option_parser.add_argument(*_settings_op_args[0],
+                                        **_settings_op_args[1])
+
+    # Main CLI parser.
     parser = argparse.ArgumentParser()
     # The arguments (as opposed to the options) are a list of filenames to
     # analyze.
     parser.add_argument('wavfiles', nargs="+", metavar='wavfile',
                         help="wav file to analyze")
-    # These options control where we get our settings and measurements.
-    parser.add_argument('-s', '--settings',
-                        help="Path to settings file.  Defaults to the first"
-                             " of {} that is found.  Command line arguments"
-                             " override file-based settings.".format(
-                                settings_locs))
+    # Need to include settings in main parser also so it doesn't cause an error
+    # during the full parse and so it shows up in help.
+    parser.add_argument(*_settings_op_args[0], **_settings_op_args[1])
+    del _settings_op_args
+    # These options control where we get our measurements.
     parser.add_argument('-m', '--default-measurements-file',
                         help="Path to measurements file.  Defaults to the first"
                              " of {} that is found.".format(measurements_locs))
@@ -190,8 +205,7 @@ class CLI(argparse.Namespace):
                              " in the output file in the same order as"
                              " specified on the command line.  When"
                              " --measurements is specified the default"
-                             " measurements file is ignored, and specifying"
-                             " -m/--default-measurements-file is an error."
+                             " measurements file is ignored."
                              " The supported values for measurements are:"
                              " {}".format(_valid_measurements))
     # These options control the analysis.
