@@ -178,6 +178,17 @@ class TestCLI(TestCase):
         self.assertEqual(len(lines), 2347 - 119)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
 
+    def test_settings_default_file(self):
+        settingsfn = self._make_settings_file("""
+            include-empty-labels
+            """)
+        with self.patch(CLI, 'settings_locs', [settingsfn]):
+            lines = self._CLI_output([
+                data_file_path('beijing_f3_50_a.wav'),
+                '--measurements', 'snackF0',
+                ])
+            self.assertEqual(len(lines), 2347)
+
     def test_settings_option_invalid_in_settings_file(self):
         settingsfn = self._make_settings_file("""
             include-empty-labels

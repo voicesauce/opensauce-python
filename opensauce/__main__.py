@@ -23,16 +23,14 @@ class MyArgumentParser(argparse.ArgumentParser):
         self.exit(2, "{}: error: {}\n".format(self.prog, message))
 
 
-settings_locs = ('./opensauce.settings',
-                 '~/.config/opensauce/settings',
-                 '~/.opensaucerc')
-measurements_locs = ('./opensauce.measurements',
-                    '~/.config/opensauce/measurements',
-                    '~/.opensauce.measurements')
-
-
-
 class CLI(object):
+
+    settings_locs = ('./opensauce.settings',
+                     '~/.config/opensauce/settings',
+                     '~/.opensaucerc')
+    measurements_locs = ('./opensauce.measurements',
+                        '~/.config/opensauce/measurements',
+                        '~/.opensauce.measurements')
 
     def __init__(self, args=None):
         ns, _ = self.settings_option_parser.parse_known_args(args)
@@ -73,9 +71,9 @@ class CLI(object):
         return settings
 
     def _settings_from_default_file(self):
-        for filepath in settings_locs:
+        for filepath in self.settings_locs:
             if os.path.isfile(filepath):
-                return self._load_settings_file(filepath)
+                return self._settings_from_file(filepath)
         return []
 
     def _measurements_from_file(self, filepath):
@@ -91,9 +89,9 @@ class CLI(object):
         return measurements
 
     def _measurements_from_default_file(self):
-        for filepath in measurements_locs:
+        for filepath in self.measurements_locs:
             if os.path.isfile(filepath):
-                return self._load_default_measurements_file(filepath)
+                return self._measurements_from_file(filepath)
         return []
 
     def _algorithm(self, name):

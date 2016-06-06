@@ -143,6 +143,13 @@ class TestCase(unittest.TestCase):
         finally:
             setattr(sys, stream_name, orig_stdout)
 
+    # A minimal version of patch good enough for our needs.
+    @contextlib.contextmanager
+    def patch(self, obj, attr, value):
+        old_val = getattr(obj, attr)
+        setattr(obj, attr, value)
+        yield
+        obj.attr = old_val
 
 
 def parameterize(cls):
