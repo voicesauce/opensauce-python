@@ -1,6 +1,7 @@
 import contextlib
 import filecmp
 import os
+import textwrap
 from shutil import copytree
 from subprocess import Popen, PIPE
 
@@ -152,12 +153,19 @@ class TestCLI(TestCase):
                 ['required', 'wavfile']):
             CLI([])
 
-    def test_settings(self):
+    def _make_settings_file(self, lines):
+        lines = textwrap.dedent(lines.lstrip('\n'))
         tmp = self.tmpdir()
         settingsfn = os.path.join(tmp, 'settings')
         with open(settingsfn, 'w') as f:
-            f.write('include-empty-labels\n')
-            f.write('ignore-label C2\n')
+            f.write(lines)
+        return settingsfn
+
+    def test_settings(self):
+        settingsfn = self._make_settings_file("""
+            include-empty-labels
+            ignore-label C2
+            """)
         lines = self._CLI_output([
             '--settings', settingsfn,
             data_file_path('beijing_f3_50_a.wav'),
