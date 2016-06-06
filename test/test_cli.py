@@ -157,7 +157,7 @@ class TestCLI(TestCase):
         with self.assertArgparseError(['[Nn]o measurements']):
             CLI([data_file_path('beijing_f3_50_a.wav')])
 
-    def _make_settings_file(self, lines):
+    def _make_file(self, lines):
         lines = textwrap.dedent(lines.lstrip('\n'))
         tmp = self.tmpdir()
         settingsfn = os.path.join(tmp, 'settings')
@@ -166,7 +166,7 @@ class TestCLI(TestCase):
         return settingsfn
 
     def test_settings(self):
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             include-empty-labels
             ignore-label C2
             """)
@@ -179,7 +179,7 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
 
     def test_settings_default_file(self):
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             include-empty-labels
             """)
         with self.patch(CLI, 'settings_locs', [settingsfn]):
@@ -190,7 +190,7 @@ class TestCLI(TestCase):
             self.assertEqual(len(lines), 2347)
 
     def test_settings_option_invalid_in_settings_file(self):
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             include-empty-labels
             settings somefile
             ignore-lables
@@ -199,7 +199,7 @@ class TestCLI(TestCase):
             CLI(['--settings', settingsfn])
 
     def test_measurements_in_settings(self):
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             measurements snackF0
             include-empty-labels
             """)
@@ -214,7 +214,7 @@ class TestCLI(TestCase):
     def test_measurements_cant_be_last_line_in_settings(self):
         # This is because it would eat filenames if it was and no other options
         # were specified on the command line before the filenames.
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             include-empty-labels
             measurements snackF0
             """)
@@ -224,10 +224,9 @@ class TestCLI(TestCase):
     def test_invalid_measurement_rejected(self):
         # This is because it would eat filenames if it was and no other options
         # were specified on the command line before the filenames.
-        settingsfn = self._make_settings_file("""
+        settingsfn = self._make_file("""
             measurements thereisnosuchmeasurement
             include-empty-labels
             """)
         with self.assertArgparseError(['thereisnosuchmeasurement']):
             CLI(['--settings', settingsfn])
-
