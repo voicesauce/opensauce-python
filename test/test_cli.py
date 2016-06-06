@@ -184,7 +184,7 @@ class TestCLI(TestCase):
             settings somefile
             ignore-lables
             """)
-        with self.assertArgparseError('settings', settingsfn):
+        with self.assertArgparseError(['settings', settingsfn]):
             CLI(['--settings', settingsfn])
 
     def test_measurements_in_settings(self):
@@ -199,3 +199,24 @@ class TestCLI(TestCase):
         self.assertEqual(len(lines), 2347)
         self.assertIn('snackF0', lines[0])
         self.assertTrue(len(lines[1].split()), 6)
+
+    def test_measurements_cant_be_last_line_in_settings(self):
+        # This is because it would eat filenames if it was and no other options
+        # were specified on the command line before the filenames.
+        settingsfn = self._make_settings_file("""
+            include-empty-labels
+            measurements snackF0
+            """)
+        with self.assertArgparseError(['measurements', settingsfn, 'last']):
+            CLI(['--settings', settingsfn])
+
+    def test_invalid_measurement_rejected(self):
+        # This is because it would eat filenames if it was and no other options
+        # were specified on the command line before the filenames.
+        settingsfn = self._make_settings_file("""
+            measurements thereisnosuchmeasurement
+            include-empty-labels
+            """)
+        with self.assertArgparseError(['thereisnosuchmeasurement']):
+            CLI(['--settings', settingsfn])
+
