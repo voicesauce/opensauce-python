@@ -13,8 +13,14 @@ import sys
 from .soundfile import SoundFile
 
 
-class CmdError(Exception):
-    pass
+# Override default 'error' method so that it doesn't print out the noisy usage
+# prefix on the error messages, and so that we get a useful command name
+# when opensauce is run using -m.
+class MyArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        if self.prog.startswith('__main__'):
+            self.prog = os.path.split(os.path.split(__file__)[0])[1]
+        self.exit(2, "{}: error: {}\n".format(self.prog, message))
 
 
 settings_locs = ('./opensauce.settings',
@@ -42,6 +48,8 @@ class CLI(object):
                                             self.args.default_measurements_file)
             else:
                 self.args.measurements = self._measurements_from_default_file()
+        if not self.args.measurements:
+            self.parser.error("No measurements requested")
         self._cached_results = {}
 
     def _settings_from_file(self, filepath):
@@ -52,14 +60,14 @@ class CLI(object):
         # better solution.
         lastoptname = lines[-1][0].lstrip('-')[1:]
         if lastoptname and 'easurements'.startswith(lastoptname):
-            raise CmdError('"--measurements" may not be the last line'
-                           ' in settings file {!r}'.format(filepath))
+            self.parser.error('"--measurements" may not be the last line'
+                              ' in settings file {!r}'.format(filepath))
         # The strip and add of '--' makes '--' optional in the settings
         # file but ensures the '--' is there for parsing by argparse.
         settings = sum([['--' + tokens[0].lstrip('-')] + tokens[1:]
                        for tokens in lines], [])
         if any(x.startswith('--settings') for x in settings):
-            raise CmdError(
+            self.parser.error(
                 'invalid option "--settings" in settings file {!r}'.format(
                     filepath))
         return settings
@@ -76,7 +84,7 @@ class CLI(object):
             for i, line in enumerate(f):
                 m = line.strip()
                 if not hasattr(self, 'DO_' + m):
-                    raise CmdError(
+                    self.parser.error(
                         "Unknown measurement {} on line"
                         "{} of {!r}".format(m, i, filepath))
                 measurements.append(m)
@@ -180,12 +188,12 @@ class CLI(object):
                               " of {} that is found.  Command line arguments"
                               " override file-based settings.".format(
                                  settings_locs)))
-    settings_option_parser = argparse.ArgumentParser()
+    settings_option_parser = MyArgumentParser()
     settings_option_parser.add_argument(*_settings_op_args[0],
                                         **_settings_op_args[1])
 
     # Main CLI parser.
-    parser = argparse.ArgumentParser()
+    parser = MyArgumentParser()
     # The arguments (as opposed to the options) are a list of filenames to
     # analyze.
     parser.add_argument('wavfiles', nargs="+", metavar='wavfile',
@@ -278,6 +286,6 @@ class CLI(object):
 if __name__ == '__main__':
     try:
         CLI().process()
-    except (CmdError, OSError, IOError) as err:
+    except (OSError, IOError) as err:
         print(err)
         sys.exit(1)

@@ -130,6 +130,7 @@ class TestCase(unittest.TestCase):
 
     # Python3 compat
     assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
+    assertRegex = unittest.TestCase.assertRegexpMatches
 
     @contextlib.contextmanager
     def captured_output(self, stream_name):
