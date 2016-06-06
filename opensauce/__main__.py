@@ -32,6 +32,10 @@ class CLI(object):
                         '~/.config/opensauce/measurements',
                         '~/.opensauce.measurements')
 
+    #
+    # Command Line Parsing and Execution.
+    #
+
     def __init__(self, args=None):
         ns, _ = self.settings_option_parser.parse_known_args(args)
         if ns.settings:
@@ -131,8 +135,11 @@ class CLI(object):
                 results = {}
                 results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
                 for measurement in self.args.measurements:
-                    compute_measurement = self._algorithm(measurement)
-                    results[measurement] = compute_measurement(soundfile)
+                    if measurement in self._cached_results:
+                        results[measurement] = self._cached_results[measurement]
+                    else:
+                        compute_measurement = self._algorithm(measurement)
+                        results[measurement] = compute_measurement(soundfile)
                 if self.args.use_textgrid and soundfile.textgrid:
                     intervals = soundfile.textgrid_intervals
                 else:
@@ -164,9 +171,11 @@ class CLI(object):
                                       for x in self.args.measurements]
                             ))
 
+    #
+    # Algorithm wrappers.
+    #
+
     def DO_snackF0(self, soundfile):
-        if 'snackF0' in self._cached_results:
-            return self._cached_results['snackF0']
         from .snack import snack_pitch
         F0, V = snack_pitch(soundfile.wavpath,
                             frame_length=self.args.frame_shift/1000,
@@ -177,7 +186,31 @@ class CLI(object):
         self._cached_results['snackF0'] = F0
         return F0
 
+    def DO_shrF0(self, soundfile):
+        from .shrp import shr_pitch
+        SHR, F0 = shr_pitch(soundfile.wavdata,
+                            soundfile.fs,
+                            window_length=self.args.window_size,
+                            frame_shift=self.args.frame_shift,
+                            # XXX need to add shrp_min_F0 etc
+                            min_pitch=self.args.min_F0,
+                            max_pitch=self.args.max_F0,
+                            datalen=soundfile.ms_len,
+                            frame_precision=1,
+                            )
+        self._cached_results['shrF0'] = F0
+        self._cached_results['SHR'] = SHR
+        return F0
+
+    def DO_SHR(self, soundfile):
+        self.DO_shrF0(soundfile)
+        return self._cached_results['SHR']
+
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
+
+    #
+    # Parsing Declarations
+    #
 
     # Special parser used to get the settings file name so we can read that
     # first before doing the main CLI parse.

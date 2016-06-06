@@ -205,7 +205,7 @@ class TestCLI(TestCase):
             """)
         lines = self._CLI_output([
             '--settings', settingsfn,
-            data_file_path('beijing_f3_50_a.wav')
+            data_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 2347)
         self.assertIn('snackF0', lines[0])
@@ -230,3 +230,13 @@ class TestCLI(TestCase):
             """)
         with self.assertArgparseError(['thereisnosuchmeasurement']):
             CLI(['--settings', settingsfn])
+
+    def test_multiple_measurements(self):
+        lines = self._CLI_output([
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'shrF0', 'snackF0', 'SHR',
+            ])
+        self.assertEqual(len(lines), 589)
+        header = lines[0].split()
+        self.assertEqual(header[-3:], ['shrF0', 'snackF0', 'SHR'])
+        self.assertTrue(len(lines[1].split()), 8)
