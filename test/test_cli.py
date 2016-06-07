@@ -240,3 +240,47 @@ class TestCLI(TestCase):
         header = lines[0].split()
         self.assertEqual(header[-3:], ['shrF0', 'snackF0', 'SHR'])
         self.assertTrue(len(lines[1].split()), 8)
+
+    def test_measurements_from_file(self):
+        measurefn = self._make_file("""
+            snackF0
+            shrF0
+            """)
+        lines = self._CLI_output([
+            "--default-measurements-file", measurefn,
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 589)
+        header = lines[0].split()
+        self.assertEqual(header[-2:], ['snackF0', 'shrF0'])
+        self.assertTrue(len(lines[1].split()), 7)
+
+    def test_measurements_default_file(self):
+        measurefn = self._make_file("""
+            snackF0
+            shrF0
+            """)
+        with self.patch(CLI, 'measurements_locs', [measurefn]):
+            lines = self._CLI_output([
+                data_file_path('beijing_f3_50_a.wav'),
+                ])
+        self.assertEqual(len(lines), 589)
+        self.assertTrue(len(lines[1].split()), 7)
+
+    def test_invalid_measurements_from_file(self):
+        measurefn = self._make_file("""
+            nosuchmeasurement
+            """)
+        with self.assertArgparseError(['nosuchmeasurement', '0', measurefn]):
+            CLI(['-m', measurefn, 'NA'])
+
+    def test_alternate_F0(self):
+        lines = self._CLI_output([
+            '--F0', 'shrF0',
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(len(lines), 589)
+        header = lines[0].split()
+        self.assertEqual(header[-1:], ['shrF0'])
+        self.assertTrue(len(lines[1].split()), 6)

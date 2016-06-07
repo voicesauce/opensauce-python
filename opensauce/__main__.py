@@ -50,6 +50,8 @@ class CLI(object):
                                             self.args.default_measurements_file)
             else:
                 self.args.measurements = self._measurements_from_default_file()
+        if self.args.include_f0_column:
+            self.args.measurements.append(self.args.f0)
         if not self.args.measurements:
             self.parser.error("No measurements requested")
         self._cached_results = {}
@@ -88,7 +90,7 @@ class CLI(object):
                 if not hasattr(self, 'DO_' + m):
                     self.parser.error(
                         "Unknown measurement {} on line"
-                        "{} of {!r}".format(m, i, filepath))
+                        " {} of {!r}".format(m, i, filepath))
                 measurements.append(m)
         return measurements
 
@@ -248,7 +250,7 @@ class CLI(object):
                              " The supported values for measurements are:"
                              " {}".format(_valid_measurements))
     # These options control the analysis.
-    parser.add_argument('-f', '--f0', default='snackF0',
+    parser.add_argument('-f', '--f0', '--F0', default='snackF0',
                         help="The algorithm to use to compute F0 for use as"
                              " input to the other measurements.  It will appear"
                              " in the output as the first column unless"
@@ -276,13 +278,14 @@ class CLI(object):
                         help="A TextGrid label to exclude from the analysis"
                              " and output.  May be specified more than once.")
     # These options control the output.
-    parser.add_argument('--no-f0-column', action="store_false",
-                        dest='include_f0_column',
+    parser.add_argument('--no-f0-column', '--no-F0-column',
+                        action="store_false", dest='include_f0_column',
                         help="Do not include the F0 measurement used as input"
                              " to the other algorithms as the first column of"
                              " the output (default True, for compatibility"
                              " with voicesauce).")
-    parser.add_argument('--include-f0-column', action="store_true",
+    parser.add_argument('--include-f0-column', '--include-F0-column',
+                        action="store_true",
                         help="Include the F0 measurement used as input"
                              " to the other algorithms as the first column of"
                              " the output (default False, for compatibility"
