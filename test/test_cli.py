@@ -284,3 +284,45 @@ class TestCLI(TestCase):
         self.assertEqual(lines[100],
             ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
              '230.220'])
+
+    # XXX Ideally we would have a separate test for each of these options
+    # for each pitch algorithm, to confirm the value is getting passed
+    # through correctly.  For now we'll just do snack to at least prove that
+    # they are getting parsed correctly.
+
+    # XXX There is as yet no confirmation that the values being tested against
+    # are accurate, these tests just prove the option is have *some* effect.
+
+    def test_default_frame_shift(self):
+        lines = self._CLI_output([
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(len(lines), 589)
+
+    def test_frame_shift(self):
+        lines = self._CLI_output([
+            '--frame-shift', '2',
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(len(lines), 297)
+
+    def test_default_window_size(self):
+        lines = self._CLI_output([
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(lines[100],
+                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+                 '216.184'])
+
+    def test_window_size(self):
+        lines = self._CLI_output([
+            '--window-size', '10',
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(lines[100],
+                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+                 '220.058'])
