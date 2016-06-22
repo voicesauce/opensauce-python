@@ -28,34 +28,46 @@ tested with tk8.4 and tk8.5 on linux.
 
 # Quickstart
 
+(Note that these are interim instructions...eventually there will be
+installation instructions and an 'opensauce' command.)
+
 To run OpenSauce, open a new Terminal window, `cd` into the directory where you
-cloned `opensauce-python`, and set the `VS_ROOT` environment variable:
+cloned `opensauce-python`:
 
         $ cd /path/to/opensauce-python
-        $ export VS_ROOT=$PWD
 
-In order to take measurements, OpenSauce needs a directory of wave files, a
-directory where it can store the output of measurements, a settings file, and a
-parameters file. The settings file stores extra information that the
-measurement algorithms use to carry out calculations (e.g. the maximum value to
-consider for f0 candidates, voiced/unvoiced threshold, etc.). The parameters
-file is where you can specify the measurements that you want OpenSauce to take.
-To turn a measurement "on" in the parameters file, change the "0" next to the
-measurement label to a "1", e.g.
+You can view the command help by typing:
 
-        F0 (Snack)|0 --> F0 (Snack)|1
+        $ python -m opensauce --help
 
-Default files for settings and parameters are in the folder
-"defaults/settings/default.csv" and "defaults/parameters/default.csv", and you
-can find a sound file to use for Quickstart in "defaults/sounds".
+To process a file and get the snackF0 and SHR measurements as output, do:
 
-To run OpenSauce using the default setup, type the following in Terminal:
+        $ python -m opensauce /path/to/file.wav -m snackF0 -m SHR
 
-        $ ./run.sh
+The csv formatted data will be written to stdout (that is, displayed
+on the terminal).  To write it to a file you can either redirect stdout
+or do:
 
-To change the parameters and settings, I recommend that you copy the defaults
-as new files and edit the copies. You'll also need to modify the corresponding
-paths in `run.sh`.
+        $ python -m opensauce /path/to/file.wav -m snackF0 -m SHR -o out.csv
+
+You can process multiple wav files by using shell wildcards.  Suppose
+your wav files are in the directory 'data/sample1'.  You can process
+all of them by typing:
+
+        $ python -m opensauce data/sample1/*.wav -m snackF0 -m SHR -o out.csv
+
+Any options you can specify on the command line you can also put into a
+settings file, one option and its arguments per line.  You can also or
+alternatively have a measurements file containing one measurement per line.
+opensauce looks for the settings and measurement files first in the current
+directory, then in your home directory, and then in your .config/opensauce
+directory.  (This is all documented in the --help).  Options and
+measurements specified on the command line override those specified in
+a settings or measurements file.
+
+Currently only the snackF0, shrF0, and SHR measurements are supported,
+as indicated by the --help information (which will be the most up to date
+information, so check it!)
 
 
 # Contributing
