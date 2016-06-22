@@ -120,55 +120,66 @@ class CLI(object):
         return res
 
     def process(self):
-        with open(self.args.output_filepath, 'w') as of:
-            output = csv.writer(of, dialect=csv.excel_tab)
-            output.writerow(
-                self._assemble_fields(
-                    filename='Filename',
-                    textgrid_data=['Label', 'seg_Start', 'seg_End'],
-                    offset='t_ms',
-                    data=self.args.measurements
-                ))
-            for wavfile in self.args.wavfiles:
-                self._cached_results.clear()
-                soundfile = SoundFile(wavfile)
-                results = {}
-                results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
-                for measurement in self.args.measurements:
-                    if measurement in self._cached_results:
-                        results[measurement] = self._cached_results[measurement]
-                    else:
-                        compute_measurement = self._algorithm(measurement)
-                        results[measurement] = compute_measurement(soundfile)
-                if self.args.use_textgrid and soundfile.textgrid:
-                    intervals = soundfile.textgrid_intervals
+        use_stdout = self.args.output_filepath in (None, '-')
+        if use_stdout:
+            of = sys.stdout
+        else:
+            of = open(self.args.output_filepath, 'w')
+        try:
+            self._process(of)
+        finally:
+            if not use_stdout:
+                of.close()
+
+    def _process(self, of):
+        output = csv.writer(of, dialect=csv.excel_tab)
+        output.writerow(
+            self._assemble_fields(
+                filename='Filename',
+                textgrid_data=['Label', 'seg_Start', 'seg_End'],
+                offset='t_ms',
+                data=self.args.measurements
+            ))
+        for wavfile in self.args.wavfiles:
+            self._cached_results.clear()
+            soundfile = SoundFile(wavfile)
+            results = {}
+            results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
+            for measurement in self.args.measurements:
+                if measurement in self._cached_results:
+                    results[measurement] = self._cached_results[measurement]
                 else:
-                    if self.args.use_textgrid:
-                        # XXX covert this to use logging.
-                        print("Found no TextGrid for {}, reporting all"
-                               " data".format(soundfile.wavfn))
-                    intervals = (('no textgrid', 0,
-                                  int(soundfile.ms_len//self.args.frame_shift)),)
-                frame_shift = self.args.frame_shift
-                for (label, start, stop) in intervals:
-                    if label in self.args.ignore_label:
-                        continue
-                    if not label.strip() and not self.args.include_empty_labels:
-                        continue
-                    fstart = int(round(start*1000/frame_shift))
-                    fstop = min(int(round(stop*1000/frame_shift)),
-                                int(soundfile.ms_len//self.args.frame_shift))
-                    start_str = format(start, '.3f')
-                    stop_str = format(stop, '.3f')
-                    for s in range(fstart, fstop+1):
-                        output.writerow(
-                            self._assemble_fields(
-                                filename=soundfile.wavfn,
-                                textgrid_data=[label, start_str, stop_str],
-                                offset=format(s * frame_shift, '.3f'),
-                                data=[self._get_value(results[x], s)
-                                      for x in self.args.measurements]
-                            ))
+                    compute_measurement = self._algorithm(measurement)
+                    results[measurement] = compute_measurement(soundfile)
+            if self.args.use_textgrid and soundfile.textgrid:
+                intervals = soundfile.textgrid_intervals
+            else:
+                if self.args.use_textgrid:
+                    # XXX covert this to use logging.
+                    print("Found no TextGrid for {}, reporting all"
+                           " data".format(soundfile.wavfn))
+                intervals = (('no textgrid', 0,
+                              int(soundfile.ms_len//self.args.frame_shift)),)
+            frame_shift = self.args.frame_shift
+            for (label, start, stop) in intervals:
+                if label in self.args.ignore_label:
+                    continue
+                if not label.strip() and not self.args.include_empty_labels:
+                    continue
+                fstart = int(round(start*1000/frame_shift))
+                fstop = min(int(round(stop*1000/frame_shift)),
+                            int(soundfile.ms_len//self.args.frame_shift))
+                start_str = format(start, '.3f')
+                stop_str = format(stop, '.3f')
+                for s in range(fstart, fstop+1):
+                    output.writerow(
+                        self._assemble_fields(
+                            filename=soundfile.wavfn,
+                            textgrid_data=[label, start_str, stop_str],
+                            offset=format(s * frame_shift, '.3f'),
+                            data=[self._get_value(results[x], s)
+                                  for x in self.args.measurements]
+                        ))
 
     #
     # Algorithm wrappers.
@@ -312,10 +323,12 @@ class CLI(object):
                         help="String to use for measurement values that do not"
                              " exist or whose valid is invalid"
                              " (default %(default)s).")
-    parser.add_argument('-o', '--output-filepath', default='output.txt',
+    parser.add_argument('-o', '--output-filepath',
                         help="Path to the output file.  If the file already"
                              " exists it will be overwritten.  Default"
-                             " is %(default)s.")
+                             " is to write to the shell standard output,"
+                             " which can also be specified explicitly by"
+                             " specifying '-' as the OUTPUT_FILEPATH.")
 
 
 if __name__ == '__main__':

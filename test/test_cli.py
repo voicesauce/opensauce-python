@@ -50,12 +50,10 @@ class TestCLI(TestCase):
         self.assertEqual(p.returncode, 2)
 
     def _CLI_output(self, args):
-        tmp = self.tmpdir()
-        outfile = os.path.join(tmp, 'output.txt')
-        CLI(args + ['-o', outfile]).process()
-        with open(outfile) as f:
-            lines = f.readlines()
-        return [l.rstrip().split('\t') for l in lines]
+        with self.captured_output('stdout') as sout:
+            CLI(args).process()
+        lines = sout.getvalue().splitlines()
+        return [l.split('\t') for l in lines]
 
     def test_snackF0(self):
         lines = self._CLI_output([
@@ -289,6 +287,15 @@ class TestCLI(TestCase):
     def test_invalid_F0(self):
         with self.assertArgparseError(['nosuchpitch']):
             CLI(['--f0', 'nosuchpitch'])
+
+    def test_output_filepath(self):
+        tmp = self.tmpdir()
+        outfile = os.path.join(tmp, 'output.txt')
+        CLI(['--include-f0',
+             '-o', outfile,
+             data_file_path('beijing_f3_50_a.wav')]).process()
+        with open(outfile) as f:
+            self.assertEqual(len(list(f.readlines())), 589)
 
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
