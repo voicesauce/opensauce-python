@@ -7,7 +7,7 @@ from subprocess import Popen, PIPE
 
 from opensauce.__main__ import CLI
 
-from test.support import TestCase, data_file_path, py2
+from test.support import TestCase, data_file_path, py2, parameterize
 
 class TestOldCLI(TestCase):
 
@@ -32,6 +32,7 @@ class TestOldCLI(TestCase):
         self.assertTrue(filecmp.cmp(d('defaults/sounds/cant_c5_19a.f0'),
                                     data_file_path('cant_c5_19a.f0')))
 
+@parameterize
 class TestCLI(TestCase):
 
     def test_m(self):
@@ -285,58 +286,94 @@ class TestCLI(TestCase):
             ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
              '230.220'])
 
-    # XXX Ideally we would have a separate test for each of these options
-    # for each pitch algorithm, to confirm the value is getting passed
-    # through correctly.  For now we'll just do snack to at least prove that
-    # they are getting parsed correctly.
+    def test_invalid_F0(self):
+        with self.assertArgparseError(['nosuchpitch']):
+            CLI(['--f0', 'nosuchpitch'])
 
     # XXX There is as yet no confirmation that the values being tested against
-    # are accurate, these tests just prove the option is have *some* effect.
+    # here are accurate; these tests just prove the options have *some* effect.
 
-    def test_defaults(self):
+    line100_prefix = ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000']
+
+    def _check_algos(self, algo_list):
+        self.assertEqual(sorted(algo_list), sorted(CLI._valid_f0),
+            "Tests we have do not match tests we need")
+
+    pitch_algo1_params = {
+        'snackF0': ('snackF0', 589, '216.184'),
+        'shrF0': ('shrF0', 589, '230.220'),
+        }
+
+    def test_have_default_settings_tests(self):
+        self._check_algos(self.pitch_algo1_params.keys())
+
+    def pitch_algo1_as_default_settings(self, pitch_algo, line_count, v100):
         lines = self._CLI_output([
+            '--f0', pitch_algo,
             '--include-F0',
              data_file_path('beijing_f3_50_a.wav'),
              ])
-        self.assertEqual(len(lines), 589)
-        self.assertEqual(lines[100],
-                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-                 '216.184'])
+        self.assertEqual(len(lines), line_count)
+        self.assertEqual(lines[100], self.line100_prefix + [v100])
 
-    def test_frame_shift(self):
+    pitch_algo2_params = CLI._valid_f0
+
+    def pitch_algo2_as_frame_shift(self, pitch_algo):
         lines = self._CLI_output([
-            '--frame-shift', '2',
+            '--f0', pitch_algo,
             '--include-F0',
+            '--frame-shift', '2',
              data_file_path('beijing_f3_50_a.wav'),
              ])
         self.assertEqual(len(lines), 297)
 
-    def test_window_size(self):
+    pitch_algo3_params = {
+        'snackF0': ('snackF0', '220.058'),
+        'shrF0': ('shrF0', '238.159'),
+        }
+
+    def test_have_window_size_tests(self):
+        self._check_algos(self.pitch_algo3_params.keys())
+
+    def pitch_algo3_as_window_size(self, pitch_algo, v100):
         lines = self._CLI_output([
+            '--f0', pitch_algo,
+            '--include-F0',
             '--window-size', '10',
-            '--include-F0',
              data_file_path('beijing_f3_50_a.wav'),
              ])
-        self.assertEqual(lines[100],
-                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-                 '220.058'])
+        self.assertEqual(lines[100], self.line100_prefix + [v100])
 
-    def test_min_f0(self):
+    pitch_algo4_params = {
+        'snackF0': ('snackF0', '0.000'),
+        'shrF0': ('shrF0', '251.043'),
+        }
+
+    def test_have_min_f0_tests(self):
+        self._check_algos(self.pitch_algo4_params.keys())
+
+    def pitch_algo4_as_min_f0(self, pitch_algo, v100):
         lines = self._CLI_output([
-            '--min-f0', '200',
+            '--f0', pitch_algo,
             '--include-F0',
+            '--min-f0', '400',
              data_file_path('beijing_f3_50_a.wav'),
              ])
-        self.assertEqual(lines[100],
-                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-                 '0.000'])
+        self.assertEqual(lines[100], self.line100_prefix + [v100])
 
-    def test_max_f0(self):
+    pitch_algo5_params = {
+        'snackF0': ('snackF0', '106.820'),
+        'shrF0': ('shrF0', '100.512'),
+        }
+
+    def test_have_max_f0_tests(self):
+        self._check_algos(self.pitch_algo5_params.keys())
+
+    def pitch_algo5_as_max_f0(self, pitch_algo, v100):
         lines = self._CLI_output([
+            '--f0', pitch_algo,
+            '--include-F0',
             '--max-f0', '200',
-            '--include-F0',
              data_file_path('beijing_f3_50_a.wav'),
              ])
-        self.assertEqual(lines[100],
-                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-                 '106.820'])
+        self.assertEqual(lines[100], self.line100_prefix + [v100])

@@ -208,7 +208,7 @@ def parameterize(cls):
             if not hasattr(attr, 'keys'):
                 d = {}
                 for x in attr:
-                    if not hasattr(x, '__iter__'):
+                    if not hasattr(x, '__iter__') or hasattr(x, 'encode'):
                         x = (x,)
                     n = '_'.join(str(v) for v in x).replace(' ', '_')
                     d[n] = x

@@ -206,6 +206,7 @@ class CLI(object):
         return self._cached_results['SHR']
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
+    _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
 
     #
     # Parsing Declarations
@@ -248,6 +249,7 @@ class CLI(object):
                              " {}".format(_valid_measurements))
     # These options control the analysis.
     parser.add_argument('-f', '--f0', '--F0', default='snackF0',
+                        choices=_valid_f0,
                         help="The algorithm to use to compute F0 for use as"
                              " input to the other measurements.  It will appear"
                              " in the output as the first column unless"
