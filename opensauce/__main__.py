@@ -104,11 +104,10 @@ class CLI(object):
         return getattr(self, 'DO_' + name)
 
 
-    def _assemble_fields(self, filename, textgrid_data, offset, f0, data):
+    def _assemble_fields(self, filename, textgrid_data, offset, data):
         return ([filename]
                 + (textgrid_data if self.args.use_textgrid else [])
                 + [offset]
-                + ([f0] if self.args.include_f0_column else [])
                 + data)
 
     def _get_value(self, vector, index):
@@ -128,7 +127,6 @@ class CLI(object):
                     filename='Filename',
                     textgrid_data=['Label', 'seg_Start', 'seg_End'],
                     offset='t_ms',
-                    f0=self.args.f0,
                     data=self.args.measurements
                 ))
             for wavfile in self.args.wavfiles:
@@ -168,7 +166,6 @@ class CLI(object):
                                 filename=soundfile.wavfn,
                                 textgrid_data=[label, start_str, stop_str],
                                 offset=format(s * frame_shift, '.3f'),
-                                f0=self._get_value(results[self.args.f0], s),
                                 data=[self._get_value(results[x], s)
                                       for x in self.args.measurements]
                             ))

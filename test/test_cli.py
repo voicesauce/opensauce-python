@@ -54,7 +54,7 @@ class TestCLI(TestCase):
         CLI(args + ['-o', outfile]).process()
         with open(outfile) as f:
             lines = f.readlines()
-        return lines
+        return [l.rstrip().split('\t') for l in lines]
 
     def test_snackF0(self):
         lines = self._CLI_output([
@@ -131,11 +131,11 @@ class TestCLI(TestCase):
         # file equivalent test above because there we were counting the header
         # line and here we are not.
         self.assertEqual(len([x for x in lines
-                              if 'beijing_f3_50_a' in x]), 2346)
+                              if 'beijing_f3_50_a.wav' in x]), 2346)
         self.assertEqual(len([x for x in lines
-                              if 'beijing_m5_17_c' in x]), 1673)
+                              if 'beijing_m5_17_c.wav' in x]), 1673)
         self.assertEqual(len([x for x in lines
-                              if 'hmong_f4_24_d' in x]), 2101)
+                              if 'hmong_f4_24_d.wav' in x]), 2101)
 
     @contextlib.contextmanager
     def assertArgparseError(self, expected_regex, expected_regex_3=None):
@@ -209,7 +209,7 @@ class TestCLI(TestCase):
             ])
         self.assertEqual(len(lines), 2347)
         self.assertIn('snackF0', lines[0])
-        self.assertTrue(len(lines[1].split()), 6)
+        self.assertEqual(len(lines[1]), 6)
 
     def test_measurements_cant_be_last_line_in_settings(self):
         # This is because it would eat filenames if it was and no other options
@@ -237,9 +237,8 @@ class TestCLI(TestCase):
             '--measurements', 'shrF0', 'snackF0', 'SHR',
             ])
         self.assertEqual(len(lines), 589)
-        header = lines[0].split()
-        self.assertEqual(header[-3:], ['shrF0', 'snackF0', 'SHR'])
-        self.assertTrue(len(lines[1].split()), 8)
+        self.assertEqual(lines[0][-3:], ['shrF0', 'snackF0', 'SHR'])
+        self.assertEqual(len(lines[1]), 8)
 
     def test_measurements_from_file(self):
         measurefn = self._make_file("""
@@ -251,9 +250,8 @@ class TestCLI(TestCase):
             data_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 589)
-        header = lines[0].split()
-        self.assertEqual(header[-2:], ['snackF0', 'shrF0'])
-        self.assertTrue(len(lines[1].split()), 7)
+        self.assertEqual(lines[0][-2:], ['snackF0', 'shrF0'])
+        self.assertEqual(len(lines[1]), 7)
 
     def test_measurements_default_file(self):
         measurefn = self._make_file("""
@@ -265,7 +263,7 @@ class TestCLI(TestCase):
                 data_file_path('beijing_f3_50_a.wav'),
                 ])
         self.assertEqual(len(lines), 589)
-        self.assertTrue(len(lines[1].split()), 7)
+        self.assertEqual(len(lines[1]), 7)
 
     def test_invalid_measurements_from_file(self):
         measurefn = self._make_file("""
@@ -281,6 +279,8 @@ class TestCLI(TestCase):
              data_file_path('beijing_f3_50_a.wav'),
              ])
         self.assertEqual(len(lines), 589)
-        header = lines[0].split()
-        self.assertEqual(header[-1:], ['shrF0'])
-        self.assertTrue(len(lines[1].split()), 6)
+        self.assertEqual(lines[0][-1:], ['shrF0'])
+        self.assertEqual(len(lines[1]), 6)
+        self.assertEqual(lines[100],
+            ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+             '230.220'])
