@@ -219,7 +219,7 @@ class CLI(object):
                               " of {} that is found.  Command line arguments"
                               " override file-based settings.".format(
                                  settings_locs)))
-    settings_option_parser = MyArgumentParser()
+    settings_option_parser = MyArgumentParser(add_help=False)
     settings_option_parser.add_argument(*_settings_op_args[0],
                                         **_settings_op_args[1])
 
@@ -252,9 +252,9 @@ class CLI(object):
                         choices=_valid_f0,
                         help="The algorithm to use to compute F0 for use as"
                              " input to the other measurements.  It will appear"
-                             " in the output as the first column unless"
-                             " --no-f0-output is specified.  It defaults to"
-                             " %(default)s.")
+                             " in the output as the first column if"
+                             " --include-f0-output is specified.  It defaults"
+                             " to %(default)s.")
     parser.add_argument('--frame-shift', default=1, type=int,
                         help="Number of milliseonds the analysis frame is"
                              " shifted between computed data points.  Default"
@@ -295,8 +295,8 @@ class CLI(object):
                              " information for analysis.")
     parser.add_argument('--use-textgrid', action="store_true",
                         dest='use_textgrid',
-                        help="Do not include the textgrid interval"
-                             " information for analysis.")
+                        help="Include the textgrid interval"
+                             " information for analysis (default %(default)s).")
     parser.add_argument('--no-labels', action="store_false",
                         dest='include_labels', default=True,
                         help="Do not include the textgrid labels or interval"
@@ -304,12 +304,14 @@ class CLI(object):
     parser.add_argument('--include-labels', action="store_true",
                         dest='include_labels',
                         help="Include the textgrid labels and interval"
-                             " information in the output.")
+                             " information in the output"
+                             " (default %(default)s).")
     parser.set_defaults(include_f0_column=False, use_textgrid=True,
                         include_labels=True)
     parser.add_argument('--NaN', default='NaN',
                         help="String to use for measurement values that do not"
-                             " exist or whose valid is invalid.")
+                             " exist or whose valid is invalid"
+                             " (default %(default)s).")
     parser.add_argument('-o', '--output-filepath', default='output.txt',
                         help="Path to the output file.  If the file already"
                              " exists it will be overwritten.  Default"
