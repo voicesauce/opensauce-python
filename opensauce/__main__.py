@@ -179,8 +179,8 @@ class CLI(object):
         F0, V = snack_pitch(soundfile.wavpath,
                             frame_length=self.args.frame_shift/1000,
                             window_length=self.args.window_size/1000,
-                            min_pitch=self.args.min_F0,
-                            max_pitch=self.args.max_F0,
+                            min_pitch=self.args.min_f0,
+                            max_pitch=self.args.max_f0,
                             )
         self._cached_results['snackF0'] = F0
         return F0
@@ -191,9 +191,9 @@ class CLI(object):
                             soundfile.fs,
                             window_length=self.args.window_size,
                             frame_shift=self.args.frame_shift,
-                            # XXX need to add shrp_min_F0 etc
-                            min_pitch=self.args.min_F0,
-                            max_pitch=self.args.max_F0,
+                            # XXX need to add shrp_min_f0 etc
+                            min_pitch=self.args.min_f0,
+                            max_pitch=self.args.max_f0,
                             datalen=soundfile.ms_len,
                             frame_precision=1,
                             )
@@ -260,10 +260,10 @@ class CLI(object):
     parser.add_argument('--window-size', default=15, type=int,
                         help="Width of each analysis frame in milliseconds."
                              " Default is %(default)s milliseconds.")
-    parser.add_argument('--min-F0', default=40, type=int,
+    parser.add_argument('--min-f0', '--min-F0', default=40, type=int,
                         help="Lowest frequency considered in F0 analysis."
                              " Default is %(default)s Hz.")
-    parser.add_argument('--max-F0', default=500, type=int,
+    parser.add_argument('--max-f0', '--max-F0', default=500, type=int,
                         help="Highest frequency considered in F0 analysis."
                              " Default is %(default)s Hz.")
     parser.add_argument('--include-empty-labels', default=False,

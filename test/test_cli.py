@@ -293,12 +293,15 @@ class TestCLI(TestCase):
     # XXX There is as yet no confirmation that the values being tested against
     # are accurate, these tests just prove the option is have *some* effect.
 
-    def test_default_frame_shift(self):
+    def test_defaults(self):
         lines = self._CLI_output([
             '--include-F0',
              data_file_path('beijing_f3_50_a.wav'),
              ])
         self.assertEqual(len(lines), 589)
+        self.assertEqual(lines[100],
+                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+                 '216.184'])
 
     def test_frame_shift(self):
         lines = self._CLI_output([
@@ -307,15 +310,6 @@ class TestCLI(TestCase):
              data_file_path('beijing_f3_50_a.wav'),
              ])
         self.assertEqual(len(lines), 297)
-
-    def test_default_window_size(self):
-        lines = self._CLI_output([
-            '--include-F0',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
-        self.assertEqual(lines[100],
-                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-                 '216.184'])
 
     def test_window_size(self):
         lines = self._CLI_output([
@@ -326,3 +320,23 @@ class TestCLI(TestCase):
         self.assertEqual(lines[100],
                 ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
                  '220.058'])
+
+    def test_min_f0(self):
+        lines = self._CLI_output([
+            '--min-f0', '200',
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(lines[100],
+                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+                 '0.000'])
+
+    def test_max_f0(self):
+        lines = self._CLI_output([
+            '--max-f0', '200',
+            '--include-F0',
+             data_file_path('beijing_f3_50_a.wav'),
+             ])
+        self.assertEqual(lines[100],
+                ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+                 '106.820'])
