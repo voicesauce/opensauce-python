@@ -1,7 +1,7 @@
 import numpy as np
 
 from opensauce.shrp import (window, toframes, two_max, compute_shr,
-                            get_log_spectrum, shrp, shrp_pitch)
+                            get_log_spectrum, shrp, shr_pitch)
 from opensauce.helpers import wavread
 
 from test.support import TestCase, parameterize, loadmat, data_file_path
@@ -73,7 +73,7 @@ class TestToframes(TestCase):
 @parameterize
 class Test_two_max(TestCase):
 
-    matlab_fn_params = ('twomax_data', 'two_max_183')
+    matlab_fn_params = (['twomax_data'], ['two_max_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
         data = loadmat(filename)
@@ -102,7 +102,7 @@ class Test_two_max(TestCase):
 @parameterize
 class Test_compute_shr(TestCase):
 
-    matlab_fn_params = ('ComputeSHR_data', 'compute_shr_183')
+    matlab_fn_params = (['ComputeSHR_data'], ['compute_shr_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
         data = loadmat(filename)
@@ -161,11 +161,11 @@ class Test_shrp(TestCase):
                                              data['f0_candidates'])
 
 
-class Test_shrp_pitch(TestCase):
+class Test_shr_pitch(TestCase):
 
     def test_with_matlab_data(self):
-        data = loadmat('shrp_pitch_data')
+        data = loadmat('shr_pitch_data')
         wav_data, fps = wavread(data_file_path('beijing_f3_50_a.wav'))
-        shr, f0 = shrp_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
+        shr, f0 = shr_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
         np.testing.assert_array_almost_equal(f0, data['F0'])
         np.testing.assert_array_almost_equal(shr, data['SHR'])

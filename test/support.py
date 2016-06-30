@@ -1,8 +1,14 @@
+import contextlib
 import csv
 import collections
 import json
 import os
+import sys
 import unittest
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import scipy.io
 
@@ -43,6 +49,7 @@ except ImportError:
         def __del__(self):
             self.cleanup()
 
+py2 = sys.version_info[0] < 3
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -112,16 +119,37 @@ def get_text_grid(fn):
     return TextGrid.load(tg_fn)
 
 
-# My past experience is that I eventually write helpers that wrap unittest
-# resources and use them in a number of test cases.  These helpers need access
-# to the underlying unittest.TestCase, so it is easiest to write them as
-# methods on a subclass.  So, I'll create a subclass now that doesn't have any
-# extra methods, to make it easy to add them later without having to touch all
-# the then-existing test cases.
-
 class TestCase(unittest.TestCase):
 
     longMessage = True
+
+    def tmpdir(self):
+        tmpdir = TemporaryDirectory()
+        self.addCleanup(tmpdir.cleanup)
+        return tmpdir.name
+
+    # Python3 compat
+    assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
+    assertRegex = unittest.TestCase.assertRegexpMatches
+
+    @contextlib.contextmanager
+    def captured_output(self, stream_name):
+        """Return a context manager that temporarily replaces the sys stream
+        *stream_name* with a StringIO and returns it."""
+        orig_stdout = getattr(sys, stream_name)
+        setattr(sys, stream_name, StringIO())
+        try:
+            yield getattr(sys, stream_name)
+        finally:
+            setattr(sys, stream_name, orig_stdout)
+
+    # A minimal version of patch good enough for our needs.
+    @contextlib.contextmanager
+    def patch(self, obj, attr, value):
+        old_val = getattr(obj, attr)
+        setattr(obj, attr, value)
+        yield
+        obj.attr = old_val
 
 
 def parameterize(cls):
@@ -180,7 +208,7 @@ def parameterize(cls):
             if not hasattr(attr, 'keys'):
                 d = {}
                 for x in attr:
-                    if not hasattr(x, '__iter__'):
+                    if not hasattr(x, '__iter__') or hasattr(x, 'encode'):
                         x = (x,)
                     n = '_'.join(str(v) for v in x).replace(' ', '_')
                     d[n] = x

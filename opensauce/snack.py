@@ -9,6 +9,8 @@ manager.
 # XXX We may need to add a call to snack.exe on Windows if a snack install on
 # Windows isn't visible to Windows Python.
 
+from __future__ import division
+
 import logging
 log = logging.getLogger('opensauce.snack')
 
@@ -50,6 +52,8 @@ def snack_pitch(wav_fn, frame_length=None, window_length=None, max_pitch=None,
         if local_vars[v] is not None:
             cmd.extend(['-' + v.replace('_', '') + ' ' + str(local_vars[v])])
     tcl.eval('set data [{}]'.format(' '.join(cmd)))
+    # XXX check for errors here and log and abort if there is one.  Result
+    # string will start with ERROR:.
     num_frames = int(tcl.eval('llength $data'))
     F0, V = [], []
     # snack returns four values per frame, we only care about the first two.

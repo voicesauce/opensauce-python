@@ -17,9 +17,9 @@ from scipy.interpolate import interp1d
 # Based func_GetSHRP.m from voicesauce v1.25, by Kristine Yu, which in turn was
 # based on func_PraatPitch.m by Yen-Liang Shue.
 
-def shrp_pitch(wav_data, fps, window_length=None, frame_shift=None,
-               min_pitch=None, max_pitch=None, shr_threshold=None,
-               frame_precision=None, datalen=None):
+def shr_pitch(wav_data, fps, window_length=None, frame_shift=None,
+              min_pitch=None, max_pitch=None, shr_threshold=None,
+              frame_precision=None, datalen=None):
     """Return a list of Subharmonic ratios and F0 values computed from wav_data.
 
     wav_data        a vector of data read from a wav file
@@ -41,11 +41,11 @@ def shrp_pitch(wav_data, fps, window_length=None, frame_shift=None,
 
     """
     # XXX the octave code produces 201 output points given a datalen
-    # of 200.  Presumably a but in the matlab code.  But we'll emulate it.
+    # of 200.  Presumably a bug in the matlab code.  But we'll emulate it.
     datalen += 1
     kw = {}
     # XXX This is awkward, fix it in refactoring later.
-    if len(filter(None, (min_pitch, max_pitch))) == 1:
+    if len(list(filter(None, (min_pitch, max_pitch)))) == 1:
         raise ValueError('none or both of min_pitch, max_pitch must be specified')
     elif min_pitch:
         kw['F0MinMax'] = (min_pitch, max_pitch)
