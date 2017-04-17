@@ -1,2 +1,0 @@
-include runner README.md
-recursive-include opensauce *
