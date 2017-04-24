@@ -6,14 +6,14 @@ import helpers
 
 def process(indir, outdir, settingsfile, paramfile):
     '''
-    Main sound file processing procedure. Finds all wave files in 'indir', reads them in one by one, and applies functions corresponding to each parameter in the parameters file. If no parameters file is specified, the default is "defaults/parameters/default.csv". If no settings file is specified, the default is "defaults/settings/default.csv" 
+    Main sound file processing procedure. Finds all wave files in 'indir', reads them in one by one, and applies functions corresponding to each parameter in the parameters file. If no parameters file is specified, the default is "defaults/parameters/default.csv". If no settings file is specified, the default is "defaults/settings/default.csv"
     '''
     measurements = measure.measurements
     params = helpers.get_parameters(paramfile)
     settings = helpers.get_settings(settingsfile)
 
     frameshift = int(settings['frameshift'])
-    print("indir=%s, outdir=%s" % (indir, outdir))    
+    print("indir=%s, outdir=%s" % (indir, outdir))
 
     # make a list of wav files
     # TODO fix this so it uses absolute file paths (os.getenv)

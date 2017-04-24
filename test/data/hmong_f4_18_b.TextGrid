@@ -1,50 +1,50 @@
 File type = "ooTextFile"
 Object class = "TextGrid"
 
-xmin = 0 
-xmax = 2.108027210884354 
-tiers? <exists> 
-size = 1 
-item []: 
+xmin = 0
+xmax = 2.108027210884354
+tiers? <exists>
+size = 1
+item []:
     item [1]:
-        class = "IntervalTier" 
-        name = "segments" 
-        xmin = 0 
-        xmax = 2.108027210884354 
-        intervals: size = 9 
+        class = "IntervalTier"
+        name = "segments"
+        xmin = 0
+        xmax = 2.108027210884354
+        intervals: size = 9
         intervals [1]:
-            xmin = 0 
-            xmax = 0.444365921642421 
-            text = "" 
+            xmin = 0
+            xmax = 0.444365921642421
+            text = ""
         intervals [2]:
-            xmin = 0.444365921642421 
-            xmax = 0.6716318601104018 
-            text = "V0" 
+            xmin = 0.444365921642421
+            xmax = 0.6716318601104018
+            text = "V0"
         intervals [3]:
-            xmin = 0.6716318601104018 
-            xmax = 0.7844523794070105 
-            text = "C1" 
+            xmin = 0.6716318601104018
+            xmax = 0.7844523794070105
+            text = "C1"
         intervals [4]:
-            xmin = 0.7844523794070105 
-            xmax = 0.9641598634304548 
-            text = "V1" 
+            xmin = 0.7844523794070105
+            xmax = 0.9641598634304548
+            text = "V1"
         intervals [5]:
-            xmin = 0.9641598634304548 
-            xmax = 1.0925223520186294 
-            text = "C2" 
+            xmin = 0.9641598634304548
+            xmax = 1.0925223520186294
+            text = "C2"
         intervals [6]:
-            xmin = 1.0925223520186294 
-            xmax = 1.290721132915768 
-            text = "V2" 
+            xmin = 1.0925223520186294
+            xmax = 1.290721132915768
+            text = "V2"
         intervals [7]:
-            xmin = 1.290721132915768 
-            xmax = 1.356400919073097 
-            text = "C3" 
+            xmin = 1.290721132915768
+            xmax = 1.356400919073097
+            text = "C3"
         intervals [8]:
-            xmin = 1.356400919073097 
-            xmax = 1.4697105877161885 
-            text = "V3" 
+            xmin = 1.356400919073097
+            xmax = 1.4697105877161885
+            text = "V3"
         intervals [9]:
-            xmin = 1.4697105877161885 
-            xmax = 2.108027210884354 
-            text = "" 
+            xmin = 1.4697105877161885
+            xmax = 2.108027210884354
+            text = ""

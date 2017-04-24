@@ -5,6 +5,7 @@ import math
 import numpy
 from scipy.io import wavfile
 
+
 def wavread(fn):
     """Emulate the parts of the matlab wavread function that we need.
 
@@ -34,10 +35,10 @@ def wavread(fn):
 class SoundFile:
     def __init__(self, settings, wavfile):
         self.settings = settings
-        self.wavfile = wavfile # path to wavfile
+        self.wavfile = wavfile  # path to wavfile
         self.matfile = None
         self.y = None
-        self.Fs = None # corresponds to Fs in opensauce
+        self.Fs = None  # corresponds to Fs in opensauce
         self.data_len = None
         self.f0 = None
         self.measurements = {}
@@ -59,6 +60,7 @@ class SoundFile:
     def calc_data_len(self):
         self.data_len = math.floor(len(self.data) / self.samplerate * 1000 / int(self.settings['frameshift']))
 
+
 def get_parameters(parameter_file):
     '''
     Read in parameters file
@@ -73,6 +75,7 @@ def get_parameters(parameter_file):
                 p = line[0].strip()
                 on.append(p)
     return on
+
 
 def get_settings(settings_file):
     '''

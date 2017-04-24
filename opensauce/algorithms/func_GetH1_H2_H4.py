@@ -31,19 +31,19 @@ def getH1_H2_H4(y, Fs, F0, variables, textgridfile=None):
 
     if textgridfile == None: # don't use Textgrid
         for k in range(1, length(F0)):
-            ks = round(k * sampleshift) 
+            ks = round(k * sampleshift)
             if ks <= 0 or ks > length(y):
                 continue
-            
+
             F0_curr = F0(k)
             if numpy.isnan(F0_curr) or F0_curr == 0:
                 continue
 
             N0_curr = 1 / F0_curr * Fs
-                            
+
             ystart = round(ks - N_periods/2*N0_curr)
             yend = round(ks + N_periods/2*N0_curr) - 1
-            
+
             if ystart <= 0:
                 continue
 
@@ -51,7 +51,7 @@ def getH1_H2_H4(y, Fs, F0, variables, textgridfile=None):
                 continue
 
             yseg = y[ystart:yend+1]
-            
+
             # what are f0, dummy for? FIXME?
             h1, f0  = func_GetHarmonics(yseg, F0_curr, Fs)
             h2, dummy = func_GetHarmonics(yseg, 2*F0_curr, Fs)

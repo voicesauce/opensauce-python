@@ -67,7 +67,7 @@ def H1A1_H1A2_H1A3(soundfile):
     F3 = soundfile.F3
     variables = soundfile.settings
     func_GetH1A1_H1A2_H1A3.getH1A1_H1A2_H1A3(H1, A1, A2, A3, Fs, F0, F1, F2, F3)
-    
+
 
 
 # dict of pointers to functions that call the measurement functions

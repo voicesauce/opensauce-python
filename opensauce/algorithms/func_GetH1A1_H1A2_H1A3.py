@@ -26,7 +26,7 @@ def getH1A1_H1A2_H1A3(H1, A1, A2, A3, Fs, F0, F1, F2, F3, B1=None, B2=None, B3=N
     H1_corr = H1 - func_correct_iseli_z(F0, F1, B1, Fs)
     H1_corr = H1_corr - func_correct_iseli_z(F0, F2, B2, Fs)
     #H1_corr = H1_corr - func_correct_iseli_z(F0, F3, B3, Fs)
-        
+
     A3_corr = A3 - func_correct_iseli_z(F3, F1, B1, Fs)
     A3_corr = A3_corr - func_correct_iseli_z(F3, F2, B2, Fs)
     A3_corr = A3_corr - func_correct_iseli_z(F3, F3, B3, Fs)

@@ -54,7 +54,7 @@ def ana_GetMagnitudeMax(x, Fx, Fs, fftlen):
     if numpy.isnan(Fx):
         M = float('NaN')
         fmax = float('NaN')
-      
+
     else:
         xlen = len(x)
         hamlen = min(fftlen, xlen)
@@ -83,6 +83,6 @@ def ana_GetMagnitudeMax(x, Fx, Fs, fftlen):
         # The code following the equals sign is untranslated Octave Code
         # M[cnt],pos = max(X(1+round(lowf[cnt]/fstep):1+round(highf(cnt)/fstep), :))
         fmax[cnt] = (pos-1+round(lowf(cnt)/fstep))*fstep
-        
+
     return M, fmax
 
