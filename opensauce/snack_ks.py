@@ -1,14 +1,12 @@
 from __future__ import division
-import sys
 import os
-import helpers
+
 
 def get_snack_f0(soundfile):
 
     # ERROR: wind_dur parameter must be between [0.0001, 0.1].
     # ERROR: frame_step parameter must be between [1/sampling rate, 0.1].
     # invalid/inconsistent parameters -- exiting.
-
 
     # if len(sys.argv) != 2:
     #     print "usage python snack_ks.py [infile]"
@@ -19,7 +17,7 @@ def get_snack_f0(soundfile):
     tclfile = 'tclforsnackpitch.tcl'
 
     # you can change these #
-    frameshift = 0.01 # must be between 1/Fs and 0.1
+    frameshift = 0.01  # must be between 1/Fs and 0.1
     # frameshift = soundfile.settings["frameshift"]
     # windowlength = 0.25 # must be between 0.0001 and 0.1
     # windowlength = soundfile.settings["windowsize"]
@@ -55,6 +53,3 @@ def get_snack_f0(soundfile):
         f0[i] = float(raw[i])
 
     return f0
-
-
-

@@ -9,10 +9,12 @@ from opensauce.__main__ import CLI
 
 from test.support import TestCase, data_file_path, py2, parameterize
 
+
 class TestOldCLI(TestCase):
 
     def test_default_setup(self):
         tmp = self.tmpdir()
+
         def d(fn):
             return os.path.join(tmp, fn)
         os.mkdir(d('output'))
@@ -31,6 +33,7 @@ class TestOldCLI(TestCase):
         self.assertEqual(rc, 0)
         self.assertTrue(filecmp.cmp(d('defaults/sounds/cant_c5_19a.f0'),
                                     data_file_path('cant_c5_19a.f0')))
+
 
 @parameterize
 class TestCLI(TestCase):
@@ -57,9 +60,9 @@ class TestCLI(TestCase):
 
     def test_snackF0(self):
         lines = self._CLI_output([
-             data_file_path('beijing_f3_50_a.wav'),
+            data_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
-             ])
+            ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
         self.assertEqual(len([x for x in lines if 'V1' in x]), 209)
@@ -148,8 +151,7 @@ class TestCLI(TestCase):
             self.assertRegex(msg, regex)
 
     def test_at_least_one_input_file_required(self):
-        with self.assertArgparseError(['too few arguments'],
-                ['required', 'wavfile']):
+        with self.assertArgparseError(['too few arguments'], ['required', 'wavfile']):
             CLI([])
 
     def test_at_least_one_measurement_required(self):
@@ -275,8 +277,8 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--F0', 'shrF0',
             '--include-F0',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(lines[0][-1:], ['shrF0'])
         self.assertEqual(len(lines[1]), 6)
@@ -303,8 +305,7 @@ class TestCLI(TestCase):
     line100_prefix = ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000']
 
     def _check_algos(self, algo_list):
-        self.assertEqual(sorted(algo_list), sorted(CLI._valid_f0),
-            "Tests we have do not match tests we need")
+        self.assertEqual(sorted(algo_list), sorted(CLI._valid_f0), "Tests we have do not match tests we need")
 
     pitch_algo1_params = {
         'snackF0': ('snackF0', 589, '216.184'),
@@ -318,8 +319,8 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--f0', pitch_algo,
             '--include-F0',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(len(lines), line_count)
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
@@ -330,8 +331,8 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0',
             '--frame-shift', '2',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(len(lines), 297)
 
     pitch_algo3_params = {
@@ -347,8 +348,8 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0',
             '--window-size', '10',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo4_params = {
@@ -364,8 +365,8 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0',
             '--min-f0', '400',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo5_params = {
@@ -381,6 +382,6 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0',
             '--max-f0', '200',
-             data_file_path('beijing_f3_50_a.wav'),
-             ])
+            data_file_path('beijing_f3_50_a.wav'),
+            ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])

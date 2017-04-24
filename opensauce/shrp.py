@@ -203,7 +203,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
     N = N * 4
     # "derive how many frames we have based on segment length and timestep."
     segmentlen = int(np.around(segmentduration * (Fs / 1000)))
-    inc = int(np.around(timestep * (Fs / 1000)));
+    inc = int(np.around(timestep * (Fs / 1000)))
     nf = int(np.fix((total_len - segmentlen + inc) / inc))
     n = np.arange(nf)
     # "anchor time for each frame, the middle point"
@@ -211,12 +211,12 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
     # f0_time = np.transpose(((n - 1) * timestep)) # anchor starting from zero
     # "--- determine FFT length ---"
     fftlen = 1
-    while fftlen < segmentlen * (1 +interpolation_depth):
+    while fftlen < segmentlen * (1 + interpolation_depth):
         fftlen = fftlen * 2
     # "--- derive linear and log frequency scale ---"
     # "we ignore frequency 0 here since we need to do log transformation later
     # and won't use it anyway."
-    frequency = Fs * np.arange(1,fftlen/2+1)/fftlen
+    frequency = Fs * np.arange(1, fftlen/2+1) / fftlen
     limit = np.where(frequency >= ceiling)[0][0]
     frequency = frequency[0:limit+1]
     logf = np.log2(frequency)
@@ -228,7 +228,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
     shift = np.log2(N)
     # "the number of unit on the log x-axis"
     shift_units = int(np.around(shift/min_bin))
-    i = np.arange(2,N+1)
+    i = np.arange(2, N+1)
     # "--- the followings are universal for all the frames ---"
     # "find out all the start position of each shift"
     startpos = shift_units + 1 - np.around(np.log2(i) / min_bin).astype(int)
@@ -267,24 +267,24 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
     f0_value = np.zeros(nf)
     SHR = np.zeros(nf)
     f0_time = f0_time[0:nf+1]
-    f0_candidates = np.zeros((nf, 2));
+    f0_candidates = np.zeros((nf, 2))
     # "--- voicing determination ---"
     if CHECK_VOICING:
         raise NotImplementedError
         #NoiseFloor=sum(frames(1,:).^2);
         #voicing=vda(frames,segmentduration/1000,NoiseFloor);
     else:
-        voicing = np.ones(nf);
+        voicing = np.ones(nf)
     # "--- the main loop ---"
-    curf0 = 0;
-    cur_SHR = 0;
-    cur_cand1 = 0;
-    cur_cand2 = 0;
+    curf0 = 0
+    cur_SHR = 0
+    cur_cand1 = 0
+    cur_cand2 = 0
     for n in range(nf):
         segment = frames[n, :]
         if voicing[n] == 0:
-            curf0 = 0;
-            cur_SHR = 0;
+            curf0 = 0
+            cur_SHR = 0
         else:
             log_spectrum = get_log_spectrum(
                 segment,
@@ -317,8 +317,8 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
                     cur_cand1 = 0
                     cur_cand2 = newfre[all_peak_indices[0]] * 2
                 else:
-                    cur_cand1 = newfre[all_peak_indices[0]] * 2;
-                    cur_cand2 = newfre[all_peak_indices[1]] * 2;
+                    cur_cand1 = newfre[all_peak_indices[0]] * 2
+                    cur_cand2 = newfre[all_peak_indices[1]] * 2
                 if cur_cand1 > maxf0:
                     cur_cand1 = cur_cand1 / 2
                 if cur_cand2 > maxf0:
@@ -394,7 +394,7 @@ def compute_shr(log_spectrum, min_bin, startpos, endpos, lowerbound, upperbound,
         # i.e., f0 range"
         if mag <= 0:
             # "this must be an unvoiced frame"
-            peak_index = -1;
+            peak_index = -1
             return peak_index, shr, shshift, index
         peak_index = index
         shr = 0
@@ -432,8 +432,8 @@ def two_max(x, lowerbound, upperbound, unit_len):
     index = np.where(x == mag)[0]
     if mag < 0:
         return mag, index
-    harmonics=2
-    limit=0.0625; # "1/8 octave"
+    harmonics = 2
+    limit = 0.0625  # "1/8 octave"
     startpos = index[0] + round(np.log2(harmonics-limit)/unit_len)
     if startpos <= max_index:
         # "for example, 100hz-200hz is one octave, 200hz-250hz is 1/4octave"
@@ -475,9 +475,8 @@ def toframes(samples, curpos, segmentlen, window_type):
     index = np.nonzero(endpos > last_index)[0]
     endpos[index] = last_index
     start[index] = last_index + 1 - segmentlen
-    frames = samples[
-        (np.tile(np.expand_dims(start, 1), (1, segmentlen))
-         + np.tile(offset, (num_frames, 1)))]
+    frames = samples[(np.tile(np.expand_dims(start, 1),
+                     (1, segmentlen)) + np.tile(offset, (num_frames, 1)))]
     window_vector = np.tile(window(segmentlen, window_type), (num_frames, 1))
     return np.multiply(frames, window_vector)
 
@@ -488,15 +487,19 @@ def toframes(samples, curpos, segmentlen, window_type):
 def postvda(segment, curf0, Fs, r_threshold):
     raise NotImplementedError
 
+
 def zcr(x, dur):
     raise NotImplementedError
+
 
 # ---- window -----
 def _pi_arange(width):
     return 2*np.pi*np.arange(width)/(width-1)
 
+
 def _not_implemented():
     raise NotImplementedError
+
 
 def _triangular(n):
     m = (n-1)/2
@@ -508,10 +511,10 @@ window_funcs = dict(
     tria = _triangular,
     hann = lambda n: 0.5*(1 - np.cos(_pi_arange(n))),
     hamm = lambda n: 0.54 - 0.46*np.cos(_pi_arange(n)),
-    blac = lambda n: (0.42 - 0.5*np.cos(_pi_arange(n))
-                      + 0.08*np.cos(2*_pi_arange(n))),
+    blac = lambda n: (0.42 - 0.5*np.cos(_pi_arange(n)) + 0.08*np.cos(2*_pi_arange(n))),
     kais = lambda n: _not_implemented(),
     )
+
 
 def window(width, window_type, beta=None):
     """Generate a window function (1 dim ndarray) of length width.

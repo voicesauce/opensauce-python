@@ -20,6 +20,7 @@ except ImportError:
     # Copied from Python3.
     from tempfile import mkdtemp
     import shutil as _shutil
+
     class TemporaryDirectory(object):
         name = None
         _finalizer = None
@@ -53,11 +54,13 @@ py2 = sys.version_info[0] < 3
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
+
 def data_file_path(fn):
     return os.path.join(data_path, fn)
 
-wav_fns = sorted([data_file_path(fn) for fn in os.listdir(data_path)
-                                     if fn.endswith('.wav')])
+
+wav_fns = sorted([data_file_path(fn) for fn in os.listdir(data_path) if fn.endswith('.wav')])
+
 
 def sample_data_fn(fn, col_name, f0_base, sample):
     """Return the filename corresponding to fn, col_name, f0_base, and sample.
@@ -88,7 +91,7 @@ def get_test_data(fn, col_name, f0_base, sample):
         c = csv.DictReader(f, dialect=csv.excel_tab)
         for row in c:
             if row['Filename'].startswith(in_name):
-                res.append(( float(row['t_ms']), float(row[col_name])))
+                res.append((float(row['t_ms']), float(row[col_name])))
     return res
 
 
@@ -107,6 +110,7 @@ def get_sample_data(*args):
     """
     with open(sample_data_fn(*args)) as f:
         return json.loads(f.read())
+
 
 def loadmat(fn):
     """Load the matlab sample .mat file fn using scipy.io.loadmat."""
@@ -228,8 +232,7 @@ def parameterize(cls):
             if name.startswith(paramsname):
                 testnameroot = 'test_' + name[len(paramsname):]
                 for paramname, params in paramsdict.items():
-                    test = (lambda self, name=name, params=params:
-                                    getattr(self, name)(*params))
+                    test = (lambda self, name=name, params=params: getattr(self, name)(*params))
                     testname = testnameroot + '_' + paramname
                     test.__name__ = testname
                     testfuncs[testname] = test

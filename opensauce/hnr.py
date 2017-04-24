@@ -6,6 +6,7 @@ Created on Mon Apr 14 21:51:49 2014
 """
 import numpy as np
 
+
 def run(y, Fs, F0, variables):
     """
     INPUT
@@ -34,7 +35,7 @@ def run(y, Fs, F0, variables):
     HNR35 = np.zeros(len(F0)) * None
 
     print 'reached the first for loop'
-    for k in range(1, len(F0)): #check this with the k multiplcation stuff below
+    for k in range(1, len(F0)):  # check this with the k multiplcation stuff below
         print 'loop!'
         ks = round(k * sampleshift)
 
@@ -71,21 +72,22 @@ def run(y, Fs, F0, variables):
 
     return [HNR05, HNR15, HNR25, HNR35]
 
+
 def getHNR(y, Fs, F0, Nfreqs):
     print 'holla'
     NBins = len(y)
     N0 = round(Fs/F0)
     N0_delta = round(N0 * 0.1)
 
-    y = [x*z for x,z in zip(np.hamming(len(y)),y)]
+    y = [x*z for x, z in zip(np.hamming(len(y)), y)]
     fftY = np.fft(y, NBins)
     aY = np.log10(abs(fftY))
     ay = np.ifft(aY)
 
     peakinx = np.zeros(np.floor(len(y))/2/N0)
     for k in range(1, len(peakinx)):
-        ayseg = ay[k*N0 - N0_delta : k*N0 + N0_delta]
-        val, inx = max(abs(ayseg)) #MAX does not behave the same - doesn't return inx??
+        ayseg = ay[(k*N0 - N0_delta):(k*N0 + N0_delta)]
+        val, inx = max(abs(ayseg))  # MAX does not behave the same - doesn't return inx??
         peakinx[k] = inx + (k * N0) - N0_delta - 1
 
         s_ayseg = np.sign(np.diff(ayseg))
@@ -100,11 +102,11 @@ def getHNR(y, Fs, F0, Nfreqs):
             ay[num] = 0
 
     midL = round(len(y)/2)+1
-    ay[midL:] = ay[midL-1: -1 : midL-1-(len(ay)-midL)]
+    ay[midL:] = ay[(midL-1):-1:(midL-1-(len(ay)-midL))]
 
     Nap = np.real(np.fft(ay))
-    N = Nap #???? why?
-    Ha = aY - Nap #change these names ffs
+    N = Nap  # ???? why?
+    Ha = aY - Nap  # change these names ffs
 
     Hdelta = F0/Fs * len(y)
     for f in [num+0.0001 for num in range(Hdelta, round(len(y)/2), Hdelta)]:

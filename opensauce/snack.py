@@ -19,6 +19,7 @@ try:
 except ImportError:
     import Tkinter as tkinter
 
+
 def snack_pitch(wav_fn, frame_length=None, window_length=None, max_pitch=None,
                 min_pitch=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.

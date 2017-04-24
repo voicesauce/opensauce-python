@@ -85,7 +85,6 @@ For each tier:
 
 # needs more cleanup, subclassing, epydoc docstrings
 
-import sys
 import re
 
 TEXTTIER = "TextTier"
@@ -108,7 +107,6 @@ OLDOOTEXTFILE = re.compile(r"""(?x)
             [\r\n]+(\S+)
             [\r\n]+.+[\r\n]+(\S+)
 """)
-
 
 
 #################################################################
@@ -175,8 +173,7 @@ class TextGrid(object):
             tier_headers = m.findall(self.read_file)
             tier_re = " \d+.?\d* \d+.?\d*[\r\n]+\"[^\"]*\""
             for i in range(0, self.size):
-                tier_info = [tier_headers[i]] + \
-                re.findall(str(i + 1) + tier_re, self.read_file)
+                tier_info = [tier_headers[i]] + re.findall(str(i + 1) + tier_re, self.read_file)
                 tier_info = "\n".join(tier_info)
                 tiers.append(Tier(tier_info, self.text_type, self.t_time))
             return tiers
@@ -254,7 +251,7 @@ class TextGrid(object):
             transcript = tier.simple_transcript
             for (xmin, xmax, utt) in transcript:
                 chron_file += str(idx) + " " + str(xmin)
-                chron_file += " " + str(xmax) +"\n"
+                chron_file += " " + str(xmax) + "\n"
                 chron_file += "\"" + utt + "\"\n"
         return chron_file
 
@@ -329,8 +326,9 @@ class Tier(object):
             self.mark_type = "intervals"
         else:
             self.mark_type = "points"
-            self.header = [("class", self.classid), ("name", self.nameid), \
-            ("xmin", self.xmin), ("xmax", self.xmax), ("size", self.size)]
+            self.header = [("class", self.classid), ("name", self.nameid),
+                           ("xmin", self.xmin), ("xmax", self.xmax),
+                           ("size", self.size)]
 
     def __iter__(self):
         return self
@@ -368,7 +366,7 @@ class Tier(object):
         self.nameid = self.tier_info[1]
         self.xmin = float(self.tier_info[2])
         self.xmax = float(self.tier_info[3])
-        if self.size != None:
+        if self.size is not None:
             self.size = int(self.tier_info[4])
         self.transcript = self.tier_info[-1]
 
@@ -446,6 +444,7 @@ class Tier(object):
     def __str__(self):
         return self.__repr__() + "\n  " + "\n  ".join(" ".join(row) for row in self.simple_transcript)
 
+
 def demo_TextGrid(demo_data):
     print("** Demo of the TextGrid class. **")
 
@@ -456,6 +455,7 @@ def demo_TextGrid(demo_data):
         print("\n***")
         print("Tier: %s" % (i + 1))
         print(tier)
+
 
 def demo():
     # Each demo demonstrates different TextGrid formats.
@@ -650,4 +650,3 @@ demo_data3 = """"Praat chronological TextGrid text file"
 
 if __name__ == "__main__":
     demo()
-

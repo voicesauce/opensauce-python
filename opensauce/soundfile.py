@@ -13,6 +13,7 @@ import os
 from opensauce.helpers import wavread
 from opensauce.textgrid import TextGrid
 
+
 class SoundFile(object):
 
     def __init__(self, wavpath, tgdir=None, tgfn=None):

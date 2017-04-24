@@ -4,6 +4,7 @@ from opensauce.helpers import wavread
 
 from test.support import TestCase, data_file_path, loadmat
 
+
 class TestSupport(TestCase):
 
     def test_wavread(self):

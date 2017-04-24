@@ -1,12 +1,16 @@
-import sys
 import os
 import argparse
 import measure
 import helpers
 
+
 def process(indir, outdir, settingsfile, paramfile):
     '''
-    Main sound file processing procedure. Finds all wave files in 'indir', reads them in one by one, and applies functions corresponding to each parameter in the parameters file. If no parameters file is specified, the default is "defaults/parameters/default.csv". If no settings file is specified, the default is "defaults/settings/default.csv"
+    Main sound file processing procedure. Finds all wave files in 'indir',
+    reads them in one by one, and applies functions corresponding to each
+    parameter in the parameters file. If no parameters file is specified, the
+    default is "defaults/parameters/default.csv". If no settings file is
+    specified, the default is "defaults/settings/default.csv"
     '''
     measurements = measure.measurements
     params = helpers.get_parameters(paramfile)
@@ -31,9 +35,10 @@ def process(indir, outdir, settingsfile, paramfile):
 
         # run the measurements
         for param in params:
-            soundfile.measurements[param] = measurements[param](soundfile) # it is what it is...
+            soundfile.measurements[param] = measurements[param](soundfile)  # it is what it is...
 
     print "Done processing."
+
 
 if __name__ == "__main__":
     settings = "defaults/settings/default.csv"

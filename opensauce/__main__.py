@@ -1,10 +1,6 @@
 from __future__ import division
 
 import argparse
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
 import csv
 import os
 import shlex
@@ -29,8 +25,8 @@ class CLI(object):
                      '~/.config/opensauce/settings',
                      '~/.opensaucerc')
     measurements_locs = ('./opensauce.measurements',
-                        '~/.config/opensauce/measurements',
-                        '~/.opensauce.measurements')
+                         '~/.config/opensauce/measurements',
+                         '~/.opensauce.measurements')
 
     #
     # Command Line Parsing and Execution.
@@ -103,12 +99,8 @@ class CLI(object):
     def _algorithm(self, name):
         return getattr(self, 'DO_' + name)
 
-
     def _assemble_fields(self, filename, textgrid_data, offset, data):
-        return ([filename]
-                + (textgrid_data if self.args.use_textgrid else [])
-                + [offset]
-                + data)
+        return ([filename] + (textgrid_data if self.args.use_textgrid else []) + [offset] + data)
 
     def _get_value(self, vector, index):
         try:
@@ -157,7 +149,7 @@ class CLI(object):
                 if self.args.use_textgrid:
                     # XXX covert this to use logging.
                     print("Found no TextGrid for {}, reporting all"
-                           " data".format(soundfile.wavfn))
+                          " data".format(soundfile.wavfn))
                 intervals = (('no textgrid', 0,
                               int(soundfile.ms_len//self.args.frame_shift)),)
             frame_shift = self.args.frame_shift
@@ -282,8 +274,8 @@ class CLI(object):
     parser.add_argument('--include-empty-labels', default=False,
                         action='store_true',
                         help="Include TextGrid entries with empty or blank"
-                              " labels in the analysis and output.  Default"
-                              " is %(default)s.")
+                             " labels in the analysis and output.  Default"
+                             " is %(default)s.")
     parser.add_argument('--ignore-label', action='append', default=[],
                         help="A TextGrid label to exclude from the analysis"
                              " and output.  May be specified more than once.")

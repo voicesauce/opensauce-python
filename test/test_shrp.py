@@ -6,6 +6,7 @@ from opensauce.helpers import wavread
 
 from test.support import TestCase, parameterize, loadmat, data_file_path
 
+
 @parameterize
 class TestWindow(TestCase):
 
@@ -116,8 +117,7 @@ class Test_compute_shr(TestCase):
             int(data['N']),
             int(data['shift_units']),
             data['SHR_Threshold'])
-        np.testing.assert_array_equal(peak_index,
-                                             int(data['peak_index'])-1)
+        np.testing.assert_array_equal(peak_index, int(data['peak_index'])-1)
         np.testing.assert_array_almost_equal(shr, data['SHR'])
         np.testing.assert_array_almost_equal(shshift, data['shshift'])
         np.testing.assert_array_almost_equal(index, data['index']-1)

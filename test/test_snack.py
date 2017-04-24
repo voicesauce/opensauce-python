@@ -7,6 +7,7 @@ from opensauce.snack import snack_pitch
 
 from support import TestCase, wav_fns, get_test_data, get_sample_data
 
+
 class TestSnack(TestCase):
 
     longMessage = True
@@ -54,8 +55,7 @@ class TestSnack(TestCase):
             #    print((i, os_data[i], voicesauce_data[i]))
             #print(fn)
             for i in range(len(os_data)):
-                if (abs(os_data[i] - vs_data[i]) >= 40
-                       and (os_data[i]==0 or vs_data[i]==0)):
+                if (abs(os_data[i] - vs_data[i]) >= 40 and (os_data[i] == 0 or vs_data[i] == 0)):
                     continue
                 self.assertLess(abs(os_data[i] - vs_data[i]), 0.6, "row %s" % i)
 
