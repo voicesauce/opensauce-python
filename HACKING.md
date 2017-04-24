@@ -1,11 +1,11 @@
 # Workflow
 
-To contribute code/edit/etc:
+To contribute code, edit, etc:
 
-1. [Install git](http://git-scm.com/book/en/Getting-Started-Installing-Git) (if
+1. [Install Git](http://git-scm.com/book/en/Getting-Started-Installing-Git) (if
    you haven't already)
 
-2. Make a github account
+2. Make a GitHub account
 
 3. Clone the repo:
 
@@ -16,17 +16,33 @@ To contribute code/edit/etc:
 
         $ python -m unittest test
 
-5. Write code, edit code, test code.  Ideally, add tests to the set of
+5. To run code checkers on Python code (.py files), use one or more of these
+   Python packages:
+
+        * [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
+        * [pyflakes](https://pypi.python.org/pypi/pyflakes)
+        * [pydocstyle](https://pypi.python.org/pypi/pydocstyle)
+        * [pylint](https://www.pylint.org/)
+
+   If you don't have these packages, you need to install them using pip.  It's
+   good to start with pycodestyle and pyflakes, which work well for basic checking.
+
+   Some examples of how to run the code checkers for pycodestyle and pyflakes:
+
+        $ pycodestyle /path/to/python_file
+        $ pyflakes /path/to/python_file
+
+6. Write code, edit code, test code.  Ideally, add tests to the set of
    unit tests in the tests directory to cover any new or changed code.
    New tests will be automatically picked up by the test runner if
    (a) any test class subclasses unittest.TestCase and (b) any
    test method name starts with the string 'test_'.
 
-6. To track added or changed files, use "git add":
+7. To track added or changed files, use "git add":
 
         $ git add path/to/file
 
-7. Once you're ready to commit your changes, use "git commit":
+8. Once you're ready to commit your changes, use "git commit":
 
         $ git commit
 
@@ -34,26 +50,22 @@ To contribute code/edit/etc:
    one line summary of the change, a blank line, and then a paragraph or two
    about the motivation for the change and what the changes are.
 
-8. Push your changes to the cloud (it'll ask for your github username and
+9. Push your changes to the cloud (it'll ask for your GitHub username and
    password):
 
         $ git push
 
-
-In order to sync your version of the repo with the master copy, use "git pull":
+   In order to sync your version of the repo with the master copy, use "git pull":
 
         $ git pull
 
-If something breaks or anything is confusing, e-mail me: ksilvers at umass dot
-edu
-
+   If something breaks or anything is confusing, post a question on the Issue tracker.
 
 # Projects
 
 Check the Issue tracker and TODO.md for ideas.
 
-
-# Howto do an algorithm conversion
+# How to do an algorithm conversion
 
 1. In the algorithm's .m file, add a line to the end of the function
    for which the file is named like this:
