@@ -87,18 +87,9 @@ does not use TextGrid information.
 
     $ python -m opensauce --measurements snackF0 SHR --no-textgrid /path/to/file.wav
 
-Any options you can specify on the command line you can also put into a
-settings file, one option and its arguments per line.  You can also or
-alternatively have a measurements file containing one measurement per line.
-OpenSauce looks for the settings and measurement files first in the current
-directory, then in your home directory, and then in your `.config/opensauce`
-directory.  (For more information, run `$ python -m opensauce --help` again).
-Options and measurements specified on the command line override those specified
-in a settings or measurements file.
-
 Currently only the snackF0, shrF0, and SHR measurements are supported. (Again,
 you can run `$ python -m opensauce --help` to see which measurements are
-available.
+available.)
 
 Note there is one subtlety with using the command line interface.  You cannot
 specify the sound files right after the `--measurements` option.
@@ -116,6 +107,60 @@ specified after measurements,
 or specify the sound file at the beginning.
 
     $ python -m opensauce /path/to/file.wav --measurements SHR
+
+# Settings and measurement files
+
+If it is inconvenient to enter options on the command line, you can also do
+this via a settings and/or measurements file.
+
+Any options you can specify on the command line you can put into a settings
+file, one option and its arguments per line.  On the command line, you can
+specify a settings file to use, with a command like
+
+    $ python -m opensauce -s my_settings /path/to/file.wav
+
+or alternatively,
+
+    $ python -m opensauce --settings my_settings /path/to/file.wav
+
+To run your favorite settings by default, you can copy your settings file to
+one of the locations `./opensauce.settings`, `~/.config/opensauce/settings`,
+or `~/.opensaucerc`.  Opensauce will automatically search each of these
+locations, in the above order, for a default settings file, if no settings file
+is explicitly specified on the command line.  The first file found will be
+used.
+
+An example settings file is included in this repository, called
+`opensauce.settings.example`.  You can copy this file to `opensauce.settings`
+to see how the settings file works.  Run OpenSauce on a sound file with no
+settings file specified, like this:
+
+    $ python -m opensauce /path/to/file.wav
+
+You can also have a measurements file containing one measurement per line.  On
+the command line, you can specify a measurements file to use, with a command
+like
+
+    $ python -m opensauce -m my_measurements /path/to/file.wav
+
+To run your favorite settings by default, you can copy your measurements file
+to one of the locations `./opensauce.measurements`,
+`~/.config/opensauce/measurements`, or `~/.opensauce.measurements`.  Opensauce
+will automatically search each of these locations, in the above order, for a
+default settings file, if no settings file is explicitly specified on the
+command line.  The first file found will be used.
+
+An example settings file is included in this repository, called
+`opensauce.measurements.example`.  You can copy this file to
+`opensauce.measurements` to see how the measurements file works.  Run OpenSauce
+on a sound file with no measurements file specified, like this:
+
+    $ python -m opensauce /path/to/file.wav
+
+Note that if you specify measurements in both the settings and measurements
+files, the measurements in the settings file will override those in the
+measurements file.  Similarly, options and measurements specified on the
+command line override those specified in a settings or measurements file.
 
 # Contributing
 
