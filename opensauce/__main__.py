@@ -6,6 +6,7 @@ import os
 import shlex
 import sys
 
+# Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
 
 
@@ -74,6 +75,9 @@ class CLI(object):
 
     def _settings_from_default_file(self):
         for filepath in self.settings_locs:
+            # Expand path for paths that start with tilde,
+            # e.g. '~/.opensaucerc'
+            filepath = os.path.expanduser(filepath)
             if os.path.isfile(filepath):
                 return self._settings_from_file(filepath)
         return []
@@ -92,6 +96,9 @@ class CLI(object):
 
     def _measurements_from_default_file(self):
         for filepath in self.measurements_locs:
+            # Expand path for paths that start with tilde,
+            # e.g. '~/.opensauce.measurements'
+            filepath = os.path.expanduser(filepath)
             if os.path.isfile(filepath):
                 return self._measurements_from_file(filepath)
         return []
@@ -287,7 +294,7 @@ class CLI(object):
                              " the output (default True, for compatibility"
                              " with voicesauce).")
     parser.add_argument('--include-f0-column', '--include-F0-column',
-                        action="store_true",
+                        action="store_true", dest='include_f0_column',
                         help="Include the F0 measurement used as input"
                              " to the other algorithms as the first column of"
                              " the output (default False, for compatibility"
@@ -325,7 +332,8 @@ class CLI(object):
 
 if __name__ == '__main__':
     try:
-        CLI().process()
+        my_cli = CLI()
+        my_cli.process()
     except (OSError, IOError) as err:
         print(err)
         sys.exit(1)
