@@ -2,6 +2,7 @@ import contextlib
 import filecmp
 import os
 import textwrap
+import numpy as np
 from shutil import copytree
 from subprocess import Popen, PIPE
 
@@ -31,8 +32,12 @@ class TestOldCLI(TestCase):
         p.stdout.read()
         rc = p.wait()
         self.assertEqual(rc, 0)
-        self.assertTrue(filecmp.cmp(d('defaults/sounds/cant_c5_19a.f0'),
-                                    data_file_path('cant_c5_19a.f0')))
+        # f0 calculated by command from process.py
+        f0 = np.loadtxt(d('defaults/sounds/cant_c5_19a.f0'))
+        # f0 loaded from data
+        f0_data = np.loadtxt(data_file_path('cant_c5_19a.f0'))
+        # Check that calculated f0 and data f0 are "close"
+        self.assertTrue(np.allclose(f0, f0_data))
 
 
 @parameterize
