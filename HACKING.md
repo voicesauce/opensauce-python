@@ -12,9 +12,31 @@ To contribute code, edit, etc:
         $ git clone https://github.com/voicesauce/opensauce-python.git
         $ cd opensauce-python
 
-4. To run the existing unit tests:
+4. To run unit tests, run the Python standard testing library `unittest` as a
+   module on the command line.
+
+   To run all the tests:
 
         $ python -m unittest test
+
+   To run tests in one test file (for example, the tests in `test_cli.py`):
+
+        $ python -m unittest test.test_cli
+
+   To run tests in one class of one test file (for example, `TestCLI`):
+
+        $ python -m unittest test.test_cli.TestCLI
+
+   To run a single test in one class of one test file (for example, `test_m`):
+
+        $ python -m unittest test.test_cli.TestCLI.test_m
+
+   Following the convention of `unittest`, all tests and test files begin with
+   `test_`.
+
+   To see all the available options for running `unittest`, display help:
+
+        $ python -m unittest -h
 
 5. To run code checkers on Python code (.py files), use one or more of these
    Python packages:
@@ -60,10 +82,6 @@ To contribute code, edit, etc:
         $ git pull
 
    If something breaks or anything is confusing, post a question on the Issue tracker.
-
-# Projects
-
-Check the Issue tracker and TODO.md for ideas.
 
 # How to do an algorithm conversion
 
@@ -144,3 +162,9 @@ Check the Issue tracker and TODO.md for ideas.
    correctly.
 
 9. XXX: A few more steps to come once the runtime framework is fleshed out.
+
+# Projects
+
+Check the Issue tracker and TODO.md for ideas.
+
+
