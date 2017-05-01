@@ -2,6 +2,7 @@ from __future__ import division
 
 import math
 import unittest
+import numpy as np
 
 from opensauce.snack import snack_pitch
 
@@ -72,7 +73,6 @@ class TestSnack(TestCase):
             self.assertEqual(V, sample_data)
             sample_data = get_sample_data(fn, 'sF0', 'sf0', '1ms')
             self.assertEqual(len(F0), len(sample_data))
-            for i in range(len(F0)):
-                # The F0 float values are unlikely to compare exactly across
-                # different machines.  NB: Voicesauce reports to 3 places.
-                self.assertAlmostEqual(F0[i], sample_data[i], places=4)
+            # Check that F0 and sample_data are "close enough" for
+            # floating precision
+            self.assertTrue(np.allclose(F0, sample_data))
