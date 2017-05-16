@@ -12,6 +12,8 @@ from audio recordings.
 1.  NOTE that OpenSauce depends on the Python packages
     [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/).
 
+    To install Python on Windows, see the [Windows specific instructions](WINDOWS.md).
+
     To install these packages on a Mac or Linux machine, you can use pip:
 
         $ python -m pip install --upgrade pip
@@ -32,8 +34,12 @@ from audio recordings.
     [Anaconda](https://www.continuum.io) as your Python distribution. Anaconda
     includes the NumPy and SciPy packages by default.
 
-2.  In addition, you may need to install Tcl/Tk and Snack. If you're on a Debian
-    / Ubuntu machine, install the relevant packages using these commands:
+2.  In addition, you may need to install Tcl/Tk and Snack.
+
+    To install Snack on Windows, see  the [Windows specific instructions](WINDOWS.md).
+
+    If you're on a Debian / Ubuntu machine, install the relevant packages using
+    these commands:
 
         $ sudo apt-get install tk8.4
         $ sudo apt-get install libsnack2
@@ -90,6 +96,15 @@ does not use TextGrid information.
 Currently only the snackF0, shrF0, and SHR measurements are supported. (Again,
 you can run `$ python -m opensauce --help` to see which measurements are
 available.)
+
+The command line interface has default values for all the different options.
+To see the default values, run the help command: `python -m opensauce -h`.
+
+If you want to use TextGrid files in your analysis, make sure that each sound
+file you analyze `name.wav`, has a corresponding TextGrid file with the same
+base filename followed by the `.TextGrid` extension, e.g. `name.TextGrid`.
+Capitalization is important, so `name.TextGrid` will be found, but
+`name.textgrid` will not.
 
 Note there is one subtlety with using the command line interface.  You cannot
 specify the sound files right after the `--measurements` option.
