@@ -1,5 +1,4 @@
 import contextlib
-import filecmp
 import os
 import textwrap
 import numpy as np
