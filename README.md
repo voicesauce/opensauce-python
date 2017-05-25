@@ -7,54 +7,43 @@ This is a Python port of
 It provides a set of command-line tools for taking automatic voice measurements
 from audio recordings.
 
+# Requirements
+
+* Python 2.7
+* Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
+
+If you want to use Snack to estimate parameters:
+* Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
+* [Snack Sound Toolkit](http://www.speech.kth.se/snack/)
+
 # Installation
 
-1.  NOTE that OpenSauce depends on the Python packages
-    [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/).
+1.  Install Python, the Pythons package NumPy and SciPy, and Snack Sound
+    Toolkit, if you don't already have them. Installing Snack is non-trivial,
+    so we recommend that you follow the recommendations in the instructions
+    below for this step.
 
-    To install Python on Windows, see the [Windows specific instructions](WINDOWS.md).
+    * [Windows specific instructions](WINDOWS.md)
+    * [Mac OS X specific instructions](MAC-OS-X.md)
+    * [Linux specific instructions](LINUX.md)
 
-    To install these packages on a Mac or Linux machine, you can use pip:
+2.  Install Git, if you don't have it on your machine.  See the official Git
+    website for [recommendations on how to install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-        $ python -m pip install --upgrade pip
-        $ pip install --user numpy scipy
-
-    (Advanced users might want to install the NumPy and SciPy packages in a
-    [virtualenv](https://virtualenv.pypa.io).)
-
-    Debian / Ubuntu users might prefer to install NumPy and SciPy system-wide
-    via their package manager:
-
-        $ sudo apt-get install python-numpy python-scipy
-
-    If you have trouble, look at the
-    [SciPy documentation](https://www.scipy.org/install.html).
-
-    Another way to obtain these packages is to install
-    [Anaconda](https://www.continuum.io) as your Python distribution. Anaconda
-    includes the NumPy and SciPy packages by default.
-
-2.  In addition, you may need to install Tcl/Tk and Snack.
-
-    To install Snack on Windows, see  the [Windows specific instructions](WINDOWS.md).
-
-    If you're on a Debian / Ubuntu machine, install the relevant packages using
-    these commands:
-
-        $ sudo apt-get install tk8.4
-        $ sudo apt-get install libsnack2
-
-    Note that the code will probably work with a later versions of tk; it has
-    been tested with tk8.4 and tk8.5 on Linux.
-
-3.  Finally, clone this repository.
+3.  Finally, navigate to the directory where you want to download opensauce and
+    clone this repository using Git.
 
         $ git clone https://github.com/voicesauce/opensauce-python.git
 
+4.  To get updates to the software, use the `git pull` command inside the
+    `opensauce-python` directory.
+
+        $ git pull
+
 # Quickstart
 
-(Note that these are interim instructions. Eventually there will be
-installation instructions and an 'opensauce' command.)
+(Note that these are interim instructions. Eventually there will be an
+'opensauce' command.)
 
 To run OpenSauce, open a new terminal window, `cd` into the directory where you
 cloned `opensauce-python`:
