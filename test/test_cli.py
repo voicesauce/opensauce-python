@@ -18,7 +18,7 @@ class TestOldCLI(TestCase):
         def d(fn):
             return os.path.join(tmp, fn)
         os.mkdir(d('output'))
-        copytree('defaults', d('defaults'))
+        copytree('legacy/defaults', d('defaults'))
         p = Popen(['python', 'opensauce/process.py',
                         '-i', d('defaults/sounds'),
                         '-o', d('output'),

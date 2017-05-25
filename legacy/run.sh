@@ -7,17 +7,17 @@ else
     root=$VS_ROOT
 
     # path to an input directory of *.wav files
-    inputDir="$root/defaults/sounds"
+    inputDir="$root/legacy/defaults/sounds"
 
     # path to the directory where you want to store OpenSauce output
-    outputDir="$root/output"
+    outputDir="$root/legacy/output"
     mkdir -pv $outputDir # if the output dir already doesn't exist, create it
 
     # path to your settings file
-    settings="$root/defaults/settings/default.csv"
+    settings="$root/legacy/defaults/settings/default.csv"
 
     # path to the list of measurements you want to extract from the input
-    params="$root/defaults/parameters/default.csv"
+    params="$root/legacy/defaults/parameters/default.csv"
 
     python $root/opensauce/process.py -i $inputDir -o $outputDir -s $settings -p $params
 fi
