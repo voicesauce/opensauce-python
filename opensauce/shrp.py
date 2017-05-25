@@ -95,7 +95,7 @@ def shr_pitch(wav_data, fps, window_length=None, frame_shift=None,
         if dabs[inx] > frame_precision * frame_shift:
             # "no valid value found"
             continue
-        n = round(k / frame_shift) + 1
+        n = int(round(k / frame_shift)) + 1
         if n < 0 or n >= datalen:
             continue
         F0[n] = f0_value[inx]
@@ -346,7 +346,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
 def get_log_spectrum(segment, fftlen, limit, logf, interp_logf):
     spectra = fft(segment, fftlen)
     # "fftlen is always even here."
-    amplitude = np.abs(spectra[0:fftlen/2+1])
+    amplitude = np.abs(spectra[0:fftlen//2+1])
     # "ignore the zero frequency component"
     amplitude = amplitude[1:limit+2]
     interp_amplitude = interp1d(logf, amplitude)(interp_logf)
@@ -434,10 +434,10 @@ def two_max(x, lowerbound, upperbound, unit_len):
         return mag, index
     harmonics = 2
     limit = 0.0625  # "1/8 octave"
-    startpos = index[0] + round(np.log2(harmonics-limit)/unit_len)
+    startpos = index[0] + int(round(np.log2(harmonics-limit)/unit_len))
     if startpos <= max_index:
         # "for example, 100hz-200hz is one octave, 200hz-250hz is 1/4octave"
-        endpos = index[0] + round(np.log2(harmonics + limit)/unit_len)
+        endpos = index[0] + int(round(np.log2(harmonics + limit)/unit_len))
         endpos = min(max_index, endpos)
         # "find the maximum value at right side of last maximum"
         mag2 = np.amax(x[startpos:endpos+1])
@@ -504,7 +504,7 @@ def _not_implemented():
 def _triangular(n):
     m = (n-1)/2
     res = np.arange(np.floor(m+1))/m
-    return np.append(res, res[np.ceil(m)-1::-1])
+    return np.append(res, res[int(np.ceil(m))-1::-1])
 
 window_funcs = dict(
     rect = lambda n: np.ones(n),

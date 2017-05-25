@@ -71,7 +71,7 @@ class SoundFile(object):
 
     @property
     def ms_len(self):
-        ms_len = math.floor(len(self.wavdata) / self.fs * 1000)
+        ms_len = int(math.floor(len(self.wavdata) / self.fs * 1000))
         self.__dict__['ms_len'] = ms_len
         return ms_len
 

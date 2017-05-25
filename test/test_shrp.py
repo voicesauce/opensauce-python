@@ -132,8 +132,8 @@ class Test_get_log_spectrum(TestCase):
         data = loadmat('GetLogSpectrum_data')
         interp_amplitude = get_log_spectrum(
             data['segment'],
-            data['fftlen'],
-            data['limit'] - 1,
+            int(data['fftlen']),
+            int(data['limit']) - 1,
             data['logf'],
             data['interp_logf'])
         np.testing.assert_array_almost_equal(interp_amplitude,
