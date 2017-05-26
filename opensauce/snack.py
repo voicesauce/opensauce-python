@@ -20,8 +20,8 @@ except ImportError:
     import Tkinter as tkinter
 
 
-def snack_pitch(wav_fn, frame_length=None, window_length=None, max_pitch=None,
-                min_pitch=None):
+def snack_pitch(wav_fn, method, frame_length=None, window_length=None,
+                max_pitch=None, min_pitch=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.
 
     Use the snack esps method and extract the pitch (F0) and voicing values for
@@ -31,6 +31,20 @@ def snack_pitch(wav_fn, frame_length=None, window_length=None, max_pitch=None,
     Hertz.  Defaults are the snack defaults.
 
     """
+
+    if method == 'exe':
+        raise NotImplementedError('exe method not implemented yet')
+    elif method == 'python':
+        F0, V = snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+    elif method == 'tcl':
+        raise NotImplementedError('tcl method not implemented yet')
+    else:
+        raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
+
+    return F0, V
+
+def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+
     # XXX I'm assuming Hz for pitch; the docs don't actually say that.
     # http://www.speech.kth.se/snack/man/snack2.2/tcl-man.html#spitch
     tcl = tkinter.Tcl()

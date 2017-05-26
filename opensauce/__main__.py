@@ -5,6 +5,10 @@ import csv
 import os
 import shlex
 import sys
+from sys import platform
+
+# Import user-defined global configuration variables
+import userconf
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
@@ -187,6 +191,7 @@ class CLI(object):
     def DO_snackF0(self, soundfile):
         from .snack import snack_pitch
         F0, V = snack_pitch(soundfile.wavpath,
+                            method=self.args.snack_method,
                             frame_length=self.args.frame_shift/1000,
                             window_length=self.args.window_size/1000,
                             min_pitch=self.args.min_f0,
@@ -217,6 +222,22 @@ class CLI(object):
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
+    _valid_snack_methods = ['exe', 'python', 'tcl']
+    # Determine default method for calling Snack
+
+    if userconf.user_default_snack_method is not None:
+        if userconf.user_default_snack_method in _valid_snack_methods:
+            default_snack_method = userconf.user_default_snack_method
+        else:
+            raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
+    elif platform == "win32" or platform == "cygwin":
+        default_snack_method = 'exe'
+    elif platform == "linux" or platform == "linux2":
+        default_snack_method = 'python'
+    elif platform == "darwin":
+        default_snack_method = 'tcl'
+    else:
+        default_snack_method = 'tcl'
 
     #
     # Parsing Declarations
@@ -328,6 +349,11 @@ class CLI(object):
                              " is to write to the shell standard output,"
                              " which can also be specified explicitly by"
                              " specifying '-' as the OUTPUT_FILEPATH.")
+    parser.add_argument('--snack-method', default=default_snack_method,
+                        choices=_valid_snack_methods,
+                        help="Method to use in calling Snack.  On Windows,"
+                             " the default is 'exe'.  On Linux, the default"
+                             " is 'python'.  On OS X, the default is 'tcl'.")
 
 
 if __name__ == '__main__':

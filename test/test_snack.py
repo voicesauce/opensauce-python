@@ -4,6 +4,11 @@ import math
 import unittest
 import numpy as np
 
+from sys import platform
+
+# Import user-defined global configuration variables
+import userconf
+
 from opensauce.snack import snack_pitch
 
 from support import TestCase, wav_fns, get_test_data, get_sample_data
@@ -12,6 +17,21 @@ from support import TestCase, wav_fns, get_test_data, get_sample_data
 class TestSnack(TestCase):
 
     longMessage = True
+
+    _valid_snack_methods = ['exe', 'python', 'tcl']
+    if userconf.user_default_snack_method is not None:
+        if userconf.user_default_snack_method in _valid_snack_methods:
+            default_snack_method = userconf.user_default_snack_method
+        else:
+            raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
+    elif platform == "win32" or platform == "cygwin":
+        default_snack_method = 'exe'
+    elif platform == "linux" or platform == "linux2":
+        default_snack_method = 'python'
+    elif platform == "darwin":
+        default_snack_method = 'tcl'
+    else:
+        default_snack_method = 'tcl'
 
     #
     # XXX This test fails because the data we generate does not match the data
@@ -32,7 +52,7 @@ class TestSnack(TestCase):
         for fn in wav_fns:
             # XXX I think voicesauce will optionally emit the Voice data, but I
             # don't have example output data for it, so I'm ignoring it for now.
-            F0, V = snack_pitch(fn, frame_length=f_len, window_length=w_len)
+            F0, V = snack_pitch(fn, self.default_snack_method, frame_length=f_len, window_length=w_len)
             # The first samples in all of our test data yield 0.
             self.assertEqual(F0[:10], [0.0]*10)
             # The snack esps data starts in the middle of the first window,
@@ -67,7 +87,7 @@ class TestSnack(TestCase):
         f_len = 0.001
         w_len = 0.025
         for fn in wav_fns:
-            F0, V = snack_pitch(fn, frame_length=f_len, window_length=w_len)
+            F0, V = snack_pitch(fn, self.default_snack_method, frame_length=f_len, window_length=w_len)
             # Voice is 0 or 1, so (hopefully) no FP rounding issues.
             sample_data = get_sample_data(fn, 'V', 'sf0', '1ms')
             self.assertEqual(V, sample_data)
