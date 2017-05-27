@@ -227,6 +227,8 @@ class CLI(object):
 
     if userconf.user_default_snack_method is not None:
         if userconf.user_default_snack_method in _valid_snack_methods:
+            if userconf.user_default_snack_method == 'exe' and (platform != 'win32' and platform != 'cygwin'):
+                raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
             default_snack_method = userconf.user_default_snack_method
         else:
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
