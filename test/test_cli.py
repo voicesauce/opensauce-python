@@ -3,6 +3,7 @@ import os
 import textwrap
 import numpy as np
 from shutil import copytree
+from sys import platform
 from subprocess import Popen, PIPE
 
 from opensauce.__main__ import CLI
@@ -151,6 +152,13 @@ class TestCLI(TestCase):
         msg = out.getvalue()
         if not py2 and expected_regex_3 is not None:
             expected_regex = expected_regex_3
+
+        # HACK: Change backslashes to normal slashes on Windows
+        #       because backslashes are special characters in regex
+        if platform == 'win32' or platform == 'cygwin':
+            msg = msg.replace('\\\\', '/')
+            expected_regex = [regex.replace('\\', '/') for regex in expected_regex]
+
         for regex in expected_regex:
             self.assertRegex(msg, regex)
 

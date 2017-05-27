@@ -2,6 +2,8 @@ import os
 import shutil
 import numpy as np
 
+from sys import platform
+
 from opensauce.helpers import wavread
 from opensauce.soundfile import SoundFile
 
@@ -32,6 +34,11 @@ class TestSoundFile(TestCase):
         with self.assertRaises(ValueError) as cx:
             s.textgrid_intervals
         msg = str(cx.exception)
+
+        # HACK: On Windows systems, the number of backslashes is doubled
+        if platform == 'win32' or platform == 'cygwin':
+            msg = msg.replace('\\\\', '\\')
+
         self.assertIn(os.path.basename(fn)[0], msg)
         self.assertIn(t, msg)
         self.assertIn('TextGrid', msg)
