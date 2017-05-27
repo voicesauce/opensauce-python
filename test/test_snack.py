@@ -28,7 +28,7 @@ class TestSnack(TestCase):
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
     elif platform == "win32" or platform == "cygwin":
         default_snack_method = 'exe'
-    elif platform == "linux" or platform == "linux2":
+    elif platform.startswith("linux"):
         default_snack_method = 'python'
     elif platform == "darwin":
         default_snack_method = 'tcl'
