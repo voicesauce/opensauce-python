@@ -50,7 +50,16 @@ def snack_pitch(wav_fn, method, frame_length=None, window_length=None,
 def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
-    return_code = call([exe_path, 'pitch', wav_fn, '-method esps', '-framelength', str(frame_length), '-windowlength', str(window_length), '-maxpitch', str(max_pitch), '-minpitch', str(min_pitch)])
+    snack_cmd = [exe_path, 'pitch', wav_fn, '-method', 'esps']
+    if frame_length is not None:
+        snack_cmd.extend(['-framelength', str(frame_length)])
+    if window_length is not None:
+        snack_cmd.extend(['-windowlength', str(window_length)])
+    if max_pitch is not None:
+        snack_cmd.extend(['-maxpitch', str(max_pitch)])
+    if min_pitch is not None:
+        snack_cmd.extend(['-minpitch', str(min_pitch)])
+    return_code = call(snack_cmd)
 
     if return_code != 0:
         raise EnvironmentError('snack.exe error')
@@ -62,6 +71,8 @@ def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
         F0, V = np.loadtxt(f0_fn, usecols=(0,1), unpack=True)
         # Cleanup and remove f0 file
         os.remove(f0_fn)
+    else:
+        raise EnvironmentError('snack.exe error -- unable to locate .f0 file')
 
     return F0, V
 
