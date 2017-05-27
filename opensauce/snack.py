@@ -11,6 +11,11 @@ manager.
 
 from __future__ import division
 
+from subprocess import call
+
+import os
+import numpy as np
+
 import logging
 log = logging.getLogger('opensauce.snack')
 
@@ -31,15 +36,32 @@ def snack_pitch(wav_fn, method, frame_length=None, window_length=None,
     Hertz.  Defaults are the snack defaults.
 
     """
-
     if method == 'exe':
-        raise NotImplementedError('exe method not implemented yet')
+        F0, V = snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
     elif method == 'python':
         F0, V = snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
     elif method == 'tcl':
         raise NotImplementedError('tcl method not implemented yet')
     else:
         raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
+
+    return F0, V
+
+def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+
+    exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
+    return_code = call([exe_path, 'pitch', wav_fn, '-method esps', '-framelength', str(frame_length), '-windowlength', str(window_length), '-maxpitch', str(max_pitch), '-minpitch', str(min_pitch)])
+
+    if return_code != 0:
+        raise EnvironmentError('snack.exe error')
+
+    # Path for f0 file corresponding to wav_fn
+    f0_fn = wav_fn.split('.')[0] + '.f0'
+    # Load data from f0 file
+    if os.path.isfile(f0_fn):
+        F0, V = np.loadtxt(f0_fn, usecols=(0,1), unpack=True)
+        # Cleanup and remove f0 file
+        os.remove(f0_fn)
 
     return F0, V
 
