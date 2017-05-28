@@ -1,6 +1,7 @@
 from __future__ import division
-import os
 
+import os
+from sys import platform
 
 def get_snack_f0(soundfile):
 
@@ -13,6 +14,10 @@ def get_snack_f0(soundfile):
     #
     # infile = sys.argv[1]
     infile = soundfile.wavfile
+
+    # HACK: Tcl shell expects double backslashes in Windows path
+    if platform == 'win32' or platform == 'cygwin':
+        infile = infile.replace('\\', '\\\\')
 
     tclfile = 'tclforsnackpitch.tcl'
 

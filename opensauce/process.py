@@ -21,8 +21,8 @@ def process(indir, outdir, settingsfile, paramfile):
 
     # make a list of wav files
     # TODO fix this so it uses absolute file paths (os.getenv)
-    if indir[-1] != '/':
-        indir = indir + '/'
+    if indir[-1] != os.sep:
+        indir = indir + os.sep
     filelist = [indir+f for f in os.listdir(indir) if f.endswith('.wav')]
 
     for wav in filelist:

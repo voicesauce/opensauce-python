@@ -1,5 +1,6 @@
 import scipy.io.wavfile as sio
 import math
+import os
 import helpers
 import snack_ks
 import hnr
@@ -117,7 +118,7 @@ def test(param_label):
     Test a measurement function.
     Example usage: test('F0 (Snack)')
     '''
-    testfile = generate_test_file("../defaults/sounds/cant_c5_19a.wav")
+    testfile = generate_test_file(os.path.join('..', 'defaults', 'sounds', 'cant_c5_19a.wav'))
     return measurements[param_label](testfile)
 
 

@@ -6,11 +6,9 @@ manager.
 
 """
 
-# XXX We may need to add a call to snack.exe on Windows if a snack install on
-# Windows isn't visible to Windows Python.
-
 from __future__ import division
 
+from sys import platform
 from subprocess import call
 
 import os
@@ -77,6 +75,11 @@ def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     return F0, V
 
 def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+
+    # HACK: Need to replace single backslash with two backslashes,
+    #       so that the Tcl shell reads the file path correctly on Windows
+    if platform == 'win32' or platform == 'cygwin':
+        wav_fn = wav_fn.replace('\\', '\\\\')
 
     # XXX I'm assuming Hz for pitch; the docs don't actually say that.
     # http://www.speech.kth.se/snack/man/snack2.2/tcl-man.html#spitch
