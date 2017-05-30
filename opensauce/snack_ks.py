@@ -4,7 +4,7 @@ import os
 from sys import platform
 
 # Import user-defined global configuration variables
-from opensauce import userconf
+import userconf
 
 
 def get_snack_f0(soundfile):
