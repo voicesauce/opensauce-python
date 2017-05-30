@@ -1,9 +1,9 @@
 import contextlib
 import os
+import sys
 import textwrap
 import numpy as np
 from shutil import copytree
-from sys import platform
 from subprocess import Popen, PIPE
 
 from opensauce.__main__ import CLI
@@ -23,11 +23,7 @@ class TestOldCLI(TestCase):
             return os.path.join(tmp, fn)
         os.mkdir(d('output'))
         copytree(os.path.join('legacy', 'defaults'), d('defaults'))
-        if userconf.user_python_cmd is not None:
-            python_cmd = userconf.user_python_cmd
-        else:
-            python_cmd = 'python'
-        p = Popen([python_cmd, os.path.join('opensauce','process.py'),
+        p = Popen([sys.executable, os.path.join('opensauce','process.py'),
                         '-i', d(os.path.join('defaults','sounds')),
                         '-o', d('output'),
                         '-s', d(os.path.join('defaults', 'settings', 'default.csv')),
@@ -53,11 +49,7 @@ class TestCLI(TestCase):
     def test_m(self):
         here = os.path.dirname(os.path.dirname(__file__))
         here = here if here else '.'
-        if userconf.user_python_cmd is not None:
-            python_cmd = userconf.user_python_cmd
-        else:
-            python_cmd = 'python'
-        p = Popen([python_cmd, '-m', 'opensauce'], cwd=here,
+        p = Popen([sys.executable, '-m', 'opensauce'], cwd=here,
                   stdout=PIPE,
                   stderr=PIPE,
                   universal_newlines=True,
@@ -166,7 +158,7 @@ class TestCLI(TestCase):
 
         # HACK: Change backslashes to normal slashes on Windows
         #       because backslashes are special characters in regex
-        if platform == 'win32' or platform == 'cygwin':
+        if sys.platform == 'win32' or sys.platform == 'cygwin':
             msg = msg.replace('\\\\', '/')
             expected_regex = [regex.replace('\\', '/') for regex in expected_regex]
 
