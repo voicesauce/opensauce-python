@@ -133,8 +133,9 @@ class TestCase(unittest.TestCase):
         return tmpdir.name
 
     # Python3 compat
-    assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
-    assertRegex = unittest.TestCase.assertRegexpMatches
+    if py2:
+        assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
+        assertRegex = unittest.TestCase.assertRegexpMatches
 
     @contextlib.contextmanager
     def captured_output(self, stream_name):

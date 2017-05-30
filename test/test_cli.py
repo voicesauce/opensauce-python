@@ -32,7 +32,8 @@ class TestOldCLI(TestCase):
                     stdout=PIPE,
                     )
         # For now, just ignore the output.
-        p.stdout.read()
+        with p.stdout:
+            p.stdout.read()
         rc = p.wait()
         self.assertEqual(rc, 0)
         # f0 calculated by command from process.py
@@ -41,7 +42,6 @@ class TestOldCLI(TestCase):
         f0_data = np.loadtxt(data_file_path('cant_c5_19a.f0'))
         # Check that calculated f0 and data f0 are "close"
         self.assertTrue(np.allclose(f0, f0_data))
-
 
 @parameterize
 class TestCLI(TestCase):
@@ -56,8 +56,10 @@ class TestCLI(TestCase):
                   )
         out, err = p.communicate()
         self.assertEqual(out, '')
-        # XXX assumes python is python2.  Fix?
-        self.assertIn('too few arguments', err)
+        if py2:
+            self.assertIn('too few arguments', err)
+        else:
+            self.assertIn('the following arguments are required', err)
         self.assertEqual(p.returncode, 2)
 
     def _CLI_output(self, args):
