@@ -16,6 +16,8 @@ If you want to use Snack to estimate parameters:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
 * [Snack Sound Toolkit](http://www.speech.kth.se/snack/)
 
+Note that on some Linux distributions, people report a [bug that prevents Snack from working on Python with Tcl/Tk 8.6](https://bugs.launchpad.net/ubuntu/+source/snack/+bug/1510562).
+
 # Installation
 
 1.  Install Python, the Pythons package NumPy and SciPy, and Snack Sound

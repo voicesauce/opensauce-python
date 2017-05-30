@@ -34,5 +34,7 @@ opensauce-python.
 
     This will install both Tcl/Tk version 8.4 and Snack 2.2.
 
-    Note that the code will probably work with a later versions of Tcl/Tk; it has
-    been tested with tk8.4 and tk8.5 on Linux.
+    Note that the code will probably work with a later versions of Tcl/Tk; it
+    has been tested with tk8.4 and tk8.5 on Linux.  Note that on some Linux
+    distributions, people report a [bug that prevents Snack from working on Python with Tcl/Tk 8.6](https://bugs.launchpad.net/ubuntu/+source/snack/+bug/1510562).
+
