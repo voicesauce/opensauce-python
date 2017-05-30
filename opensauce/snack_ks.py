@@ -3,6 +3,8 @@ from __future__ import division
 import os
 from sys import platform
 
+import userconf
+
 def get_snack_f0(soundfile):
 
     # ERROR: wind_dur parameter must be between [0.0001, 0.1].
@@ -30,7 +32,10 @@ def get_snack_f0(soundfile):
     maxF0 = 400
     minF0 = 90
 
-    cmd1 = 'tclsh'
+    if userconf.user_tcl_shell_cmd is not None:
+        cmd1 = userconf.user_tcl_shell_cmd
+    else:
+        cmd1 = 'tclsh'
     f = open(tclfile, 'w')
     cmd = '#!/bin/bash\n'
     cmd += '# the next line restarts with wish \\\n'

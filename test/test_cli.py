@@ -10,6 +10,8 @@ from opensauce.__main__ import CLI
 
 from test.support import TestCase, data_file_path, py2, parameterize
 
+import userconf
+
 
 class TestOldCLI(TestCase):
 
@@ -20,7 +22,11 @@ class TestOldCLI(TestCase):
             return os.path.join(tmp, fn)
         os.mkdir(d('output'))
         copytree(os.path.join('legacy', 'defaults'), d('defaults'))
-        p = Popen(['python', os.path.join('opensauce','process.py'),
+        if userconf.user_python_cmd is not None:
+            python_cmd = userconf.user_python_cmd
+        else:
+            python_cmd = 'python'
+        p = Popen([python_cmd, os.path.join('opensauce','process.py'),
                         '-i', d(os.path.join('defaults','sounds')),
                         '-o', d('output'),
                         '-s', d(os.path.join('defaults', 'settings', 'default.csv')),
@@ -46,7 +52,11 @@ class TestCLI(TestCase):
     def test_m(self):
         here = os.path.dirname(os.path.dirname(__file__))
         here = here if here else '.'
-        p = Popen(['python', '-m', 'opensauce'], cwd=here,
+        if userconf.user_python_cmd is not None:
+            python_cmd = userconf.user_python_cmd
+        else:
+            python_cmd = 'python'
+        p = Popen([python_cmd, '-m', 'opensauce'], cwd=here,
                   stdout=PIPE,
                   stderr=PIPE,
                   universal_newlines=True,
