@@ -8,7 +8,7 @@ import sys
 from sys import platform
 
 # Import user-defined global configuration variables
-import userconf
+from opensauce import userconf
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile

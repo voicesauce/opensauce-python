@@ -10,7 +10,8 @@ from opensauce.__main__ import CLI
 
 from test.support import TestCase, data_file_path, py2, parameterize
 
-import userconf
+# Import user-defined global configuration variables
+from opensauce import userconf
 
 
 class TestOldCLI(TestCase):

@@ -3,7 +3,9 @@ from __future__ import division
 import os
 from sys import platform
 
-import userconf
+# Import user-defined global configuration variables
+from opensauce import userconf
+
 
 def get_snack_f0(soundfile):
 
