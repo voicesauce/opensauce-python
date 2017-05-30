@@ -34,9 +34,9 @@ def run(y, Fs, F0, variables):
     HNR25 = np.zeros(len(F0)) * None
     HNR35 = np.zeros(len(F0)) * None
 
-    print 'reached the first for loop'
+    print('reached the first for loop')
     for k in range(1, len(F0)):  # check this with the k multiplcation stuff below
-        print 'loop!'
+        print('loop!')
         ks = round(k * sampleshift)
 
         if ks <= 0 or ks > len(y):
@@ -74,7 +74,7 @@ def run(y, Fs, F0, variables):
 
 
 def getHNR(y, Fs, F0, Nfreqs):
-    print 'holla'
+    print('holla')
     NBins = len(y)
     N0 = round(Fs/F0)
     N0_delta = round(N0 * 0.1)

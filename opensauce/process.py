@@ -26,7 +26,7 @@ def process(indir, outdir, settingsfile, paramfile):
     filelist = [indir+f for f in os.listdir(indir) if f.endswith('.wav')]
 
     for wav in filelist:
-        print "Processing ", wav
+        print("Processing ", wav)
         matfile = wav[:-3]+"mat"
         # TODO TextGrid stuff
 
@@ -37,7 +37,7 @@ def process(indir, outdir, settingsfile, paramfile):
         for param in params:
             soundfile.measurements[param] = measurements[param](soundfile)  # it is what it is...
 
-    print "Done processing."
+    print("Done processing.")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from algorithms import func_GetH1_H2_H4
 
 def dummy(soundfile):
     # print soundfile.wavfile
-    print "hi from dummy"
+    print("hi from dummy")
 
 
 def f0_snack(soundfile):
@@ -20,7 +20,7 @@ def f0_snack(soundfile):
     if "F0 (Snack)" not in soundfile.measurements:
         soundfile.measurements["F0 (Snack)"] = f0
     else:
-        print "Already calculated Snack F0 ?"
+        print("Already calculated Snack F0 ?")
     return f0
 
 
