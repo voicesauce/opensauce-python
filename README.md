@@ -29,6 +29,11 @@ Note that on some Linux distributions, people report a [bug that prevents Snack 
     * [Mac OS X specific instructions](MAC-OS-X.md)
     * [Linux specific instructions](LINUX.md)
 
+    Technical note: If you setup your machine and opensauce-python to run
+    Snack from Python, there may be an error message `cannot open /dev/mixer`
+    on the console if you don't have a `/dev/mixer`.  You don't *need* a mixer
+    for opensauce-python, so it is okay to ignore that message.
+
 2.  Install Git, if you don't have it on your machine.  See the official Git
     website for [recommendations on how to install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
