@@ -235,7 +235,7 @@ class CLI(object):
     elif platform == "win32" or platform == "cygwin":
         default_snack_method = 'exe'
     elif platform.startswith("linux"):
-        default_snack_method = 'python'
+        default_snack_method = 'tcl'
     elif platform == "darwin":
         default_snack_method = 'tcl'
     else:
@@ -292,7 +292,7 @@ class CLI(object):
                         help="Number of milliseonds the analysis frame is"
                              " shifted between computed data points.  Default"
                              " is %(default)s milliseconds.")
-    parser.add_argument('--window-size', default=15, type=int,
+    parser.add_argument('--window-size', default=25, type=int,
                         help="Width of each analysis frame in milliseconds."
                              " Default is %(default)s milliseconds.")
     parser.add_argument('--min-f0', '--min-F0', default=40, type=int,
@@ -354,8 +354,8 @@ class CLI(object):
     parser.add_argument('--snack-method', default=default_snack_method,
                         choices=_valid_snack_methods,
                         help="Method to use in calling Snack.  On Windows,"
-                             " the default is 'exe'.  On Linux, the default"
-                             " is 'python'.  On OS X, the default is 'tcl'.")
+                             " the default is 'exe'.  On Linux and OS X, the"
+                             " default is 'tcl'.")
 
 
 if __name__ == '__main__':

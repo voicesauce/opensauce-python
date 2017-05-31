@@ -29,7 +29,7 @@ class TestSnack(TestCase):
     elif platform == "win32" or platform == "cygwin":
         default_snack_method = 'exe'
     elif platform.startswith("linux"):
-        default_snack_method = 'python'
+        default_snack_method = 'tcl'
     elif platform == "darwin":
         default_snack_method = 'tcl'
     else:
