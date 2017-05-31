@@ -49,7 +49,7 @@ class SoundFile(object):
         """
         open(wavpath).close()   # Generate an error if the file doesn't exist.
         self.wavpath = wavpath
-        self.wavfn = os.path.split(self.wavpath)[1]
+        self.wavfn = os.path.basename(self.wavpath)
         if tgfn is None:
             tgfn = os.path.splitext(os.path.basename(wavpath))[0] + '.TextGrid'
         if tgdir is None:
