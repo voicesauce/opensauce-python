@@ -9,6 +9,8 @@ import numpy as np
 from scipy.fftpack import fft
 from scipy.interpolate import interp1d
 
+from opensauce.helpers import round_half_away_from_zero
+
 # Comments in quotes are copied from the matlab source.
 
 
@@ -65,18 +67,11 @@ def shr_pitch(wav_data, fps, window_length=None, frame_shift=None,
 
     # "time locations rounded to nearest ms"
     #
-    # XXX numpy uses round-half-even, while matlab appears to use
-    # round-away-from-zero.  We can emulate this in python2 by using
-    # python2 round function instead of numpy's, but in python3 the
-    # rounding will have to take a detour through the Decimal module,
-    # which fortunately in python3 has a C accelerator.  Or perhaps
-    # we can ultimately just use round-half-even, if it turns out
-    # not to affect the results.  (This matters here because the time
-    # intervals produced by shrp are normally x.5 values.)
-    import sys
-    if sys.version_info.major > 2:
-        raise NotImplementedError("python3 rounding will produce bad results")
-    t = np.vectorize(round)(f0_time)
+    # VoiceSauce uses Matlab, and Matlab's round function uses the
+    # round-half-away-from-zero method.  However, NumPy uses the
+    # round-half-to-even method.  So we use our own round-half-away-from-zero
+    # method here.
+    t = round_half_away_from_zero(f0_time)
 
     # "Like timecoures from Praat, we might have missing values so pad with NaNs at
     # beginning and end if necessary."

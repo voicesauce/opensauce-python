@@ -2,7 +2,7 @@ from __future__ import division
 
 import math
 
-import numpy
+import numpy as np
 from scipy.io import wavfile
 
 
@@ -29,4 +29,19 @@ def wavread(fn):
     # XXX: if we need to handle 8 bit files we'll need to detect them and
     # special case them here.
     Fs, y = wavfile.read(fn)
-    return y/numpy.float64(32768.0), Fs
+
+    return y/np.float64(32768.0), Fs
+
+
+def round_half_away_from_zero(x):
+    """Rounds a number according to round half away from zero method
+
+       For example:
+       round_half_away_from_zero(3.5) = 4
+       round_half_away_from_zero(3.2) = 3
+       round_half_away_from_zero(-2.7) = -3
+       round_half_away_from_zero(-4.3) = -4
+    """
+    q = np.sign(x) * np.floor(np.abs(x) + 0.5)
+
+    return q
