@@ -1,7 +1,7 @@
 import os
 import argparse
-import measure
-import helpers
+import measure_legacy
+import helpers_legacy
 
 
 def process(indir, outdir, settingsfile, paramfile):
@@ -12,9 +12,9 @@ def process(indir, outdir, settingsfile, paramfile):
     default is "defaults/parameters/default.csv". If no settings file is
     specified, the default is "defaults/settings/default.csv"
     '''
-    measurements = measure.measurements
-    params = helpers.get_parameters(paramfile)
-    settings = helpers.get_settings(settingsfile)
+    measurements = measure_legacy.measurements
+    params = helpers_legacy.get_parameters(paramfile)
+    settings = helpers_legacy.get_settings(settingsfile)
 
     frameshift = int(settings['frameshift'])
     print("indir=%s, outdir=%s" % (indir, outdir))
@@ -31,7 +31,7 @@ def process(indir, outdir, settingsfile, paramfile):
         # TODO TextGrid stuff
 
         # build SoundFile object
-        soundfile = helpers.SoundFile(settings, wav)
+        soundfile = helpers_legacy.SoundFile(settings, wav)
 
         # run the measurements
         for param in params:

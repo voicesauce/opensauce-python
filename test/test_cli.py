@@ -20,7 +20,7 @@ class TestOldCLI(TestCase):
             return os.path.join(tmp, fn)
         os.mkdir(d('output'))
         copytree(os.path.join('legacy', 'defaults'), d('defaults'))
-        p = Popen([sys.executable, os.path.join('opensauce','process.py'),
+        p = Popen([sys.executable, os.path.join('opensauce','process_legacy.py'),
                         '-i', d(os.path.join('defaults','sounds')),
                         '-o', d('output'),
                         '-s', d(os.path.join('defaults', 'settings', 'default.csv')),

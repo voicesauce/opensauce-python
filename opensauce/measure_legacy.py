@@ -1,8 +1,8 @@
 import scipy.io.wavfile as sio
 import math
 import os
-import helpers
-import snack_ks
+import helpers_legacy
+import snack_legacy
 import hnr
 from algorithms import func_GetH1_H2_H4
 
@@ -16,7 +16,7 @@ def f0_snack(soundfile):
     '''
     Measures f0 using the Snack algorithm.
     '''
-    f0 = snack_ks.get_snack_f0(soundfile)
+    f0 = snack_legacy.get_snack_f0(soundfile)
     if "F0 (Snack)" not in soundfile.measurements:
         soundfile.measurements["F0 (Snack)"] = f0
     else:
@@ -105,11 +105,11 @@ def generate_test_file(wavfile):
     global tester
     sf = "../defaults/settings/default.csv"
     pf = "../defaults/parameters/default.csv"
-    settings = helpers.get_settings(sf)
-    params = helpers.get_parameters(pf)
+    settings = helpers_legacy.get_settings(sf)
+    params = helpers_legacy.get_parameters(pf)
     Fs, data = sio.read(wavfile)
     data_len = math.floor(len(data) / Fs * 1000 / int(settings['frameshift']))
-    soundfile = helpers.SoundFile(settings, wavfile)
+    soundfile = helpers_legacy.SoundFile(settings, wavfile)
     return soundfile
 
 
