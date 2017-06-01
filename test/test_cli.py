@@ -298,7 +298,7 @@ class TestCLI(TestCase):
         self.assertEqual(len(lines[1]), 6)
         self.assertEqual(lines[100],
             ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
-             '230.220'])
+             '222.251'])
 
     def test_invalid_F0(self):
         with self.assertArgparseError(['nosuchpitch']):
@@ -322,8 +322,8 @@ class TestCLI(TestCase):
         self.assertEqual(sorted(algo_list), sorted(CLI._valid_f0), "Tests we have do not match tests we need")
 
     pitch_algo1_params = {
-        'snackF0': ('snackF0', 589, '216.184'),
-        'shrF0': ('shrF0', 589, '230.220'),
+        'snackF0': ('snackF0', 589, '211.009'),
+        'shrF0': ('shrF0', 589, '222.251'),
         }
 
     def test_have_default_settings_tests(self):
@@ -368,7 +368,7 @@ class TestCLI(TestCase):
 
     pitch_algo4_params = {
         'snackF0': ('snackF0', '0.000'),
-        'shrF0': ('shrF0', '251.043'),
+        'shrF0': ('shrF0', '252.445'),
         }
 
     def test_have_min_f0_tests(self):
@@ -384,8 +384,8 @@ class TestCLI(TestCase):
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo5_params = {
-        'snackF0': ('snackF0', '106.820'),
-        'shrF0': ('shrF0', '100.512'),
+        'snackF0': ('snackF0', '104.690'),
+        'shrF0': ('shrF0', '112.172'),
         }
 
     def test_have_max_f0_tests(self):
