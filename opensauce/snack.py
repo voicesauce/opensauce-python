@@ -15,12 +15,12 @@ import os
 import numpy as np
 
 # Import user-defined global configuration variables
-import userconf
+from tools.userconf import user_default_snack_method, user_tcl_shell_cmd
 
 import logging
 log = logging.getLogger('opensauce.snack')
 
-if userconf.user_default_snack_method == 'python':
+if user_default_snack_method == 'python':
     try:
         import tkinter
     except ImportError:
@@ -132,8 +132,8 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
 
-    if userconf.user_tcl_shell_cmd is not None:
-        tcl_cmd = userconf.user_tcl_shell_cmd
+    if user_tcl_shell_cmd is not None:
+        tcl_cmd = user_tcl_shell_cmd
     else:
         tcl_cmd = 'tclsh'
 

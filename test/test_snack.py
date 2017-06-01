@@ -7,7 +7,7 @@ import numpy as np
 from sys import platform
 
 # Import user-defined global configuration variables
-from opensauce.userconf import user_default_snack_method
+from tools.userconf import user_default_snack_method
 
 from opensauce.snack import snack_pitch
 

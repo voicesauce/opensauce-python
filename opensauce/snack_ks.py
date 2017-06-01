@@ -3,9 +3,6 @@ from __future__ import division
 import os
 from sys import platform
 
-# Import user-defined global configuration variables
-import userconf
-
 
 def get_snack_f0(soundfile):
 
@@ -34,10 +31,9 @@ def get_snack_f0(soundfile):
     maxF0 = 400
     minF0 = 90
 
-    if userconf.user_tcl_shell_cmd is not None:
-        cmd1 = userconf.user_tcl_shell_cmd
-    else:
-        cmd1 = 'tclsh'
+    # XXX: Should substitute the user defined Tcl shell command here,
+    #      but couldn't seem to get Python to properly import tools/userconf.py
+    cmd1 = 'tclsh'
     f = open(tclfile, 'w')
     cmd = '#!/bin/bash\n'
     cmd += '# the next line restarts with wish \\\n'

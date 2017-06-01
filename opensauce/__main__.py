@@ -8,7 +8,7 @@ import sys
 from sys import platform
 
 # Import user-defined global configuration variables
-from .userconf import user_default_snack_method
+from tools.userconf import user_default_snack_method
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
