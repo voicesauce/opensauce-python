@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import unittest
+import numpy as np
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -70,7 +71,7 @@ def sample_data_fn(fn, col_name, f0_base, sample):
     """
     fn = os.path.splitext(os.path.basename(fn))[0]
     fn = '-'.join(('sample', fn, col_name, f0_base, sample))
-    fn = os.path.join(data_path, fn) + '.json'
+    fn = os.path.join(data_path, fn) + '.txt'
     return fn
 
 
@@ -101,15 +102,13 @@ def save_sample_data(data, *args):
     This is a utility routine for creating sample data data.  There should
     be nothing calling it in the committed code base.
     """
-    with open(sample_data_fn(*args), 'w') as f:
-        f.write(json.dumps(data))
+    np.savetxt(sample_data_fn(*args), data)
 
 
 def get_sample_data(*args):
     """Return sample python data from sample_data_fn(*args).
     """
-    with open(sample_data_fn(*args)) as f:
-        return json.loads(f.read())
+    return np.loadtxt(sample_data_fn(*args))
 
 
 def loadmat(fn):
