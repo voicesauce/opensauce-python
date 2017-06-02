@@ -11,7 +11,7 @@ from tools.userconf import user_default_snack_method
 
 from opensauce.snack import snack_pitch
 
-from support import TestCase, wav_fns, get_test_data, get_sample_data
+from test.support import TestCase, wav_fns, get_test_data, get_sample_data
 
 
 class TestSnack(TestCase):
