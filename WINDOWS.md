@@ -2,7 +2,8 @@ Windows instructions
 ====================
 
 Here are specific instructions on how to setup your Windows machine to run
-opensauce-python.
+opensauce-python.  On Windows, it is recommended to install Anaconda's Python
+distribution, not the release from the official Python organization.
 
 # Recommended setup: Call Snack using binary executable
 

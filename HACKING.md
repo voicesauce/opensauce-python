@@ -163,6 +163,16 @@ To contribute code, edit, etc:
 
 9. XXX: A few more steps to come once the runtime framework is fleshed out.
 
+# Check vendored software
+
+There is a script in the main repository that checks where our version of
+`opensauce/textgrid.py` matches the one in the nltk repository.  The reason for
+the script is to check if there are new changes to the nltk version that should
+be incorporated into our version.  If the versions are different, that may be
+okay if our version is more recent.  One should check the commit log on the
+nltk version to see if there are more recent changes to be pulled into our
+version, rather than simply relying on the `check_vendored_software` script.
+
 # Projects
 
 Check the Issue tracker and TODO.md for ideas.

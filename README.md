@@ -9,6 +9,7 @@ from audio recordings.
 
 # Requirements
 
+* Windows, Mac OS X, or Linux operating system
 * Python 2.7
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
 
