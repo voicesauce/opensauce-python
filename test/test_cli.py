@@ -101,7 +101,7 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
 
-    def test_include_empty_lables(self):
+    def test_include_empty_labels(self):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--include-empty-labels',
