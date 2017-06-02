@@ -12,7 +12,8 @@ from tools.userconf import user_default_snack_method
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
-
+# Import for helpers.py in opensauce package
+from .helpers import remove_empty_lines_from_file
 
 # Override default 'error' method so that it doesn't print out the noisy usage
 # prefix on the error messages, and so that we get a useful command name
@@ -133,6 +134,7 @@ class CLI(object):
         finally:
             if not use_stdout:
                 of.close()
+                remove_empty_lines_from_file(self.args.output_filepath)
 
     def _process(self, of):
         output = csv.writer(of, dialect=csv.excel_tab)

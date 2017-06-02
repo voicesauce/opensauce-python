@@ -1,6 +1,7 @@
 from __future__ import division
 
 import math
+import fileinput
 
 import numpy as np
 from scipy.io import wavfile
@@ -45,3 +46,15 @@ def round_half_away_from_zero(x):
     q = np.sign(x) * np.floor(np.abs(x) + 0.5)
 
     return q
+
+def remove_empty_lines_from_file(fn):
+    """ Remove empty lines from a text file
+    """
+    f = fileinput.FileInput(fn, inplace=True)
+
+    for line in f:
+        stripped_line = line.rstrip()
+        if stripped_line:
+            print(stripped_line)
+
+    f.close()

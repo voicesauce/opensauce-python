@@ -310,8 +310,10 @@ class TestCLI(TestCase):
         CLI(['--include-f0',
              '-o', outfile,
              data_file_path('beijing_f3_50_a.wav')]).process()
+
         with open(outfile) as f:
-            self.assertEqual(len(list(f.readlines())), 589)
+            lines = f.readlines()
+            self.assertEqual(len(lines), 589)
 
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
