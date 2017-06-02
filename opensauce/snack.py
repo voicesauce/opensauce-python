@@ -134,6 +134,8 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     if user_tcl_shell_cmd is not None:
         tcl_cmd = user_tcl_shell_cmd
+    elif platform == 'darwin':
+        tcl_cmd = 'tclsh8.4'
     else:
         tcl_cmd = 'tclsh'
 

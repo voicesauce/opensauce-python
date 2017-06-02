@@ -33,7 +33,10 @@ def get_snack_f0(soundfile):
 
     # XXX: Should substitute the user defined Tcl shell command here,
     #      but couldn't seem to get Python to properly import tools/userconf.py
-    cmd1 = 'tclsh'
+    if platform == 'darwin':
+        cmd1 = 'tclsh8.4'
+    else:
+        cmd1 = 'tclsh'
     f = open(tclfile, 'w')
     cmd = '#!/bin/bash\n'
     cmd += '# the next line restarts with wish \\\n'
