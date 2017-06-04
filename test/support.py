@@ -116,6 +116,13 @@ def loadmat(fn):
     return scipy.io.loadmat(data_file_path(fn) + '.mat', squeeze_me=True)
 
 
+def load_json(fn):
+    """Load the json file fn"""
+    with open(data_file_path(fn) + '.json') as f:
+        data = json.load(f)
+    return data
+
+
 def get_text_grid(fn):
     in_name = os.path.splitext(os.path.basename(fn))[0]
     tg_fn = data_file_path(in_name + '.TextGrid')
