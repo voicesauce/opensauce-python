@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Make sure the code we have grabbed from other projects (where we only need a
 # small bit of code so we don't want to depend on the entire project) is up to
