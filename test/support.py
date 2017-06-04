@@ -66,7 +66,7 @@ wav_fns = sorted([data_file_path(fn) for fn in os.listdir(data_path) if fn.endsw
 def sample_data_fn(fn, col_name, f0_base, sample):
     """Return the filename corresponding to fn, col_name, f0_base, and sample.
 
-    Which is those components separated by dashes, with '.json' appended,
+    Which is those components separated by dashes, with '.txt' appended,
     with the data_file_path as prefix.
     """
     fn = os.path.splitext(os.path.basename(fn))[0]

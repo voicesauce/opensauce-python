@@ -20,6 +20,7 @@ from tools.userconf import user_default_snack_method, user_tcl_shell_cmd
 import logging
 log = logging.getLogger('opensauce.snack')
 
+# Only import tkinter if the user wants to call Snack from Python
 if user_default_snack_method == 'python':
     try:
         import tkinter
@@ -37,8 +38,7 @@ def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
     each frame.
 
     windows_length and frame_shift are in seconds, max_pitch and min_pitch in
-    Hertz.
-
+    Hertz.  Note the default parameter values are those used in VoiceSauce.
     """
     if method == 'exe':
         F0, V = snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
@@ -52,7 +52,12 @@ def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
     return F0, V
 
 def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+    """Implement snack_pitch by calling Snack through a Windows standalone
+       binary executable
 
+       Note this method can only be used on Windows.
+    """
+    # Call Snack using system command to run standalone executable
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
     snack_cmd = [exe_path, 'pitch', wav_fn, '-method', 'esps']
     snack_cmd.extend(['-framelength', str(frame_length)])
@@ -77,7 +82,11 @@ def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     return F0, V
 
 def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+    """Implement snack_pitch by calling Snack through Python's tkinter library
 
+       Note this method can only be used if the user's machine is setup,
+       so that Tcl/Tk can be accessed through Python's tkinter library
+    """
     # HACK: Need to replace single backslash with two backslashes,
     #       so that the Tcl shell reads the file path correctly on Windows
     if platform == 'win32' or platform == 'cygwin':
@@ -99,11 +108,11 @@ def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     tcl.eval('snack::sound s')
     tcl.eval('s read {}'.format(wav_fn))
     cmd = ['s pitch -method esps']
-    local_vars = locals()
     # Let snack use its defaults if no value specified for the keywords.
-    for v in ('frame_length', 'window_length', 'max_pitch', 'min_pitch'):
-        if local_vars[v] is not None:
-            cmd.extend(['-' + v.replace('_', '') + ' ' + str(local_vars[v])])
+    cmd.extend(['-framelength {}'.format(frame_length)])
+    cmd.extend(['-windowlength {}'.format(window_length)])
+    cmd.extend(['-maxpitch {}'.format(max_pitch)])
+    cmd.extend(['-minpitch {}'.format(min_pitch)])
     tcl.eval('set data [{}]'.format(' '.join(cmd)))
     # XXX check for errors here and log and abort if there is one.  Result
     # string will start with ERROR:.
@@ -118,7 +127,10 @@ def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     return F0, V
 
 def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+    """Implement snack_pitch by calling Snack through Tcl shell
 
+       Note this method can only be used if Tcl is installed
+    """
     # File path for wav file provided to Tcl script
     in_file = wav_fn
 
@@ -132,6 +144,7 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
 
+    # Determine name of system command to invoke Tcl shell
     if user_tcl_shell_cmd is not None:
         tcl_cmd = user_tcl_shell_cmd
     elif platform == 'darwin':
@@ -148,19 +161,20 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
     script += 'set fd [open [file rootname {}].f0 w]\n'.format(in_file)
-    script += 'puts $fd [join [s pitch -method esps -framelength {} -windowlength {} -maxpitch {} -minpitch {}]\n\n]\n'.format(str(frame_length), str(window_length), str(max_pitch), str(min_pitch))
+    script += 'puts $fd [join [s pitch -method esps -framelength {} -windowlength {} -maxpitch {} -minpitch {}]\n\n]\n'.format(frame_length, window_length, max_pitch, min_pitch)
     script += 'close $fd\n\n'
     script += 'exit'
     f.write(script)
     f.close()
 
+    # Run Tcl script
     return_code = call([tcl_cmd, tcl_file])
 
     if return_code != 0:
         raise EnvironmentError('Error when trying to call Snack via Tcl shell script.  Is Tcl/Tk installed?')
 
-    f0_file = os.path.splitext(wav_fn)[0] + '.f0'
     # Load data from f0 file
+    f0_file = os.path.splitext(wav_fn)[0] + '.f0'
     if os.path.isfile(f0_file):
         data = np.loadtxt(f0_file).reshape((-1,4))
         F0 = data[:, 0]
