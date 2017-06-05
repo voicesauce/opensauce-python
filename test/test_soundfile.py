@@ -28,7 +28,7 @@ class TestSoundFile(TestCase):
         fn = 'beijing_f3_50_a.wav'
         t = self.tmpdir()
         spath = os.path.join(t, fn)
-        shutil.copy(data_file_path('beijing_f3_50_a.wav'), spath)
+        shutil.copy(data_file_path(fn), spath)
         s = SoundFile(spath)
         self.assertEqual(s.textgrid, None)
         with self.assertRaises(ValueError) as cx:

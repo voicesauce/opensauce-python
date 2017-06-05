@@ -208,7 +208,7 @@ class TestCLI(TestCase):
         settingsfn = self._make_file("""
             include-empty-labels
             settings somefile
-            ignore-lables
+            ignore-label
             """)
         with self.assertArgparseError(['settings', settingsfn]):
             CLI(['--settings', settingsfn])
@@ -237,8 +237,6 @@ class TestCLI(TestCase):
             CLI(['--settings', settingsfn])
 
     def test_invalid_measurement_rejected(self):
-        # This is because it would eat filenames if it was and no other options
-        # were specified on the command line before the filenames.
         settingsfn = self._make_file("""
             measurements thereisnosuchmeasurement
             include-empty-labels
@@ -278,6 +276,7 @@ class TestCLI(TestCase):
                 data_file_path('beijing_f3_50_a.wav'),
                 ])
         self.assertEqual(len(lines), 589)
+        self.assertEqual(lines[0][-2:], ['snackF0', 'shrF0'])
         self.assertEqual(len(lines[1]), 7)
 
     def test_invalid_measurements_from_file(self):
@@ -290,7 +289,7 @@ class TestCLI(TestCase):
     def test_alternate_F0(self):
         lines = self._CLI_output([
             '--F0', 'shrF0',
-            '--include-F0',
+            '--include-F0-column',
             data_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 589)
@@ -307,7 +306,7 @@ class TestCLI(TestCase):
     def test_output_filepath(self):
         tmp = self.tmpdir()
         outfile = os.path.join(tmp, 'output.txt')
-        CLI(['--include-f0',
+        CLI(['--include-f0-column',
              '-o', outfile,
              data_file_path('beijing_f3_50_a.wav')]).process()
 
@@ -334,7 +333,7 @@ class TestCLI(TestCase):
     def pitch_algo1_as_default_settings(self, pitch_algo, line_count, v100):
         lines = self._CLI_output([
             '--f0', pitch_algo,
-            '--include-F0',
+            '--include-F0-column',
             data_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)
@@ -345,7 +344,7 @@ class TestCLI(TestCase):
     def pitch_algo2_as_frame_shift(self, pitch_algo):
         lines = self._CLI_output([
             '--f0', pitch_algo,
-            '--include-F0',
+            '--include-F0-column',
             '--frame-shift', '2',
             data_file_path('beijing_f3_50_a.wav'),
             ])
@@ -362,7 +361,7 @@ class TestCLI(TestCase):
     def pitch_algo3_as_window_size(self, pitch_algo, v100):
         lines = self._CLI_output([
             '--f0', pitch_algo,
-            '--include-F0',
+            '--include-F0-column',
             '--window-size', '10',
             data_file_path('beijing_f3_50_a.wav'),
             ])
@@ -379,7 +378,7 @@ class TestCLI(TestCase):
     def pitch_algo4_as_min_f0(self, pitch_algo, v100):
         lines = self._CLI_output([
             '--f0', pitch_algo,
-            '--include-F0',
+            '--include-F0-column',
             '--min-f0', '400',
             data_file_path('beijing_f3_50_a.wav'),
             ])
@@ -396,7 +395,7 @@ class TestCLI(TestCase):
     def pitch_algo5_as_max_f0(self, pitch_algo, v100):
         lines = self._CLI_output([
             '--f0', pitch_algo,
-            '--include-F0',
+            '--include-F0-column',
             '--max-f0', '200',
             data_file_path('beijing_f3_50_a.wav'),
             ])
