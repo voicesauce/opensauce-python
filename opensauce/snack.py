@@ -8,10 +8,11 @@ Snack can be called in several ways.
 
 from __future__ import division
 
-from sys import platform
 from subprocess import call
 
 import os
+import sys
+import inspect
 import numpy as np
 
 # Import user-defined global configuration variables
@@ -30,6 +31,9 @@ if user_default_snack_method == 'python':
         except ImportError:
             print("Need Python library tkinter. Is it installed?")
 
+def _method(name):
+    return getattr(sys.modules[__name__], 'snack_method_' + name)
+
 def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
                 max_pitch=500, min_pitch=40):
     """Return F0 and voicing vectors computed from the data in wav_fn.
@@ -40,18 +44,14 @@ def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
     windows_length and frame_shift are in seconds, max_pitch and min_pitch in
     Hertz.  Note the default parameter values are those used in VoiceSauce.
     """
-    if method == 'exe':
-        F0, V = snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
-    elif method == 'python':
-        F0, V = snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
-    elif method == 'tcl':
-        F0, V = snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+    if method in valid_snack_methods:
+        F0, V = _method(method)(wav_fn, frame_length, window_length, max_pitch, min_pitch)
     else:
-        raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
+        raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return F0, V
 
-def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """Implement snack_pitch by calling Snack through a Windows standalone
        binary executable
 
@@ -81,7 +81,7 @@ def snack_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     return F0, V
 
-def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """Implement snack_pitch by calling Snack through Python's tkinter library
 
        Note this method can only be used if the user's machine is setup,
@@ -89,7 +89,7 @@ def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """
     # HACK: Need to replace single backslash with two backslashes,
     #       so that the Tcl shell reads the file path correctly on Windows
-    if platform == 'win32' or platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
         wav_fn = wav_fn.replace('\\', '\\\\')
 
     # XXX I'm assuming Hz for pitch; the docs don't actually say that.
@@ -126,7 +126,7 @@ def snack_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
         V[i] = np.float_(values[1])
     return F0, V
 
-def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """Implement snack_pitch by calling Snack through Tcl shell
 
        Note this method can only be used if Tcl is installed
@@ -139,7 +139,7 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     # invalid/inconsistent parameters -- exiting.
 
     # HACK: Tcl shell expects double backslashes in Windows path
-    if platform == 'win32' or platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin':
         in_file = in_file.replace('\\', '\\\\')
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
@@ -147,7 +147,7 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     # Determine name of system command to invoke Tcl shell
     if user_tcl_shell_cmd is not None:
         tcl_cmd = user_tcl_shell_cmd
-    elif platform == 'darwin':
+    elif sys.platform == 'darwin':
         tcl_cmd = 'tclsh8.4'
     else:
         tcl_cmd = 'tclsh'
@@ -188,3 +188,6 @@ def snack_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     os.remove(tcl_file)
 
     return F0, V
+
+all_functions = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
+valid_snack_methods = [x[0][13:] for x in all_functions if x[0].startswith('snack_method_')]

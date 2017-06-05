@@ -12,8 +12,10 @@ from tools.userconf import user_default_snack_method
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
-# Import for helpers.py in opensauce package
+# Import from helpers.py in opensauce package
 from .helpers import remove_empty_lines_from_file
+# Import from snack.py in opensauce package
+from .snack import valid_snack_methods
 
 # Override default 'error' method so that it doesn't print out the noisy usage
 # prefix on the error messages, and so that we get a useful command name
@@ -224,11 +226,10 @@ class CLI(object):
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
-    _valid_snack_methods = ['exe', 'python', 'tcl']
     # Determine default method for calling Snack
 
     if user_default_snack_method is not None:
-        if user_default_snack_method in _valid_snack_methods:
+        if user_default_snack_method in valid_snack_methods:
             if user_default_snack_method == 'exe' and (platform != 'win32' and platform != 'cygwin'):
                 raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
             default_snack_method = user_default_snack_method
@@ -354,7 +355,7 @@ class CLI(object):
                              " which can also be specified explicitly by"
                              " specifying '-' as the OUTPUT_FILEPATH.")
     parser.add_argument('--snack-method', default=default_snack_method,
-                        choices=_valid_snack_methods,
+                        choices=valid_snack_methods,
                         help="Method to use in calling Snack.  On Windows,"
                              " the default is 'exe'.  On Linux and OS X, the"
                              " default is 'tcl'.")

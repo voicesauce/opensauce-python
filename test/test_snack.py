@@ -9,7 +9,7 @@ from sys import platform
 # Import user-defined global configuration variables
 from tools.userconf import user_default_snack_method
 
-from opensauce.snack import snack_pitch
+from opensauce.snack import snack_pitch, valid_snack_methods
 
 from test.support import TestCase, wav_fns, get_test_data, get_sample_data
 
@@ -19,9 +19,8 @@ class TestSnack(TestCase):
     longMessage = True
 
     # Figure out appropriate method to use, for calling Snack
-    _valid_snack_methods = ['exe', 'python', 'tcl']
     if user_default_snack_method is not None:
-        if user_default_snack_method in _valid_snack_methods:
+        if user_default_snack_method in valid_snack_methods:
             if user_default_snack_method == 'exe' and (platform != 'win32' and platform != 'cygwin'):
                 raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
             default_snack_method = user_default_snack_method
