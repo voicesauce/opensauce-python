@@ -114,7 +114,7 @@ class CLI(object):
         return getattr(self, 'DO_' + name)
 
     def _assemble_fields(self, filename, textgrid_data, offset, data):
-        return ([filename] + (textgrid_data if self.args.use_textgrid else []) + [offset] + data)
+        return ([filename] + (textgrid_data if self.args.use_textgrid and self.args.include_labels else []) + [offset] + data)
 
     def _get_value(self, vector, index):
         try:

@@ -142,6 +142,8 @@ class TestCLI(TestCase):
         # in the --include-empty-labels case above than there are here, where
         # we have no repeated frames.
         self.assertEqual(len(lines), 2342)
+        self.assertEqual(len(lines[1]), 3)
+        self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
         self.assertEqual(len([x for x in lines if 'C1' in x]), 0)
         self.assertEqual(len([x for x in lines if 'V1' in x]), 0)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
@@ -152,6 +154,32 @@ class TestCLI(TestCase):
             data_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
+            ])
+        self.assertEqual(len(lines), 589)
+        self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
+        self.assertEqual(len([x for x in lines if 'V1' in x]), 209)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 119)
+        self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
+
+    def test_no_labels(self):
+        lines = self._CLI_output([
+            '--measurements', 'snackF0',
+            '--no-labels',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
+        self.assertEqual(len(lines), 589)
+        self.assertEqual(len(lines[1]), 3)
+        self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
+        self.assertEqual(len([x for x in lines if 'C1' in x]), 0)
+        self.assertEqual(len([x for x in lines if 'V1' in x]), 0)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
+        self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
+
+    def test_include_labels(self):
+        lines = self._CLI_output([
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+            '--include-labels',
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
