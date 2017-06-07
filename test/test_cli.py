@@ -346,6 +346,31 @@ class TestCLI(TestCase):
             lines = f.readlines()
             self.assertEqual(len(lines), 589)
 
+    def test_default_NaN(self):
+        lines = self._CLI_output([
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0', 'shrF0', 'SHR',
+            '--include-empty-labels',
+            ])
+        self.assertEqual(len(lines), 2347)
+        self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
+        self.assertEqual(len(lines[1]), 8)
+        self.assertEqual(lines[1][-2:], ['NaN', 'NaN'])
+        self.assertEqual(lines[-1][-3:], ['NaN', 'NaN', 'NaN'])
+
+    def test_alternate_NaN(self):
+        lines = self._CLI_output([
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0', 'shrF0', 'SHR',
+            '--include-empty-labels',
+            '--NaN', 'mylabel',
+            ])
+        self.assertEqual(len(lines), 2347)
+        self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
+        self.assertEqual(len(lines[1]), 8)
+        self.assertEqual(lines[1][-2:], ['mylabel', 'mylabel'])
+        self.assertEqual(lines[-1][-3:], ['mylabel', 'mylabel', 'mylabel'])
+
     def test_invalid_snack_method(self):
         with self.assertArgparseError(['nosuchmethod']):
             CLI(['--snack-method', 'nosuchmethod'])

@@ -5,7 +5,7 @@ import csv
 import os
 import shlex
 import sys
-from sys import platform
+import numpy as np
 
 # Import user-defined global configuration variables
 from tools.userconf import user_default_snack_method
@@ -122,7 +122,11 @@ class CLI(object):
         except IndexError:
             res = self.args.NaN
         else:
-            res = format(res, '.3f')
+            if isinstance(res, float) and np.isnan(res):
+                res = self.args.NaN
+            else:
+                res = format(res, '.3f')
+
         return res
 
     def process(self):
@@ -230,16 +234,16 @@ class CLI(object):
 
     if user_default_snack_method is not None:
         if user_default_snack_method in valid_snack_methods:
-            if user_default_snack_method == 'exe' and (platform != 'win32' and platform != 'cygwin'):
+            if user_default_snack_method == 'exe' and (sys.platform != 'win32' and sys.platform != 'cygwin'):
                 raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
             default_snack_method = user_default_snack_method
         else:
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
-    elif platform == "win32" or platform == "cygwin":
+    elif sys.platform == "win32" or sys.platform == "cygwin":
         default_snack_method = 'exe'
-    elif platform.startswith("linux"):
+    elif sys.platform.startswith("linux"):
         default_snack_method = 'tcl'
-    elif platform == "darwin":
+    elif sys.platform == "darwin":
         default_snack_method = 'tcl'
     else:
         default_snack_method = 'tcl'

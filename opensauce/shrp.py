@@ -62,8 +62,8 @@ def shr_pitch(wav_data, fps, window_length=None, frame_shift=None,
     # "Postprocess subharmonic-harmonic ratios and f0 tracks"
 
     # "Initialize F0 and subharmonic-harmonic ratio values"
-    F0 = np.zeros(datalen) * float('NaN')
-    SHR = np.zeros(datalen) * float('NaN')
+    F0 = np.full(datalen, np.nan)
+    SHR = np.full(datalen, np.nan)
 
     # "time locations rounded to nearest ms"
     #
