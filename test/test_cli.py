@@ -110,6 +110,26 @@ class TestCLI(TestCase):
         self.assertEqual(len(lines), 2347)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
 
+    def test_no_f0_column(self):
+        lines = self._CLI_output([
+            '--measurements', 'SHR',
+            '--no-f0-column',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
+        self.assertEqual(len(lines), 589)
+        self.assertEqual(len(lines[1]), 6)
+        self.assertEqual(len([x for x in lines[0] if 'F0' in x]), 0)
+
+    def test_include_f0_column(self):
+        lines = self._CLI_output([
+            '--measurements', 'SHR',
+            '--include-f0-column',
+            data_file_path('beijing_f3_50_a.wav')
+            ])
+        self.assertEqual(len(lines), 589)
+        self.assertEqual(len(lines[1]), 7)
+        self.assertEqual(len([x for x in lines[0] if 'F0' in x]), 1)
+
     def test_no_textgrid(self):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
@@ -126,6 +146,18 @@ class TestCLI(TestCase):
         self.assertEqual(len([x for x in lines if 'V1' in x]), 0)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
+
+    def test_use_textgrid(self):
+        lines = self._CLI_output([
+            data_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+            '--use-textgrid',
+            ])
+        self.assertEqual(len(lines), 589)
+        self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
+        self.assertEqual(len([x for x in lines if 'V1' in x]), 209)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 119)
+        self.assertEqual(len([x for x in lines if 'V2' in x]), 159)
 
     def test_multiple_input_files(self):
         lines = self._CLI_output([
@@ -313,6 +345,10 @@ class TestCLI(TestCase):
         with open(outfile) as f:
             lines = f.readlines()
             self.assertEqual(len(lines), 589)
+
+    def test_invalid_snack_method(self):
+        with self.assertArgparseError(['nosuchmethod']):
+            CLI(['--snack-method', 'nosuchmethod'])
 
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
