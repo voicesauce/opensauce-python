@@ -4,7 +4,7 @@ from opensauce.shrp import (window, toframes, two_max, compute_shr,
                             get_log_spectrum, shrp, shr_pitch)
 from opensauce.helpers import wavread
 
-from test.support import TestCase, parameterize, loadmat, data_file_path
+from test.support import TestCase, parameterize, loadmat, sound_file_path
 
 
 @parameterize
@@ -165,7 +165,7 @@ class Test_shr_pitch(TestCase):
 
     def test_with_matlab_data(self):
         data = loadmat('shr_pitch_data')
-        wav_data, fps = wavread(data_file_path('beijing_f3_50_a.wav'))
+        wav_data, fps = wavread(sound_file_path('beijing_f3_50_a.wav'))
         shr, f0 = shr_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
         np.testing.assert_array_almost_equal(f0, data['F0'])
         np.testing.assert_array_almost_equal(shr, data['SHR'])

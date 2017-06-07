@@ -7,7 +7,7 @@ from sys import platform
 from opensauce.helpers import wavread
 from opensauce.soundfile import SoundFile
 
-from test.support import TestCase, data_file_path
+from test.support import TestCase, sound_file_path
 
 
 class TestSoundFile(TestCase):
@@ -17,7 +17,7 @@ class TestSoundFile(TestCase):
             SoundFile('nosuchfile')
 
     def test_load_wav_file(self):
-        spath = data_file_path('beijing_f3_50_a.wav')
+        spath = sound_file_path('beijing_f3_50_a.wav')
         s = SoundFile(spath)
         self.assertEqual(s.wavpath, spath)
         data, fs = wavread(spath)
@@ -28,7 +28,7 @@ class TestSoundFile(TestCase):
         fn = 'beijing_f3_50_a.wav'
         t = self.tmpdir()
         spath = os.path.join(t, fn)
-        shutil.copy(data_file_path(fn), spath)
+        shutil.copy(sound_file_path(fn), spath)
         s = SoundFile(spath)
         self.assertEqual(s.textgrid, None)
         with self.assertRaises(ValueError) as cx:
@@ -44,7 +44,7 @@ class TestSoundFile(TestCase):
         self.assertIn('TextGrid', msg)
 
     def test_find_textgrid_using_defaults(self):
-        spath = data_file_path('beijing_f3_50_a.wav')
+        spath = sound_file_path('beijing_f3_50_a.wav')
         s = SoundFile(spath)
         self.assertNotEqual(s.textgrid, None)
         # For this test, just make sure this doesn't raise.
@@ -55,8 +55,8 @@ class TestSoundFile(TestCase):
         tfn = 'beijing_f3_50_a.TextGrid'
         tmp1 = self.tmpdir()
         tmp2 = self.tmpdir()
-        shutil.copy(data_file_path(wfn), tmp1)
-        shutil.copy(data_file_path(tfn), tmp2)
+        shutil.copy(sound_file_path(wfn), tmp1)
+        shutil.copy(sound_file_path(tfn), tmp2)
         s = SoundFile(os.path.join(tmp1, wfn), tgdir=tmp2)
         self.assertNotEqual(s.textgrid, None)
         self.assertEqual(s.tgpath, os.path.join(tmp2, tfn))
@@ -66,15 +66,15 @@ class TestSoundFile(TestCase):
         tfn = 'beijing_f3_50_a.TextGrid'
         tmp1 = self.tmpdir()
         tmp2 = self.tmpdir()
-        shutil.copy(data_file_path(wfn), tmp1)
+        shutil.copy(sound_file_path(wfn), tmp1)
         newtpath = os.path.join(tmp2, 'foo.bar')
-        shutil.copy(data_file_path(tfn), newtpath)
+        shutil.copy(sound_file_path(tfn), newtpath)
         s = SoundFile(os.path.join(tmp1, wfn), tgdir=tmp2, tgfn='foo.bar')
         self.assertNotEqual(s.textgrid, None)
         self.assertEqual(s.tgpath, newtpath)
 
     def test_textgrid_intervals(self):
-        s = SoundFile(data_file_path('beijing_f3_50_a.wav'))
+        s = SoundFile(sound_file_path('beijing_f3_50_a.wav'))
         expected = (
             ('', 0, 0.7660623496874233),
             ('C1', 0.7660623496874233, 0.865632223379142),

@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE
 
 from opensauce.__main__ import CLI
 
-from test.support import TestCase, data_file_path, py2, parameterize
+from test.support import TestCase, data_file_path, sound_file_path, py2, parameterize
 
 
 class TestOldCLI(TestCase):
@@ -67,7 +67,7 @@ class TestCLI(TestCase):
 
     def test_snackF0(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             ])
         self.assertEqual(len(lines), 589)
@@ -80,7 +80,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 589 - 119)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
@@ -93,7 +93,7 @@ class TestCLI(TestCase):
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
             '--ignore-label', 'V1',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 589 - 119 - 209)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
@@ -105,7 +105,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--include-empty-labels',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 2347)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
@@ -114,7 +114,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'SHR',
             '--no-f0-column',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len(lines[1]), 6)
@@ -124,7 +124,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'SHR',
             '--include-f0-column',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len(lines[1]), 7)
@@ -134,7 +134,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--no-textgrid',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         # The textgrid output has a repeated frame offset at the end and
         # beginning of each block.  Since there are six blocks (including the
@@ -151,7 +151,7 @@ class TestCLI(TestCase):
 
     def test_use_textgrid(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
             ])
@@ -165,7 +165,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--no-labels',
-            data_file_path('beijing_f3_50_a.wav')
+            sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(len(lines[1]), 3)
@@ -177,7 +177,7 @@ class TestCLI(TestCase):
 
     def test_include_labels(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--include-labels',
             ])
@@ -191,9 +191,9 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--measurements', 'snackF0',
             '--include-empty-labels',
-            data_file_path('beijing_f3_50_a.wav'),
-            data_file_path('beijing_m5_17_c.wav'),
-            data_file_path('hmong_f4_24_d.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_m5_17_c.wav'),
+            sound_file_path('hmong_f4_24_d.wav'),
             ])
         self.assertEqual(len(lines), 6121)
         # The first of these is one less than the number lines in the single
@@ -230,7 +230,7 @@ class TestCLI(TestCase):
 
     def test_at_least_one_measurement_required(self):
         with self.assertArgparseError(['[Nn]o measurements']):
-            CLI([data_file_path('beijing_f3_50_a.wav')])
+            CLI([sound_file_path('beijing_f3_50_a.wav')])
 
     def _make_file(self, lines):
         lines = textwrap.dedent(lines.lstrip('\n'))
@@ -247,7 +247,7 @@ class TestCLI(TestCase):
             """)
         lines = self._CLI_output([
             '--settings', settingsfn,
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             ])
         self.assertEqual(len(lines), 2347 - 119)
@@ -259,7 +259,7 @@ class TestCLI(TestCase):
             """)
         with self.patch(CLI, 'settings_locs', [settingsfn]):
             lines = self._CLI_output([
-                data_file_path('beijing_f3_50_a.wav'),
+                sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
                 ])
             self.assertEqual(len(lines), 2347)
@@ -280,7 +280,7 @@ class TestCLI(TestCase):
             """)
         lines = self._CLI_output([
             '--settings', settingsfn,
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 2347)
         self.assertIn('snackF0', lines[0])
@@ -306,7 +306,7 @@ class TestCLI(TestCase):
 
     def test_multiple_measurements(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'shrF0', 'snackF0', 'SHR',
             ])
         self.assertEqual(len(lines), 589)
@@ -320,7 +320,7 @@ class TestCLI(TestCase):
             """)
         lines = self._CLI_output([
             "--default-measurements-file", measurefn,
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(lines[0][-2:], ['snackF0', 'shrF0'])
@@ -333,7 +333,7 @@ class TestCLI(TestCase):
             """)
         with self.patch(CLI, 'measurements_locs', [measurefn]):
             lines = self._CLI_output([
-                data_file_path('beijing_f3_50_a.wav'),
+                sound_file_path('beijing_f3_50_a.wav'),
                 ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(lines[0][-2:], ['snackF0', 'shrF0'])
@@ -350,7 +350,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--F0', 'shrF0',
             '--include-F0-column',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 589)
         self.assertEqual(lines[0][-1:], ['shrF0'])
@@ -368,7 +368,7 @@ class TestCLI(TestCase):
         outfile = os.path.join(tmp, 'output.txt')
         CLI(['--include-f0-column',
              '-o', outfile,
-             data_file_path('beijing_f3_50_a.wav')]).process()
+             sound_file_path('beijing_f3_50_a.wav')]).process()
 
         with open(outfile) as f:
             lines = f.readlines()
@@ -376,7 +376,7 @@ class TestCLI(TestCase):
 
     def test_default_NaN(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
             ])
@@ -388,7 +388,7 @@ class TestCLI(TestCase):
 
     def test_alternate_NaN(self):
         lines = self._CLI_output([
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
             '--NaN', 'mylabel',
@@ -423,7 +423,7 @@ class TestCLI(TestCase):
         lines = self._CLI_output([
             '--f0', pitch_algo,
             '--include-F0-column',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)
         self.assertEqual(lines[100], self.line100_prefix + [v100])
@@ -435,7 +435,7 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--frame-shift', '2',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 297)
 
@@ -452,7 +452,7 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--window-size', '10',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
@@ -469,7 +469,7 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--min-f0', '400',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
@@ -486,6 +486,6 @@ class TestCLI(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--max-f0', '200',
-            data_file_path('beijing_f3_50_a.wav'),
+            sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
