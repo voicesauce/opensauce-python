@@ -36,7 +36,7 @@ class TestOldCLI(TestCase):
         # f0 calculated by command from process.py
         f0 = np.loadtxt(d(os.path.join('defaults', 'sounds', 'cant_c5_19a.f0')))
         # f0 loaded from data
-        f0_data = np.loadtxt(data_file_path('cant_c5_19a.f0'))
+        f0_data = np.loadtxt(data_file_path(os.path.join('cli', 'cant_c5_19a.f0')))
         # Check that calculated f0 and data f0 are "close"
         self.assertTrue(np.allclose(f0, f0_data))
 
