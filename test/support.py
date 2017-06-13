@@ -124,6 +124,11 @@ def load_json(fn):
     """Load the json file fn"""
     with open(data_file_path(fn) + '.json') as f:
         data = json.load(f)
+    # Convert lists of numbers to NumPy arrays
+    for k in data.keys():
+        if isinstance(data[k], list):
+            data[k] = np.array(data[k])
+
     return data
 
 

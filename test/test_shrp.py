@@ -1,10 +1,11 @@
+import os
 import numpy as np
 
 from opensauce.shrp import (window, toframes, two_max, compute_shr,
                             get_log_spectrum, shrp, shr_pitch)
 from opensauce.helpers import wavread
 
-from test.support import TestCase, parameterize, loadmat, sound_file_path
+from test.support import TestCase, parameterize, load_json, sound_file_path
 
 
 @parameterize
@@ -63,7 +64,7 @@ class TestWindow(TestCase):
 class TestToframes(TestCase):
 
     def test_with_matlab_data(self):
-        data = loadmat('toframes_data')
+        data = load_json(os.path.join('shrp', 'toframes_data'))
         res = toframes(data['input'],
                        data['curpos'].astype(int)-1,
                        int(data['segmentlen']),
@@ -77,7 +78,7 @@ class Test_two_max(TestCase):
     matlab_fn_params = (['twomax_data'], ['two_max_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
-        data = loadmat(filename)
+        data = load_json(os.path.join('shrp',filename))
         mag, index = two_max(data['x'],
                              int(data['lowerbound'])-1,
                              int(data['upperbound'])-1,
@@ -86,7 +87,7 @@ class Test_two_max(TestCase):
         np.testing.assert_array_almost_equal(index, int(data['index'])-1)
 
     def test_second_peak_index(self):
-        data = loadmat('twomax_data')
+        data = load_json(os.path.join('shrp', 'twomax_data'))
         x = data['x']
         for i in range(142, 146):
             # Zap the values in the second peak range to exercise the branch.
@@ -106,7 +107,7 @@ class Test_compute_shr(TestCase):
     matlab_fn_params = (['ComputeSHR_data'], ['compute_shr_183'])
 
     def matlab_fn_as_matlab_input_data(self, filename):
-        data = loadmat(filename)
+        data = load_json(os.path.join('shrp', filename))
         peak_index, shr, shshift, index = compute_shr(
             data['log_spectrum'],
             data['min_bin'],
@@ -129,7 +130,7 @@ class Test_compute_shr(TestCase):
 class Test_get_log_spectrum(TestCase):
 
     def test_with_matlab_data(self):
-        data = loadmat('GetLogSpectrum_data')
+        data = load_json(os.path.join('shrp', 'GetLogSpectrum_data'))
         interp_amplitude = get_log_spectrum(
             data['segment'],
             int(data['fftlen']),
@@ -143,7 +144,7 @@ class Test_get_log_spectrum(TestCase):
 class Test_shrp(TestCase):
 
     def test_with_matlab_data(self):
-        data = loadmat('shrp_data')
+        data = load_json(os.path.join('shrp', 'shrp_data'))
         f0_time, f0_value, shr, f0_candidates = shrp(
             data['Y'],
             int(data['Fs']),
@@ -164,7 +165,7 @@ class Test_shrp(TestCase):
 class Test_shr_pitch(TestCase):
 
     def test_with_matlab_data(self):
-        data = loadmat('shr_pitch_data')
+        data = load_json(os.path.join('shrp', 'shr_pitch_data'))
         wav_data, fps = wavread(sound_file_path('beijing_f3_50_a.wav'))
         shr, f0 = shr_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
         np.testing.assert_array_almost_equal(f0, data['F0'])
