@@ -12,7 +12,7 @@ class TestSupport(TestCase):
     def test_wavread(self):
         fn = sound_file_path('beijing_f3_50_a.wav')
         samples, Fs = wavread(fn)
-        expected = load_json('beijing_f3_50_a-wavread-expected')
+        expected = load_json(os.path.join('helpers', 'beijing_f3_50_a-wavread-expected'))
         self.assertEqual(Fs, expected['Fs'])
         self.assertTrue(np.allclose(samples, expected['y']))
 
@@ -27,10 +27,10 @@ class TestSupport(TestCase):
         fn = 'extra_newlines.txt'
         t = self.tmpdir()
         tmp_path = os.path.join(t, fn)
-        shutil.copy(data_file_path(fn), tmp_path)
+        shutil.copy(data_file_path(os.path.join('helpers', fn)), tmp_path)
         remove_empty_lines_from_file(tmp_path)
         # Read lines from original test file
-        with open(data_file_path(fn)) as f:
+        with open(data_file_path(os.path.join('helpers', fn))) as f:
             lines_orig = f.readlines()
         # Read lines from copy with extra newlines removed
         with open(tmp_path) as f:
