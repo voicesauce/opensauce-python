@@ -3,16 +3,18 @@
 To contribute code, edit, etc:
 
 1. [Install Git](http://git-scm.com/book/en/Getting-Started-Installing-Git) (if
-   you haven't already)
+   you haven't already).
 
-2. Make a GitHub account
+2. Install [Git LFS](https://git-lfs.github.com/) for managing large files.
 
-3. Clone the repo:
+3. Make a GitHub account.
+
+4. Clone the repo:
 
         $ git clone https://github.com/voicesauce/opensauce-python.git
         $ cd opensauce-python
 
-4. To run unit tests, run the Python standard testing library `unittest` as a
+5. To run unit tests, run the Python standard testing library `unittest` as a
    module on the command line.
 
    To run all the tests:
@@ -38,7 +40,7 @@ To contribute code, edit, etc:
 
         $ python -m unittest -h
 
-5. To run code checkers on Python code (.py files), use one or more of these
+6. To run code checkers on Python code (.py files), use one or more of these
    Python packages:
 
         * [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
@@ -54,17 +56,24 @@ To contribute code, edit, etc:
         $ pycodestyle /path/to/python_file
         $ pyflakes /path/to/python_file
 
-6. Write code, edit code, test code.  Ideally, add tests to the set of
+7. Write code, edit code, test code.  Ideally, add tests to the set of
    unit tests in the tests directory to cover any new or changed code.
    New tests will be automatically picked up by the test runner if
    (a) any test class subclasses unittest.TestCase and (b) any
    test method name starts with the string 'test_'.
 
-7. To track added or changed files, use "git add":
+8. To track added or changed files, use "git add":
 
         $ git add path/to/file
 
-8. Once you're ready to commit your changes, use "git commit":
+   Note that JSON files are managed by Git LFS.  If you add any other type of
+   large file, you should use Git LFS to manage it, for example
+
+        $ git lfs track "*.psd"
+
+   if you wanted to add large .psd files.
+
+9. Once you're ready to commit your changes, use "git commit":
 
         $ git commit
 
@@ -72,8 +81,8 @@ To contribute code, edit, etc:
    one line summary of the change, a blank line, and then a paragraph or two
    about the motivation for the change and what the changes are.
 
-9. Push your changes to the cloud (it'll ask for your GitHub username and
-   password):
+10. Push your changes to the cloud (it'll ask for your GitHub username and
+    password):
 
         $ git push
 
