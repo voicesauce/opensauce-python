@@ -30,6 +30,7 @@ class SoundFile(object):
             wavfn                   The filename component of wavpath.
             wavdata                 An ndarray of the wavfile samples
             fs                      The number of samples per second
+            ns                      Total number of samples
             tgpath                  Full path to the textgrid file.
             textgrid                A TextGrid object loaded from tgpath if
                                         a file exists at tgpath, else None.
@@ -63,6 +64,10 @@ class SoundFile(object):
     @property
     def fs(self):
         return self._wavdata()[1]
+
+    @property
+    def ns(self):
+        return len(self.wavdata)
 
     def _wavdata(self):
         data, fs = wavread(self.wavpath)
