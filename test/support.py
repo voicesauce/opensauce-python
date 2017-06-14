@@ -78,6 +78,28 @@ def sample_data_fn(fn, col_name, f0_base, sample):
     fn = os.path.join(data_path, 'snack', fn) + '.txt'
     return fn
 
+def get_raw_data(fn, var, f0_alg, fmt_alg, bw_method):
+    """ Get raw VoiceSauce output data for variable `var` for analysis on file `fn`
+
+    The parameters f0_alg, fmt_alg, bw_method correspond to
+        f0_alg   - F0 algorithm used for F0 and harmonic parameter estimation
+        fmt_alg  - Algorithm used for formant parameter estimation
+        bw_method - Method for estimating bandwidth
+
+    These parameters are used in VoiceSauce settings
+    """
+    base_fn = os.path.splitext(os.path.basename(fn))[0]
+    data_dir = os.path.join(data_path, 'raw-vs-output', f0_alg + '-' + fmt_alg + '-' + bw_method)
+    fn_path = os.path.join(data_dir, base_fn + '.json')
+    with open(fn_path, 'r') as f:
+        json_data = json.load(f)
+
+    if isinstance(json_data[var], list):
+        var_data = np.array(json_data[var])
+    else:
+        var_data = json_data[var]
+
+    return var_data
 
 def get_test_data(fn, col_name, f0_base, sample):
     """Get frame and col_name data from output file named by f0_base and sample.
