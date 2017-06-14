@@ -8,7 +8,7 @@ import sys
 import numpy as np
 
 # Import user-defined global configuration variables
-from tools.userconf import user_default_snack_method
+from tools.userconf import user_default_snack_method, user_tcl_shell_cmd
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
@@ -204,6 +204,7 @@ class CLI(object):
                             window_length=self.args.window_size/1000,
                             min_pitch=self.args.min_f0,
                             max_pitch=self.args.max_f0,
+                            tcl_shell_cmd=self.args.tcl_cmd
                             )
         self._cached_results['snackF0'] = F0
         return F0
@@ -247,6 +248,13 @@ class CLI(object):
         default_snack_method = 'tcl'
     else:
         default_snack_method = 'tcl'
+
+    if user_tcl_shell_cmd is not None:
+        default_tcl_shell_cmd = user_tcl_shell_cmd
+    elif sys.platform == "darwin":
+        default_tcl_shell_cmd = 'tclsh8.4'
+    else:
+        default_tcl_shell_cmd = 'tclsh'
 
     #
     # Parsing Declarations
@@ -363,7 +371,10 @@ class CLI(object):
                         help="Method to use in calling Snack.  On Windows,"
                              " the default is 'exe'.  On Linux and OS X, the"
                              " default is 'tcl'.")
-
+    parser.add_argument('--tcl-cmd', default=default_tcl_shell_cmd,
+                        help="Command to use when calling Tcl shell.  On OS X,"
+                             "the default is 'tclsh8.4'.  On Linux and"
+                             "Windows, the default is 'tclsh'.")
 
 if __name__ == '__main__':
     try:

@@ -31,11 +31,8 @@ if user_default_snack_method == 'python':
         except ImportError:
             print("Need Python library tkinter. Is it installed?")
 
-def _method(name):
-    return getattr(sys.modules[__name__], 'snack_method_' + name)
-
 def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
-                max_pitch=500, min_pitch=40):
+                max_pitch=500, min_pitch=40, tcl_shell_cmd=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.
 
     Use the snack esps method and extract the pitch (F0) and voicing values for
@@ -43,9 +40,22 @@ def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
 
     windows_length and frame_shift are in seconds, max_pitch and min_pitch in
     Hertz.  Note the default parameter values are those used in VoiceSauce.
+
+    method refers to the way in which Snack is called:
+        'exe'    - Call Snack via Windows executable
+        'python' - Call Snack via Python's tkinter Tcl interface
+        'tcl'    - Call Snack via Tcl shell
+
+    tcl_shell_cmd is the name of the command to invoke the Tcl shell.  This
+    argument is only used if method = 'tcl'
     """
     if method in valid_snack_methods:
-        F0, V = _method(method)(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+        if method == 'exe':
+            F0, V = snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+        elif method == 'python':
+            F0, V = snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+        elif method == 'tcl':
+            F0, V = snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd)
     else:
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
@@ -67,7 +77,7 @@ def snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     return_code = call(snack_cmd)
 
     if return_code != 0:
-        raise EnvironmentError('snack.exe error')
+        raise OSError('snack.exe error')
 
     # Path for f0 file corresponding to wav_fn
     f0_fn = wav_fn.split('.')[0] + '.f0'
@@ -77,7 +87,7 @@ def snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
         # Cleanup and remove f0 file
         os.remove(f0_fn)
     else:
-        raise EnvironmentError('snack.exe error -- unable to locate .f0 file')
+        raise OSError('snack.exe error -- unable to locate .f0 file')
 
     return F0, V
 
@@ -126,8 +136,10 @@ def snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitc
         V[i] = np.float_(values[1])
     return F0, V
 
-def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd):
     """Implement snack_pitch by calling Snack through Tcl shell
+
+    tcl_shell_cmd is the name of the command to invoke the Tcl shell.
 
        Note this method can only be used if Tcl is installed
     """
@@ -145,7 +157,9 @@ def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
 
     # Determine name of system command to invoke Tcl shell
-    if user_tcl_shell_cmd is not None:
+    if tcl_shell_cmd is not None:
+        tcl_cmd = tcl_shell_cmd
+    elif user_tcl_shell_cmd is not None:
         tcl_cmd = user_tcl_shell_cmd
     elif sys.platform == 'darwin':
         tcl_cmd = 'tclsh8.4'
@@ -168,10 +182,15 @@ def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     f.close()
 
     # Run Tcl script
-    return_code = call([tcl_cmd, tcl_file])
-
-    if return_code != 0:
-        raise EnvironmentError('Error when trying to call Snack via Tcl shell script.  Is Tcl/Tk installed?')
+    try:
+        return_code = call([tcl_cmd, tcl_file])
+    except OSError:
+        os.remove(tcl_file)
+        raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_cmd))
+    else:
+        if return_code != 0:
+            os.remove(tcl_file)
+            raise OSError('Error when trying to call Snack via Tcl shell script.')
 
     # Load data from f0 file
     f0_file = os.path.splitext(wav_fn)[0] + '.f0'

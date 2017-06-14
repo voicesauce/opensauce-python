@@ -403,6 +403,15 @@ class TestCLI(TestCase):
         with self.assertArgparseError(['nosuchmethod']):
             CLI(['--snack-method', 'nosuchmethod'])
 
+    def test_invalid_tcl_shell_cmd(self):
+        with self.assertRaisesRegex(OSError, 'nosuchcmd'):
+            lines = self._CLI_output([
+                sound_file_path('beijing_f3_50_a.wav'),
+                '--measurements', 'snackF0',
+                '--snack-method', 'tcl',
+                '--tcl-cmd', 'nosuchcmd',
+                ])
+
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
 
