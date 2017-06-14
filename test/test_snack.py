@@ -68,9 +68,27 @@ class TestSnack(TestCase):
             vs_V = get_raw_data(fn, 'sV', 'strF0', 'FMTs', 'estimated')
 
             # Either corresponding entries for OpenSauce and VoiceSauce data
-            # have to both be nan, or they need to be "close" enough in floating precision
+            # have to both be nan, or they need to be "close" enough in
+            # floating precision
+            # XXX: In later versions of NumPy (v1.10+), you can use NumPy's
+            #      allclose() function with the argument equal_nan = True.
+            #      But since we can't be sure that the user will have a new
+            #      enough version of NumPy, we have to use the complicated
+            #      expression below which involves .all()
             self.assertTrue((np.isclose(os_V, vs_V) | (np.isnan(os_V) & np.isnan(vs_V))).all())
-            self.assertTrue((np.isclose(os_F0, vs_F0, rtol=3e-05) | (np.isnan(os_F0) & np.isnan(vs_F0))).all())
+            if not (np.isclose(os_F0, vs_F0) | (np.isnan(os_F0) & np.isnan(vs_F0))).all():
+                # If first check fails, try lowering relative tolerance and
+                # redoing the check
+                idx = np.where(np.isclose(os_F0, vs_F0) | (np.isnan(os_F0) & np.isnan(vs_F0)) == False)[0]
+                print('\nChecking F0 data using rtol=1e-05, atol=1e-08 in {}:'.format(fn))
+                print('Out of {} array entries in F0 snack data, discrepancies in these indices'.format(len(os_F0)))
+                for i in idx:
+                    print('idx {}, OpenSauce F0 = {}, VoiceSauce F0 = {}'.format(i, os_F0[i], vs_F0[i]))
+                print('Reducing relative tolerance to rtol=3e-05 and redoing check:')
+                self.assertTrue((np.isclose(os_F0, vs_F0, rtol=3e-05) | (np.isnan(os_F0) & np.isnan(vs_F0))).all())
+                print('OK')
+            else:
+                self.assertTrue((np.isclose(os_F0, vs_F0) | (np.isnan(os_F0) & np.isnan(vs_F0))).all())
 
     def test_raw(self):
         # Test against previously generated data to make sure nothing has
@@ -103,7 +121,8 @@ class TestSnack(TestCase):
                 idx = np.where(np.isclose(F0, sample_data) == False)[0]
                 print('\nChecking F0 data using rtol=1e-05, atol=1e-08 in {}:'.format(fn))
                 print('Out of {} array entries in F0 snack data, discrepancies in these indices'.format(len(F0)))
-                print(idx)
+                for i in idx:
+                    print('idx {}, OpenSauce F0 = {}, sample F0 = {}'.format(i, F0[i], sample_data[i]))
                 print('Reducing relative tolerance to rtol=3e-05 and redoing check:')
                 self.assertTrue(np.allclose(F0, sample_data, rtol=3e-05))
                 print('OK')
