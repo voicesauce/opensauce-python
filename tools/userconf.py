@@ -1,13 +1,15 @@
-# Additional configuration
+# Additional configuration for testing purposes
+# Do not change this file unless you are a developer or advanced user
+# Users should set these options through the command line interface
 
 # User defined global variables
 
-# Snack calling method
+# Snack calling method (equivalent to --snack-method CLI option)
 # Choices are 'exe', 'python', 'tcl'
 # Setting it to None, uses the default for your operating system
 user_default_snack_method = None
 
-# Tcl shell command name
+# Tcl shell command name (equivalent to --tcl-cmd CLI option)
 # Typically, something like 'tclsh', 'tclsh8.4', 'wish', 'wish8.4', etc.
 # This can be useful for calling a particular version of Tcl, e.g. call Tcl8.5
 # by setting the variable to 'tclsh8.5'
