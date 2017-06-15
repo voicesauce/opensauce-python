@@ -3,7 +3,7 @@ import math
 import os
 import helpers_legacy
 import snack_legacy
-import hnr
+import hnr_legacy
 from algorithms import func_GetH1_H2_H4
 
 
@@ -33,7 +33,7 @@ def do_hnr(soundfile):
     Fs = soundfile.Fs
     soundfile.f0 = f0_snack(soundfile)
     settings = soundfile.settings
-    hnr.run(y, Fs, soundfile.f0, settings)
+    hnr_legacy.run(y, Fs, soundfile.f0, settings)
 
 
 def A1A2A3(soundfile):
