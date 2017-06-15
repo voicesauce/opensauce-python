@@ -21,16 +21,6 @@ from tools.userconf import user_default_snack_method, user_tcl_shell_cmd
 import logging
 log = logging.getLogger('opensauce.snack')
 
-# Only import tkinter if the user wants to call Snack from Python
-if user_default_snack_method == 'python':
-    try:
-        import tkinter
-    except ImportError:
-        try:
-            import Tkinter as tkinter
-        except ImportError:
-            print("Need Python library tkinter. Is it installed?")
-
 def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
                 max_pitch=500, min_pitch=40, tcl_shell_cmd=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.
@@ -51,17 +41,17 @@ def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.0025,
     """
     if method in valid_snack_methods:
         if method == 'exe':
-            F0, V = snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+            F0, V = snack_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
         elif method == 'python':
-            F0, V = snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+            F0, V = snack_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
         elif method == 'tcl':
-            F0, V = snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd)
+            F0, V = snack_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd)
     else:
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return F0, V
 
-def snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """Implement snack_pitch by calling Snack through a Windows standalone
        binary executable
 
@@ -91,12 +81,20 @@ def snack_method_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
 
     return F0, V
 
-def snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
     """Implement snack_pitch by calling Snack through Python's tkinter library
 
        Note this method can only be used if the user's machine is setup,
        so that Tcl/Tk can be accessed through Python's tkinter library
     """
+    try:
+        import tkinter
+    except ImportError:
+        try:
+            import Tkinter as tkinter
+        except ImportError:
+            print("Need Python library tkinter. Is it installed?")
+
     # HACK: Need to replace single backslash with two backslashes,
     #       so that the Tcl shell reads the file path correctly on Windows
     if sys.platform == 'win32' or sys.platform == 'cygwin':
@@ -136,7 +134,7 @@ def snack_method_python(wav_fn, frame_length, window_length, max_pitch, min_pitc
         V[i] = np.float_(values[1])
     return F0, V
 
-def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd):
+def snack_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd):
     """Implement snack_pitch by calling Snack through Tcl shell
 
     tcl_shell_cmd is the name of the command to invoke the Tcl shell.
@@ -201,7 +199,7 @@ def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, 
         # Cleanup and remove f0 file
         os.remove(f0_file)
     else:
-        raise EnvironmentError('Snack Tcl shell error -- unable to locate .f0 file')
+        raise OSError('Snack Tcl shell error -- unable to locate .f0 file')
 
     # Cleanup and remove Tcl script file
     os.remove(tcl_file)
@@ -209,4 +207,5 @@ def snack_method_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, 
     return F0, V
 
 all_functions = inspect.getmembers(sys.modules[__name__], inspect.isfunction)
-valid_snack_methods = [x[0][13:] for x in all_functions if x[0].startswith('snack_method_')]
+prefix_len = len('snack_pitch_')
+valid_snack_methods = [x[0][prefix_len:] for x in all_functions if x[0].startswith('snack_pitch_')]
