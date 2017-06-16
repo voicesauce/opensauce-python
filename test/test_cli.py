@@ -38,7 +38,7 @@ class TestOldCLI(TestCase):
         # f0 loaded from data
         f0_data = np.loadtxt(data_file_path(os.path.join('cli', 'cant_c5_19a.f0')))
         # Check that calculated f0 and data f0 are "close"
-        self.assertTrue(np.allclose(f0, f0_data))
+        self.assertTrue(np.allclose(f0, f0_data, rtol=1e-05, atol=1e-08))
 
 @parameterize
 class TestCLI(TestCase):
