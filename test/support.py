@@ -67,14 +67,14 @@ def sound_file_path(fn):
 wav_fns = sorted([sound_file_path(fn) for fn in os.listdir(sound_path) if fn.endswith('.wav')])
 
 
-def sample_data_fn(fn, col_name, f0_base, sample):
+def sample_data_fn(fn, col_name, sample):
     """Return the filename corresponding to fn, col_name, f0_base, and sample.
 
     Which is those components separated by dashes, with '.txt' appended,
     with the data_file_path as prefix.  The data contains raw Snack samples.
     """
     fn = os.path.splitext(os.path.basename(fn))[0]
-    fn = '-'.join(('sample', fn, col_name, f0_base, sample))
+    fn = '-'.join(('sample', fn, col_name, sample))
     fn = os.path.join(data_path, 'snack', fn) + '.txt'
     return fn
 
