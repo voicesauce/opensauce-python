@@ -16,7 +16,7 @@ import inspect
 import numpy as np
 
 # Import user-defined global configuration variables
-from tools.userconf import user_default_snack_method, user_tcl_shell_cmd
+from conf.userconf import user_default_snack_method, user_tcl_shell_cmd
 
 import logging
 log = logging.getLogger('opensauce.snack')

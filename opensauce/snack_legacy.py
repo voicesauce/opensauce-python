@@ -32,7 +32,7 @@ def get_snack_f0(soundfile):
     minF0 = 90
 
     # XXX: Should substitute the user defined Tcl shell command here,
-    #      but couldn't seem to get Python to properly import tools/userconf.py
+    #      but couldn't seem to get Python to properly import conf/userconf.py
     if platform == 'darwin':
         cmd1 = 'tclsh8.4'
     else:

@@ -8,7 +8,7 @@ import numpy as np
 from sys import platform
 
 # Import user-defined global configuration variables
-from tools.userconf import user_default_snack_method
+from conf.userconf import user_default_snack_method
 
 from opensauce.snack import snack_pitch, snack_formants, valid_snack_methods, formant_names
 
