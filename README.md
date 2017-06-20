@@ -176,7 +176,7 @@ command line override those specified in a settings or measurements file.
 
 # Contributing
 
-See [HACKING](HACKING.md).
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 # Resources
 
