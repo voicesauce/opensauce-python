@@ -15,7 +15,7 @@ from .soundfile import SoundFile
 # Import from helpers.py in opensauce package
 from .helpers import remove_empty_lines_from_file
 # Import from snack.py in opensauce package
-from .snack import valid_snack_methods
+from .snack import valid_snack_methods, formant_names
 
 # Override default 'error' method so that it doesn't print out the noisy usage
 # prefix on the error messages, and so that we get a useful command name
@@ -143,14 +143,22 @@ class CLI(object):
                 remove_empty_lines_from_file(self.args.output_filepath)
 
     def _process(self, of):
+        data_fields = []
+        for m in self.args.measurements:
+            if m == 'snackFormants':
+                data_fields.extend(formant_names)
+            else:
+                data_fields.append(m)
+
         output = csv.writer(of, dialect=csv.excel_tab)
         output.writerow(
             self._assemble_fields(
                 filename='Filename',
                 textgrid_data=['Label', 'seg_Start', 'seg_End'],
                 offset='t_ms',
-                data=self.args.measurements
+                data=data_fields
             ))
+
         for wavfile in self.args.wavfiles:
             self._cached_results.clear()
             soundfile = SoundFile(wavfile)
@@ -158,10 +166,20 @@ class CLI(object):
             results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
             for measurement in self.args.measurements:
                 if measurement in self._cached_results:
-                    results[measurement] = self._cached_results[measurement]
+                    cached_result = self._cached_results[measurement]
+                    if isinstance(cached_result, dict):
+                        for k in cached_result.keys():
+                            results[k] = cached_result[k]
+                    else:
+                        results[measurement] = cached_result
                 else:
                     compute_measurement = self._algorithm(measurement)
-                    results[measurement] = compute_measurement(soundfile)
+                    computed_result = compute_measurement(soundfile)
+                    if isinstance(computed_result, dict):
+                        for k in computed_result.keys():
+                            results[k] = computed_result[k]
+                    else:
+                        results[measurement] = computed_result
             if self.args.use_textgrid and soundfile.textgrid:
                 intervals = soundfile.textgrid_intervals
             else:
@@ -189,7 +207,7 @@ class CLI(object):
                             textgrid_data=[label, start_str, stop_str],
                             offset=format(s * frame_shift, '.3f'),
                             data=[self._get_value(results[x], s)
-                                  for x in self.args.measurements]
+                                  for x in data_fields]
                         ))
 
     #
@@ -228,6 +246,21 @@ class CLI(object):
     def DO_SHR(self, soundfile):
         self.DO_shrF0(soundfile)
         return self._cached_results['SHR']
+
+    def DO_snackFormants(self, soundfile):
+        from .snack import snack_formants
+        estimates = snack_formants(soundfile.wavpath,
+                                   method=self.args.snack_method,
+                                   frame_length=self.args.frame_shift/1000,
+                                   window_length=self.args.window_size/1000,
+                                   pre_emphasis=self.args.pre_emphasis,
+                                   lpc_order=self.args.lpc_order,
+                                   tcl_shell_cmd=self.args.tcl_cmd
+                                  )
+        self._cached_results['snackFormants'] = estimates
+
+        return estimates
+
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
@@ -316,6 +349,12 @@ class CLI(object):
     parser.add_argument('--max-f0', '--max-F0', default=500, type=int,
                         help="Highest frequency considered in F0 analysis."
                              " Default is %(default)s Hz.")
+    parser.add_argument('--pre-emphasis', default=0.96, type=float,
+                        help="Pre-emphasis factor for Snack formant analysis."
+                             " Default is %(default)s")
+    parser.add_argument('--lpc-order', default=12, type=int,
+                        help="LPC order used in Snack formant analysis."
+                             " Default is %(default)s")
     parser.add_argument('--include-empty-labels', default=False,
                         action='store_true',
                         help="Include TextGrid entries with empty or blank"
@@ -373,7 +412,7 @@ class CLI(object):
                              " default is 'tcl'.")
     parser.add_argument('--tcl-cmd', default=default_tcl_shell_cmd,
                         help="Command to use when calling Tcl shell.  On OS X,"
-                             "the default is 'tclsh8.4'.  On Linux and"
+                             "the default is 'tclsh8.4'.  On Linux and "
                              "Windows, the default is 'tclsh'.")
 
 if __name__ == '__main__':
