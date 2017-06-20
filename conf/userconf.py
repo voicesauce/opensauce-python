@@ -1,8 +1,14 @@
-# Additional configuration for testing purposes
-# Do not change this file unless you are a developer or advanced user
-# Users should set these options through the command line interface
+# User configuration
 
-# User defined global variables
+# Path for Praat executable
+# For Mac OS X, use the path '/Applications/Praat.app/Contents/MacOS/Praat'
+praat_path = None
+
+#####################################################################
+
+# Additional configuration for testing purposes
+# Do not change these options unless you are a developer or advanced user
+# Users should set these options through the command line interface
 
 # Snack calling method (equivalent to --snack-method CLI option)
 # Choices are 'exe', 'python', 'tcl'
