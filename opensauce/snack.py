@@ -15,9 +15,6 @@ import sys
 import inspect
 import numpy as np
 
-# Import user-defined global configuration variables
-from conf.userconf import user_default_snack_method, user_tcl_shell_cmd
-
 import logging
 log = logging.getLogger('opensauce.snack')
 
@@ -179,21 +176,11 @@ def snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitc
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
 
-    # Determine name of system command to invoke Tcl shell
-    if tcl_shell_cmd is not None:
-        tcl_cmd = tcl_shell_cmd
-    elif user_tcl_shell_cmd is not None:
-        tcl_cmd = user_tcl_shell_cmd
-    elif sys.platform == 'darwin':
-        tcl_cmd = 'tclsh8.4'
-    else:
-        tcl_cmd = 'tclsh'
-
     # Write Tcl script
     f = open(tcl_file, 'w')
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
-    script += 'exec {} "$0" "$@"\n\n'.format(tcl_cmd)
+    script += 'exec {} "$0" "$@"\n\n'.format(tcl_shell_cmd)
     script += 'package require snack\n\n'
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
@@ -206,10 +193,10 @@ def snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitc
 
     # Run Tcl script
     try:
-        return_code = call([tcl_cmd, tcl_file])
+        return_code = call([tcl_shell_cmd, tcl_file])
     except OSError:
         os.remove(tcl_file)
-        raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_cmd))
+        raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_shell_cmd))
     else:
         if return_code != 0:
             os.remove(tcl_file)
@@ -400,21 +387,11 @@ def snack_raw_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lp
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackformant.tcl')
 
-    # Determine name of system command to invoke Tcl shell
-    if tcl_shell_cmd is not None:
-        tcl_cmd = tcl_shell_cmd
-    elif user_tcl_shell_cmd is not None:
-        tcl_cmd = user_tcl_shell_cmd
-    elif sys.platform == 'darwin':
-        tcl_cmd = 'tclsh8.4'
-    else:
-        tcl_cmd = 'tclsh'
-
     # Write Tcl script
     f = open(tcl_file, 'w')
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
-    script += 'exec {} "$0" "$@"\n\n'.format(tcl_cmd)
+    script += 'exec {} "$0" "$@"\n\n'.format(tcl_shell_cmd)
     script += 'package require snack\n\n'
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
@@ -427,10 +404,10 @@ def snack_raw_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lp
 
     # Run Tcl script
     try:
-        return_code = call([tcl_cmd, tcl_file])
+        return_code = call([tcl_shell_cmd, tcl_file])
     except OSError:
         os.remove(tcl_file)
-        raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_cmd))
+        raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_shell_cmd))
     else:
         if return_code != 0:
             os.remove(tcl_file)
