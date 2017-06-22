@@ -6,7 +6,7 @@ import os
 import glob
 import numpy as np
 
-from opensauce.snack import snack_pitch, snack_formants, formant_names
+from opensauce.snack import snack_pitch, snack_formants, sformant_names
 
 
 def save_samples(data, fn, col_name, sample, out_dir):
@@ -43,7 +43,7 @@ def main(wav_dir, out_dir):
         # Save Snack formant samples
         wav_basename = os.path.basename(wav_file)
         # Save F0 and V data to separate text files
-        for n in formant_names:
+        for n in sformant_names:
             save_samples(estimates[n], wav_basename, n, '1ms', out_dir)
 
 

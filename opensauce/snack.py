@@ -21,7 +21,7 @@ from conf.userconf import user_default_snack_method, user_tcl_shell_cmd
 import logging
 log = logging.getLogger('opensauce.snack')
 
-formant_names = ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4']
+sformant_names = ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4']
 
 def snack_pitch(wav_fn, method, frame_length=0.001, window_length=0.025,
                 max_pitch=500, min_pitch=40, tcl_shell_cmd=None):
@@ -273,7 +273,7 @@ def snack_formants_exe(wav_fn, frame_length, window_length, pre_emphasis, lpc_or
 
     estimates = {}
     for i in range(num_cols):
-        estimates[formant_names[i]] = frm_results[:, i]
+        estimates[sformant_names[i]] = frm_results[:, i]
 
     return estimates
 
@@ -323,14 +323,14 @@ def snack_formants_python(wav_fn, frame_length, window_length, pre_emphasis, lpc
     # XXX check for errors here and log and abort if there is one.  Result
     # string will start with ERROR:.
     num_frames = int(tcl.eval('llength $data'))
-    num_cols = len(formant_names)
+    num_cols = len(sformant_names)
     estimates = {}
-    for n in formant_names:
+    for n in sformant_names:
         estimates[n] = np.empty(num_frames)
     for i in range(num_frames):
         values = tcl.eval('lindex $data ' + str(i)).split()
         for j in range(num_cols):
-            estimates[formant_names[j]][i] = np.float_(values[j])
+            estimates[sformant_names[j]][i] = np.float_(values[j])
 
     return estimates
 
@@ -392,12 +392,12 @@ def snack_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lpc_or
 
     # Load data from f0 file
     frm_file = os.path.splitext(wav_fn)[0] + '.frm'
-    num_cols = len(formant_names)
+    num_cols = len(sformant_names)
     if os.path.isfile(frm_file):
         frm_results = np.loadtxt(frm_file).reshape((-1, num_cols))
         estimates = {}
         for i in range(num_cols):
-            estimates[formant_names[i]] = frm_results[:, i]
+            estimates[sformant_names[i]] = frm_results[:, i]
         # Cleanup and remove f0 file
         os.remove(frm_file)
     else:

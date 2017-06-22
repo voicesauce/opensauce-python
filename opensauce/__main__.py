@@ -15,7 +15,7 @@ from .soundfile import SoundFile
 # Import from helpers.py in opensauce package
 from .helpers import remove_empty_lines_from_file
 # Import from snack.py in opensauce package
-from .snack import valid_snack_methods, formant_names
+from .snack import valid_snack_methods, sformant_names
 
 # Override default 'error' method so that it doesn't print out the noisy usage
 # prefix on the error messages, and so that we get a useful command name
@@ -59,6 +59,7 @@ class CLI(object):
         if not self.args.measurements:
             self.parser.error("No measurements requested")
         self._cached_results = {}
+        self.data_len = 0
 
     def _settings_from_file(self, filepath):
         with open(filepath) as fp:
@@ -146,7 +147,7 @@ class CLI(object):
         data_fields = []
         for m in self.args.measurements:
             if m == 'snackFormants':
-                data_fields.extend(formant_names)
+                data_fields.extend(sformant_names)
             else:
                 data_fields.append(m)
 
@@ -162,6 +163,10 @@ class CLI(object):
         for wavfile in self.args.wavfiles:
             self._cached_results.clear()
             soundfile = SoundFile(wavfile)
+
+            # Length of all measurement vectors written to output
+            self.data_len = np.int_(np.floor(soundfile.ns / soundfile.fs / self.args.frame_shift * 1000))
+
             results = {}
             results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
             for measurement in self.args.measurements:
@@ -216,16 +221,27 @@ class CLI(object):
 
     def DO_snackF0(self, soundfile):
         from .snack import snack_pitch
+        f_len = self.args.frame_shift / 1000
+        w_len = self.args.window_size / 1000
         F0, V = snack_pitch(soundfile.wavpath,
                             method=self.args.snack_method,
-                            frame_length=self.args.frame_shift/1000,
-                            window_length=self.args.window_size/1000,
+                            frame_length=f_len,
+                            window_length=w_len,
                             min_pitch=self.args.min_f0,
                             max_pitch=self.args.max_f0,
                             tcl_shell_cmd=self.args.tcl_cmd
                             )
-        self._cached_results['snackF0'] = F0
-        return F0
+        # Pad F0 and V with NaN
+        pad_head_F0 = np.full(np.int_(np.floor(w_len / f_len / 2)), np.nan)
+        pad_tail_F0 = np.full(self.data_len - (len(F0) + len(pad_head_F0)), np.nan)
+        F0_out = np.hstack((pad_head_F0, F0, pad_tail_F0))
+
+        pad_head_V = np.full(np.int_(np.floor(w_len / f_len / 2)), np.nan)
+        pad_tail_V = np.full(self.data_len - (len(V) + len(pad_head_V)), np.nan)
+        V_out = np.hstack((pad_head_V, V, pad_tail_V))
+
+        self._cached_results['snackF0'] = F0_out
+        return F0_out
 
     def DO_shrF0(self, soundfile):
         from .shrp import shr_pitch

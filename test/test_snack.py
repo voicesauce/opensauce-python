@@ -10,7 +10,7 @@ from sys import platform
 # Import user-defined global configuration variables
 from conf.userconf import user_default_snack_method
 
-from opensauce.snack import snack_pitch, snack_formants, valid_snack_methods, formant_names
+from opensauce.snack import snack_pitch, snack_formants, valid_snack_methods, sformant_names
 
 from opensauce.soundfile import SoundFile
 
@@ -158,7 +158,7 @@ class TestSnackFormants(TestCase):
 
             # Following VoiceSauce, pad estimates with NaN
             os_formants = {}
-            for n in formant_names:
+            for n in sformant_names:
                 pad_head = np.full(np.int_(np.floor(w_len / f_len / 2)), np.nan)
                 pad_tail = np.full(data_len - (len(estimates[n]) + len(pad_head)), np.nan)
                 os_formants[n] = np.hstack((pad_head, estimates[n], pad_tail))
@@ -167,7 +167,7 @@ class TestSnackFormants(TestCase):
             # NB: It doesn't matter which output file we use, the sF0 column is
             # the same in all of them.
             vs_formants = {}
-            for n in formant_names:
+            for n in sformant_names:
                 vs_formants[n] = get_raw_data(fn, n, 'strF0', 'FMTs', 'estimated')
 
             # Either corresponding entries for OpenSauce and VoiceSauce data
@@ -179,7 +179,7 @@ class TestSnackFormants(TestCase):
             #      enough version of NumPy, we have to use the complicated
             #      expression below which involves .all()
             tol = 3e-04
-            for n in formant_names:
+            for n in sformant_names:
                 self.assertTrue((np.isclose(os_formants[n], vs_formants[n], rtol=tol, atol=1e-08) | (np.isnan(os_formants[n]) & np.isnan(vs_formants[n]))).all())
 
                 if not (np.isclose(os_formants[n], vs_formants[n], rtol=tol, atol=1e-08) | (np.isnan(os_formants[n]) & np.isnan(vs_formants[n]))).all():
@@ -200,15 +200,15 @@ class TestSnackFormants(TestCase):
 
             # Get sample data
             sample_data = {}
-            for n in formant_names:
+            for n in sformant_names:
                 sample_data[n] = get_sample_data(fn, n, '1ms')
 
             # Check number of entries is consistent
-            for n in formant_names:
+            for n in sformant_names:
                 self.assertEqual(len(estimates[n]), len(sample_data[n]))
             # Check that estimates and sample_data are "close enough" for
             # floating precision
-            for n in formant_names:
+            for n in sformant_names:
                 # Increase rtol from 1e-5 to 3e-4 to account for random seed
                 # used in Snack formants
                 self.assertTrue(np.allclose(estimates[n], sample_data[n], rtol=3e-04, atol=1e-08))
