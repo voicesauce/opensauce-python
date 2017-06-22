@@ -224,24 +224,17 @@ class CLI(object):
         f_len = self.args.frame_shift / 1000
         w_len = self.args.window_size / 1000
         F0, V = snack_pitch(soundfile.wavpath,
-                            method=self.args.snack_method,
+                            self.args.snack_method,
+                            self.data_len,
                             frame_length=f_len,
                             window_length=w_len,
                             min_pitch=self.args.min_f0,
                             max_pitch=self.args.max_f0,
                             tcl_shell_cmd=self.args.tcl_cmd
                             )
-        # Pad F0 and V with NaN
-        pad_head_F0 = np.full(np.int_(np.floor(w_len / f_len / 2)), np.nan)
-        pad_tail_F0 = np.full(self.data_len - (len(F0) + len(pad_head_F0)), np.nan)
-        F0_out = np.hstack((pad_head_F0, F0, pad_tail_F0))
 
-        pad_head_V = np.full(np.int_(np.floor(w_len / f_len / 2)), np.nan)
-        pad_tail_V = np.full(self.data_len - (len(V) + len(pad_head_V)), np.nan)
-        V_out = np.hstack((pad_head_V, V, pad_tail_V))
-
-        self._cached_results['snackF0'] = F0_out
-        return F0_out
+        self._cached_results['snackF0'] = F0
+        return F0
 
     def DO_shrF0(self, soundfile):
         from .shrp import shr_pitch
@@ -266,7 +259,8 @@ class CLI(object):
     def DO_snackFormants(self, soundfile):
         from .snack import snack_formants
         estimates = snack_formants(soundfile.wavpath,
-                                   method=self.args.snack_method,
+                                   self.args.snack_method,
+                                   self.data_len,
                                    frame_length=self.args.frame_shift/1000,
                                    window_length=self.args.window_size/1000,
                                    pre_emphasis=self.args.pre_emphasis,
