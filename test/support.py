@@ -122,24 +122,10 @@ def get_test_data(fn, col_name, f0_base, sample):
     return res
 
 
-def save_sample_data(data, *args):
-    """Dump data in json format to sample_data_fn(*args).
-
-    This is a utility routine for creating sample data data.  There should
-    be nothing calling it in the committed code base.
-    """
-    np.savetxt(sample_data_fn(*args), data)
-
-
 def get_sample_data(*args):
     """Return sample python data from sample_data_fn(*args).
     """
     return np.loadtxt(sample_data_fn(*args))
-
-
-def loadmat(fn):
-    """Load the matlab sample .mat file fn using scipy.io.loadmat."""
-    return scipy.io.loadmat(data_file_path(fn) + '.mat', squeeze_me=True)
 
 
 def load_json(fn):
@@ -152,12 +138,6 @@ def load_json(fn):
             data[k] = np.array(data[k])
 
     return data
-
-
-def get_text_grid(fn):
-    in_name = os.path.splitext(os.path.basename(fn))[0]
-    tg_fn = data_file_path(in_name + '.TextGrid')
-    return TextGrid.load(tg_fn)
 
 
 class TestCase(unittest.TestCase):
@@ -277,13 +257,3 @@ def parameterize(cls):
     for key, value in testfuncs.items():
         setattr(cls, key, value)
     return cls
-
-
-# Debugging helper.
-def adiff(a1, a2):
-    """Print a detailed difference for a1 versus a2 (must be same shape)."""
-    x = len(a1)
-    for i in range(x):
-            print("{}: {} {} {}".format(
-                i, a1[i], a2[i],
-                '=' if a1[i] == a2[i] else '!'))
