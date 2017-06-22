@@ -17,8 +17,10 @@
 # Natural Language Toolkit: TextGrid analysis
 #
 # Copyright (C) 2001-2011 NLTK Project
+# Copyright (C) 2017 Kristine Yu
 # Author: Margaret Mitchell <itallow@gmail.com>
 #         Steven Bird <sb@csse.unimelb.edu.au> (revisions)
+# Modified: Kristine Yu
 # URL: <http://www.nltk.org>
 # For license information, see LICENSE.TXT
 #
