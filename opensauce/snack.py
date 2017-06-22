@@ -20,43 +20,43 @@ log = logging.getLogger('opensauce.snack')
 
 sformant_names = ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4']
 
-def snack_pitch(wav_fn, method, data_len, frame_length=0.001,
-                window_length=0.025, max_pitch=500, min_pitch=40,
+def snack_pitch(wav_fn, method, data_len, frame_shift=1,
+                window_size=25, max_pitch=500, min_pitch=40,
                 tcl_shell_cmd=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.
 
-    Use Snack to estimate the pitch (F0) and voicing values for
-    each frame.  Includes padding to fill out entire data vectors.
+    Use Snack to estimate the pitch (F0) and voicing values for each frame.
+    Includes padding to fill out entire data vectors.
 
     method refers to the way in which Snack is called:
         'exe'    - Call Snack via Windows executable
         'python' - Call Snack via Python's tkinter Tcl interface
         'tcl'    - Call Snack via Tcl shell
 
-    data_len is the number of data (time) points that will be output
-    to the user.  All measurement vectors need to have this length.
+    data_len is the number of data (time) points that will be output to the
+    user.  All measurement vectors need to have this length.
 
-    windows_length and frame_shift are in seconds, max_pitch and min_pitch in
-    Hertz.  Note the default parameter values are those used in VoiceSauce.
+    windows_size and frame_shift are in milliseconds, max_pitch and min_pitch
+    in Hertz.  Note the default parameter values are those used in VoiceSauce.
 
     tcl_shell_cmd is the name of the command to invoke the Tcl shell.  This
     argument is only used if method = 'tcl'
     """
     # Get raw Snack F0 and V vectors
-    F0_raw, V_raw = snack_raw_pitch(wav_fn, method, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd)
+    F0_raw, V_raw = snack_raw_pitch(wav_fn, method, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd)
 
     # Pad F0 and V with NaN
-    pad_head_F0 = np.full(np.int_(np.floor(window_length / frame_length / 2)), np.nan)
+    pad_head_F0 = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
     pad_tail_F0 = np.full(data_len - (len(F0_raw) + len(pad_head_F0)), np.nan)
     F0_out = np.hstack((pad_head_F0, F0_raw, pad_tail_F0))
 
-    pad_head_V = np.full(np.int_(np.floor(window_length / frame_length / 2)), np.nan)
+    pad_head_V = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
     pad_tail_V = np.full(data_len - (len(V_raw) + len(pad_head_V)), np.nan)
     V_out = np.hstack((pad_head_V, V_raw, pad_tail_V))
 
     return F0_out, V_out
 
-def snack_raw_pitch(wav_fn, method, frame_length=0.001, window_length=0.025,
+def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
                     max_pitch=500, min_pitch=40, tcl_shell_cmd=None):
     """Return F0 and voicing vectors computed from the data in wav_fn.
 
@@ -64,17 +64,17 @@ def snack_raw_pitch(wav_fn, method, frame_length=0.001, window_length=0.025,
     """
     if method in valid_snack_methods:
         if method == 'exe':
-            F0_raw, V_raw = snack_raw_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+            F0_raw, V_raw = snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
         elif method == 'python':
-            F0_raw, V_raw = snack_raw_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_pitch)
+            F0_raw, V_raw = snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
         elif method == 'tcl':
-            F0_raw, V_raw = snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd)
+            F0_raw, V_raw = snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd)
     else:
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return F0_raw, V_raw
 
-def snack_raw_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
     """Implement snack_raw_pitch by calling Snack through a Windows standalone
        binary executable
 
@@ -83,8 +83,8 @@ def snack_raw_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitc
     # Call Snack using system command to run standalone executable
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
     snack_cmd = [exe_path, 'pitch', wav_fn, '-method', 'esps']
-    snack_cmd.extend(['-framelength', str(frame_length)])
-    snack_cmd.extend(['-windowlength', str(window_length)])
+    snack_cmd.extend(['-framelength', str(frame_shift / 1000)])
+    snack_cmd.extend(['-windowlength', str(window_size / 1000)])
     snack_cmd.extend(['-maxpitch', str(max_pitch)])
     snack_cmd.extend(['-minpitch', str(min_pitch)])
     return_code = call(snack_cmd)
@@ -104,7 +104,7 @@ def snack_raw_pitch_exe(wav_fn, frame_length, window_length, max_pitch, min_pitc
 
     return F0_raw, V_raw
 
-def snack_raw_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_pitch):
+def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
     """Implement snack_raw_pitch by calling Snack through Python's tkinter library
 
        Note this method can only be used if the user's machine is setup,
@@ -139,8 +139,8 @@ def snack_raw_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_p
     tcl.eval('snack::sound s')
     tcl.eval('s read {}'.format(wav_fn))
     cmd = ['s pitch -method esps']
-    cmd.extend(['-framelength {}'.format(frame_length)])
-    cmd.extend(['-windowlength {}'.format(window_length)])
+    cmd.extend(['-framelength {}'.format(frame_shift / 1000)])
+    cmd.extend(['-windowlength {}'.format(window_size / 1000)])
     cmd.extend(['-maxpitch {}'.format(max_pitch)])
     cmd.extend(['-minpitch {}'.format(min_pitch)])
     tcl.eval('set data [{}]'.format(' '.join(cmd)))
@@ -156,7 +156,7 @@ def snack_raw_pitch_python(wav_fn, frame_length, window_length, max_pitch, min_p
         V_raw[i] = np.float_(values[1])
     return F0_raw, V_raw
 
-def snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitch, tcl_shell_cmd):
+def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd):
     """Implement snack_raw_pitch by calling Snack through Tcl shell
 
     tcl_shell_cmd is the name of the command to invoke the Tcl shell.
@@ -185,7 +185,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitc
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
     script += 'set fd [open [file rootname {}].f0 w]\n'.format(in_file)
-    script += 'puts $fd [join [s pitch -method esps -framelength {} -windowlength {} -maxpitch {} -minpitch {}]\n\n]\n'.format(frame_length, window_length, max_pitch, min_pitch)
+    script += 'puts $fd [join [s pitch -method esps -framelength {} -windowlength {} -maxpitch {} -minpitch {}]\n\n]\n'.format(frame_shift / 1000, window_size / 1000, max_pitch, min_pitch)
     script += 'close $fd\n\n'
     script += 'exit'
     f.write(script)
@@ -218,8 +218,8 @@ def snack_raw_pitch_tcl(wav_fn, frame_length, window_length, max_pitch, min_pitc
 
     return F0_raw, V_raw
 
-def snack_formants(wav_fn, method, data_len, frame_length=0.001,
-                   window_length=0.025, pre_emphasis=0.96, lpc_order=12,
+def snack_formants(wav_fn, method, data_len, frame_shift=1,
+                   window_size=25, pre_emphasis=0.96, lpc_order=12,
                    tcl_shell_cmd=None):
     """Return formant and bandwidth vectors computed from the data in wav_fn
 
@@ -230,10 +230,10 @@ def snack_formants(wav_fn, method, data_len, frame_length=0.001,
         'python' - Call Snack via Python's tkinter Tcl interface
         'tcl'    - Call Snack via Tcl shell
 
-    data_len is the number of data (time) points that will be output
-    to the user.  All measurement vectors need to have this length.
+    data_len is the number of data (time) points that will be output to the
+    user.  All measurement vectors need to have this length.
 
-    windows_length and frame_shift are in seconds. pre_emphasis is used to
+    window_size and frame_shift are in milliseconds. pre_emphasis is used to
     specify the amount of preemphasis applied to the signal prior to windowing.
     lpc_order is order for LPC analysis.
     Note the default parameter values are those used in VoiceSauce.
@@ -242,18 +242,18 @@ def snack_formants(wav_fn, method, data_len, frame_length=0.001,
     argument is only used if method = 'tcl'
     """
     # Compute raw formant and bandwidth estimates using Snack
-    estimates_raw = snack_raw_formants(wav_fn, method, frame_length, window_length, pre_emphasis, lpc_order, tcl_shell_cmd)
+    estimates_raw = snack_raw_formants(wav_fn, method, frame_shift, window_size, pre_emphasis, lpc_order, tcl_shell_cmd)
 
     # Pad estimates with NaN
     estimates = {}
     for n in sformant_names:
-        pad_head = np.full(np.int_(np.floor(window_length / frame_length / 2)), np.nan)
+        pad_head = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
         pad_tail = np.full(data_len - (len(estimates_raw[n]) + len(pad_head)), np.nan)
         estimates[n] = np.hstack((pad_head, estimates_raw[n], pad_tail))
 
     return estimates
 
-def snack_raw_formants(wav_fn, method, frame_length=0.001, window_length=0.025,
+def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
                        pre_emphasis=0.96, lpc_order=12, tcl_shell_cmd=None):
     """Return formant and bandwidth vectors computed from the data in wav_fn
 
@@ -261,17 +261,17 @@ def snack_raw_formants(wav_fn, method, frame_length=0.001, window_length=0.025,
     """
     if method in valid_snack_methods:
         if method == 'exe':
-            estimates_raw = snack_raw_formants_exe(wav_fn, frame_length, window_length, pre_emphasis, lpc_order)
+            estimates_raw = snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
         elif method == 'python':
-            estimates_raw = snack_raw_formants_python(wav_fn, frame_length, window_length, pre_emphasis, lpc_order)
+            estimates_raw = snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
         elif method == 'tcl':
-            estimates_raw = snack_raw_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lpc_order, tcl_shell_cmd)
+            estimates_raw = snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order, tcl_shell_cmd)
     else:
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return estimates_raw
 
-def snack_raw_formants_exe(wav_fn, frame_length, window_length, pre_emphasis, lpc_order):
+def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order):
     """Implement snack_formants by calling Snack through a Windows standalone
        binary executable
 
@@ -280,8 +280,8 @@ def snack_raw_formants_exe(wav_fn, frame_length, window_length, pre_emphasis, lp
     # Call Snack using system command to run standalone executable
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
     snack_cmd = [exe_path, 'formant', wav_fn]
-    snack_cmd.extend(['-windowlength', str(window_length)])
-    snack_cmd.extend(['-framelength', str(frame_length)])
+    snack_cmd.extend(['-windowlength', str(window_size / 1000)])
+    snack_cmd.extend(['-framelength', str(frame_shift / 1000)])
     snack_cmd.extend(['-windowtype', 'Hamming'])
     snack_cmd.extend(['-lpctype', '0'])
     snack_cmd.extend(['-preemphasisfactor', str(pre_emphasis)])
@@ -310,7 +310,7 @@ def snack_raw_formants_exe(wav_fn, frame_length, window_length, pre_emphasis, lp
 
     return estimates_raw
 
-def snack_raw_formants_python(wav_fn, frame_length, window_length, pre_emphasis, lpc_order):
+def snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order):
     """Implement snack_formants by calling Snack through Python's tkinter library
 
        Note this method can only be used if the user's machine is setup,
@@ -345,8 +345,8 @@ def snack_raw_formants_python(wav_fn, frame_length, window_length, pre_emphasis,
     tcl.eval('snack::sound s')
     tcl.eval('s read {}'.format(wav_fn))
     cmd = ['s formant']
-    cmd.extend(['-windowlength {}'.format(window_length)])
-    cmd.extend(['-framelength {}'.format(frame_length)])
+    cmd.extend(['-windowlength {}'.format(window_size / 1000)])
+    cmd.extend(['-framelength {}'.format(frame_shift / 1000)])
     cmd.extend(['-windowtype Hamming'])
     cmd.extend(['-lpctype 0'])
     cmd.extend(['-preemphasisfactor {}'.format(pre_emphasis)])
@@ -367,7 +367,7 @@ def snack_raw_formants_python(wav_fn, frame_length, window_length, pre_emphasis,
 
     return estimates_raw
 
-def snack_raw_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lpc_order, tcl_shell_cmd):
+def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order, tcl_shell_cmd):
     """Implement snack_formants by calling Snack through Tcl shell
 
     tcl_shell_cmd is the name of the command to invoke the Tcl shell.
@@ -396,7 +396,7 @@ def snack_raw_formants_tcl(wav_fn, frame_length, window_length, pre_emphasis, lp
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
     script += 'set fd [open [file rootname {}].frm w]\n'.format(in_file)
-    script += 'puts $fd [join [s formant -windowlength {} -framelength {} -windowtype Hamming -lpctype 0 -preemphasisfactor {} -ds_freq 10000 -lpcorder {}]\n\n]\n'.format(window_length, frame_length, pre_emphasis, lpc_order)
+    script += 'puts $fd [join [s formant -windowlength {} -framelength {} -windowtype Hamming -lpctype 0 -preemphasisfactor {} -ds_freq 10000 -lpcorder {}]\n\n]\n'.format(window_size / 1000, frame_shift / 1000, pre_emphasis, lpc_order)
     script += 'close $fd\n\n'
     script += 'exit'
     f.write(script)

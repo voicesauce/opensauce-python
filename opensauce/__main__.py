@@ -221,13 +221,11 @@ class CLI(object):
 
     def DO_snackF0(self, soundfile):
         from .snack import snack_pitch
-        f_len = self.args.frame_shift / 1000
-        w_len = self.args.window_size / 1000
         F0, V = snack_pitch(soundfile.wavpath,
                             self.args.snack_method,
                             self.data_len,
-                            frame_length=f_len,
-                            window_length=w_len,
+                            frame_shift=self.args.frame_shift,
+                            window_size=self.args.window_size,
                             min_pitch=self.args.min_f0,
                             max_pitch=self.args.max_f0,
                             tcl_shell_cmd=self.args.tcl_cmd
@@ -261,8 +259,8 @@ class CLI(object):
         estimates = snack_formants(soundfile.wavpath,
                                    self.args.snack_method,
                                    self.data_len,
-                                   frame_length=self.args.frame_shift/1000,
-                                   window_length=self.args.window_size/1000,
+                                   frame_shift=self.args.frame_shift,
+                                   window_size=self.args.window_size,
                                    pre_emphasis=self.args.pre_emphasis,
                                    lpc_order=self.args.lpc_order,
                                    tcl_shell_cmd=self.args.tcl_cmd
