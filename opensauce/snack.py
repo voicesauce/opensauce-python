@@ -96,7 +96,7 @@ def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
     f0_fn = wav_fn.split('.')[0] + '.f0'
     # Load data from f0 file
     if os.path.isfile(f0_fn):
-        F0_raw, V_raw = np.loadtxt(f0_fn, usecols=(0,1), unpack=True)
+        F0_raw, V_raw = np.loadtxt(f0_fn, dtype=float, usecols=(0,1), unpack=True)
         # Cleanup and remove f0 file
         os.remove(f0_fn)
     else:
@@ -205,7 +205,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
     # Load data from f0 file
     f0_file = os.path.splitext(wav_fn)[0] + '.f0'
     if os.path.isfile(f0_file):
-        data = np.loadtxt(f0_file).reshape((-1,4))
+        data = np.loadtxt(f0_file, dtype=float).reshape((-1,4))
         F0_raw = data[:, 0]
         V_raw = data[:, 1]
         # Cleanup and remove f0 file
@@ -296,7 +296,7 @@ def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     frm_fn = wav_fn.split('.')[0] + '.frm'
     # Load data from frm file
     if os.path.isfile(frm_fn):
-        frm_results = np.loadtxt(frm_fn)
+        frm_results = np.loadtxt(frm_fn, dtype=float)
         # Cleanup and remove frm file
         os.remove(frm_fn)
     else:
@@ -417,7 +417,7 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     frm_file = os.path.splitext(wav_fn)[0] + '.frm'
     num_cols = len(sformant_names)
     if os.path.isfile(frm_file):
-        frm_results = np.loadtxt(frm_file).reshape((-1, num_cols))
+        frm_results = np.loadtxt(frm_file, dtype=float).reshape((-1, num_cols))
         estimates_raw = {}
         for i in range(num_cols):
             estimates_raw[sformant_names[i]] = frm_results[:, i]

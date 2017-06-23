@@ -125,7 +125,7 @@ def get_test_data(fn, col_name, f0_base, sample):
 def get_sample_data(*args):
     """Return sample python data from sample_data_fn(*args).
     """
-    return np.loadtxt(sample_data_fn(*args))
+    return np.loadtxt(sample_data_fn(*args), dtype=float)
 
 
 def load_json(fn):
