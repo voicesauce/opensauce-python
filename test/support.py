@@ -133,7 +133,7 @@ def load_json(fn):
     with open(data_file_path(fn) + '.json') as f:
         data = json.load(f)
     # Convert lists of numbers to NumPy arrays
-    for k in data.keys():
+    for k in data:
         if isinstance(data[k], list):
             data[k] = np.array(data[k])
 
@@ -188,7 +188,7 @@ def parameterize(cls):
     element tuples.  However derived, the resulting sequence is passed via
     *args to the parameterized test function.
 
-    In a _params dictioanry, the keys become part of the name of the generated
+    In a _params dictionary, the keys become part of the name of the generated
     tests.  In a _params list, the values in the list are converted into a
     string by joining the string values of the elements of the tuple by '_' and
     converting any blanks into '_'s, and this become part of the name.

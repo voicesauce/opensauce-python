@@ -23,7 +23,7 @@ def main(mat_dir, out_dir):
         mat_dict = loadmat(mat_file, squeeze_me=True)
         # Iterate through all entries of mat_dict
         # For each entry, convert data type if necessary
-        for k in mat_dict.keys():
+        for k in mat_dict:
             if isinstance(mat_dict[k], np.ndarray):
                 json_dict[k] = mat_dict[k].tolist()
             elif isinstance(mat_dict[k], unicode):
