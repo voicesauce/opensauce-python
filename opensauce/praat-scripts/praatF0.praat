@@ -51,15 +51,15 @@ endform
 
 
 # Read sound file
-Read from file... 'wavfile$'
+Read from file: "'wavfile$'"
 
 # KY 20101013: edited to allow user input for all parameters
 
 # Allow cross or auto correlation
 if method$ = "cc"
-    To Pitch (cc)... 'time_step' 'minimum_pitch' 15 no 'silence_threshold' 'voicing_threshold' 'octave_cost' 'octave_jump_cost' 'voiced_unvoiced_cost' 'maximum_pitch'
+    To Pitch (cc): 'time_step', 'minimum_pitch', 15, "no", 'silence_threshold', 'voicing_threshold', 'octave_cost', 'octave_jump_cost', 'voiced_unvoiced_cost', 'maximum_pitch'
 else
-    To Pitch (ac)... 'time_step' 'minimum_pitch' 15 no 'silence_threshold' 'voicing_threshold' 'octave_cost' 'octave_jump_cost' 'voiced_unvoiced_cost' 'maximum_pitch'
+    To Pitch (ac): 'time_step', 'minimum_pitch', 15, "no", 'silence_threshold', 'voicing_threshold', 'octave_cost', 'octave_jump_cost', 'voiced_unvoiced_cost', 'maximum_pitch'
 endif
 
 # KY 20101013:Postprocessing for smoothing/stylization
@@ -70,7 +70,7 @@ endif
 
 # Smooth
 if 'smooth' = 1
-    Smooth... smooth_bandwidth
+    Smooth: 'smooth_bandwidth'
 endif
 
 # Interpolate over missing values
@@ -95,4 +95,4 @@ if fileReadable (resultfile$)
     deleteFile (resultfile$)
 endif
 
-Save as headerless spreadsheet file... 'resultfile$'
+Save as headerless spreadsheet file: "'resultfile$'"

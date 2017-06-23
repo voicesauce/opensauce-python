@@ -16,8 +16,6 @@
 #
 #############################
 
-
-
 form Measure F1, F2, F3, F4, F5, F6, F7
     comment See header of script for details.
 
@@ -39,11 +37,11 @@ form Measure F1, F2, F3, F4, F5, F6, F7
 endform
 
 # Read sound file
-Read from file... 'wavfile$'
+Read from file: "'wavfile$'"
 
-To Formant (burg)... 'time_step' 'num_formants' 'maximum_formant_frequency' 'window_length' 50
+To Formant (burg): 'time_step', 'num_formants', 'maximum_formant_frequency', 'window_length', 50
 
-Down to Table... no yes 6 no 3 yes 3 yes
+Down to Table: "no", "yes", 6, "no", 3, "yes", 3, "yes"
 
 # Write to file
 # Index where file extension is located
@@ -55,4 +53,4 @@ if fileReadable (resultfile$)
     deleteFile (resultfile$)
 endif
 
-Write to table file... 'resultfile$'
+Save as tab-separated file: "'resultfile$'"
