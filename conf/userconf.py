@@ -1,11 +1,3 @@
-# User configuration
-
-# Path for Praat executable
-# For Mac OS X, use the path '/Applications/Praat.app/Contents/MacOS/Praat'
-praat_path = None
-
-#####################################################################
-
 # Additional configuration for testing purposes
 # Do not change these options unless you are a developer or advanced user
 # Users should set these options through the command line interface
@@ -22,3 +14,7 @@ user_default_snack_method = None
 # If the variable is set to None, 'tclsh8.4' is used on OS X;
 # otherwise 'tclsh' is used
 user_tcl_shell_cmd = None
+
+# Path for Praat executable
+# For Mac OS X, use the path '/Applications/Praat.app/Contents/MacOS/Praat'
+user_praat_path = None

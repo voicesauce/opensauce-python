@@ -8,7 +8,7 @@ import sys
 import numpy as np
 
 # Import user-defined global configuration variables
-from conf.userconf import user_default_snack_method, user_tcl_shell_cmd
+from conf.userconf import user_default_snack_method, user_tcl_shell_cmd, user_praat_path
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
@@ -173,7 +173,7 @@ class CLI(object):
                 if measurement in self._cached_results:
                     cached_result = self._cached_results[measurement]
                     if isinstance(cached_result, dict):
-                        for k in cached_result.keys():
+                        for k in cached_result:
                             results[k] = cached_result[k]
                     else:
                         results[measurement] = cached_result
@@ -181,7 +181,7 @@ class CLI(object):
                     compute_measurement = self._algorithm(measurement)
                     computed_result = compute_measurement(soundfile)
                     if isinstance(computed_result, dict):
-                        for k in computed_result.keys():
+                        for k in computed_result:
                             results[k] = computed_result[k]
                     else:
                         results[measurement] = computed_result
@@ -296,6 +296,15 @@ class CLI(object):
         default_tcl_shell_cmd = 'tclsh8.4'
     else:
         default_tcl_shell_cmd = 'tclsh'
+
+    if user_praat_path is not None:
+        default_praat_path = user_praat_path
+    elif sys.platform == "darwin":
+        default_praat_path = '/Applications/Praat.app/Contents/MacOS/Praat'
+    elif sys.platform == "win32" or sys.platform == "cygwin":
+        default_praat_path = 'C:\Program Files\Praat.exe'
+    else:
+        default_praat_path = '/usr/bin/praat'
 
     #
     # Parsing Declarations
@@ -422,6 +431,14 @@ class CLI(object):
                         help="Command to use when calling Tcl shell.  On OS X,"
                              "the default is 'tclsh8.4'.  On Linux and "
                              "Windows, the default is 'tclsh'.")
+    parser.add_argument('--praat-path', default=default_praat_path,
+                        help="Path to Praat program executable.  On OS X, "
+                             "the default is "
+                             "'/Applications/Praat.app/Contents/MacOS/Praat'. "
+                             "On Windows, the default is "
+                             "'C:\Program Files\Praat.exe'. On Linux, the "
+                             "default is '/usr/bin/praat'.")
+
 
 if __name__ == '__main__':
     try:
