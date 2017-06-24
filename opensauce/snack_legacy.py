@@ -52,6 +52,7 @@ def get_snack_f0(soundfile):
     f.close()
 
     os.system(cmd1+' '+tclfile)
+    os.remove(tclfile)
 
     f0file = soundfile.wavfile[:-4]+".f0"
     raw = []
