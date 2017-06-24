@@ -14,7 +14,7 @@ that, please feel free to submit an issue regarding any topic including
 Developers
 ==========
 
-# Workflow
+## Workflow
 
 To contribute code, edit, etc:
 
@@ -108,7 +108,7 @@ To contribute code, edit, etc:
 
    If something breaks or anything is confusing, post a question on the Issue tracker.
 
-# How to do an algorithm conversion
+## How to do an algorithm conversion
 
 1. In the algorithm's .m file, add a line to the end of the function
    for which the file is named like this:
@@ -188,7 +188,7 @@ To contribute code, edit, etc:
 
 9. XXX: A few more steps to come once the runtime framework is fleshed out.
 
-# Check vendored software
+## Check vendored software
 
 There is a script in the main repository that checks where our version of
 `opensauce/textgrid.py` matches the one in the nltk repository.  The reason for
@@ -198,7 +198,7 @@ okay if our version is more recent.  One should check the commit log on the
 nltk version to see if there are more recent changes to be pulled into our
 version, rather than simply relying on the `check_vendored_software` script.
 
-# Projects
+## Projects
 
 Check the Issue tracker and TODO.md for ideas.
 
