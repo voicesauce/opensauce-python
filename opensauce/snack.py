@@ -18,6 +18,7 @@ import numpy as np
 import logging
 log = logging.getLogger('opensauce.snack')
 
+# Variable names for Snack formant and bandwidth vectors
 sformant_names = ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4']
 
 def snack_pitch(wav_fn, method, data_len, frame_shift=1,
@@ -26,7 +27,9 @@ def snack_pitch(wav_fn, method, data_len, frame_shift=1,
     """Return F0 and voicing vectors computed from the data in wav_fn.
 
     Use Snack to estimate the pitch (F0) and voicing values for each frame.
-    Includes padding to fill out entire data vectors.
+    Includes padding to fill out entire data vectors.  The Snack pitch
+    values don't start until a half frame into the audio, so the first
+    half-frame is NaN.
 
     method refers to the way in which Snack is called:
         'exe'    - Call Snack via Windows executable
@@ -46,11 +49,15 @@ def snack_pitch(wav_fn, method, data_len, frame_shift=1,
     F0_raw, V_raw = snack_raw_pitch(wav_fn, method, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd)
 
     # Pad F0 and V with NaN
+    # First half frame is NaN
     pad_head_F0 = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
+    # Pad end with NaN
     pad_tail_F0 = np.full(data_len - (len(F0_raw) + len(pad_head_F0)), np.nan)
     F0_out = np.hstack((pad_head_F0, F0_raw, pad_tail_F0))
 
+    # First half frame is NaN
     pad_head_V = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
+    # Pad end with NaN
     pad_tail_V = np.full(data_len - (len(V_raw) + len(pad_head_V)), np.nan)
     V_out = np.hstack((pad_head_V, V_raw, pad_tail_V))
 
@@ -143,9 +150,11 @@ def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitc
     cmd.extend(['-windowlength {}'.format(window_size / 1000)])
     cmd.extend(['-maxpitch {}'.format(max_pitch)])
     cmd.extend(['-minpitch {}'.format(min_pitch)])
+    # Run Snack pitch command
     tcl.eval('set data [{}]'.format(' '.join(cmd)))
     # XXX check for errors here and log and abort if there is one.  Result
     # string will start with ERROR:.
+    # Collect results and save in return variables
     num_frames = int(tcl.eval('llength $data'))
     F0_raw = np.empty(num_frames)
     V_raw = np.empty(num_frames)
@@ -154,6 +163,7 @@ def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitc
         values = tcl.eval('lindex $data ' + str(i)).split()
         F0_raw[i] = np.float_(values[0])
         V_raw[i] = np.float_(values[1])
+
     return F0_raw, V_raw
 
 def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd):
@@ -174,9 +184,10 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
     if sys.platform == 'win32' or sys.platform == 'cygwin':
         in_file = in_file.replace('\\', '\\\\')
 
+    # Name of the file containing the Tcl script
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackpitch.tcl')
 
-    # Write Tcl script
+    # Write Tcl script which will call Snack pitch calculation
     f = open(tcl_file, 'w')
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
@@ -191,7 +202,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
     f.write(script)
     f.close()
 
-    # Run Tcl script
+    # Run the Tcl script
     try:
         return_code = call([tcl_shell_cmd, tcl_file])
     except OSError:
@@ -202,7 +213,8 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
             os.remove(tcl_file)
             raise OSError('Error when trying to call Snack via Tcl shell script.')
 
-    # Load data from f0 file
+    # Load results from the f0 file output by the Tcl script
+    # And save into return variables
     f0_file = os.path.splitext(wav_fn)[0] + '.f0'
     if os.path.isfile(f0_file):
         data = np.loadtxt(f0_file, dtype=float).reshape((-1,4))
@@ -224,6 +236,9 @@ def snack_formants(wav_fn, method, data_len, frame_shift=1,
     """Return formant and bandwidth vectors computed from the data in wav_fn
 
     Use Snack to estimate formant and bandwidth for each frame
+    Includes padding to fill out entire data vectors.  The Snack pitch
+    values don't start until a half frame into the audio, so the first
+    half-frame is NaN.
 
     method refers to the way in which Snack is called:
         'exe'    - Call Snack via Windows executable
@@ -247,7 +262,9 @@ def snack_formants(wav_fn, method, data_len, frame_shift=1,
     # Pad estimates with NaN
     estimates = {}
     for n in sformant_names:
+        # First half frame is NaN
         pad_head = np.full(np.int_(np.floor(window_size / frame_shift / 2)), np.nan)
+        # Pad end with NaN
         pad_tail = np.full(data_len - (len(estimates_raw[n]) + len(pad_head)), np.nan)
         estimates[n] = np.hstack((pad_head, estimates_raw[n], pad_tail))
 
@@ -302,8 +319,8 @@ def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     else:
         raise OSError('snack.exe error -- unable to locate .frm file')
 
+    # Save data into dictionary
     num_cols = frm_results.shape[1]
-
     estimates_raw = {}
     for i in range(num_cols):
         estimates_raw[sformant_names[i]] = frm_results[:, i]
@@ -352,9 +369,11 @@ def snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lp
     cmd.extend(['-preemphasisfactor {}'.format(pre_emphasis)])
     cmd.extend(['-ds_freq 10000'])
     cmd.extend(['-lpcorder {}'.format(lpc_order)])
+    # Run Snack formant command
     tcl.eval('set data [{}]'.format(' '.join(cmd)))
     # XXX check for errors here and log and abort if there is one.  Result
     # string will start with ERROR:.
+    # Collect results in dictionary
     num_frames = int(tcl.eval('llength $data'))
     num_cols = len(sformant_names)
     estimates_raw = {}
@@ -387,7 +406,7 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackformant.tcl')
 
-    # Write Tcl script
+    # Write Tcl script to compute Snack formants
     f = open(tcl_file, 'w')
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
@@ -413,7 +432,7 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
             os.remove(tcl_file)
             raise OSError('Error when trying to call Snack via Tcl shell script.')
 
-    # Load data from f0 file
+    # Load results from f0 file and save into return variables
     frm_file = os.path.splitext(wav_fn)[0] + '.frm'
     num_cols = len(sformant_names)
     if os.path.isfile(frm_file):

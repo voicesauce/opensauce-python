@@ -151,27 +151,25 @@ class TestSnackFormants(TestCase):
             # Compute OpenSauce formant and bandwidth estimates
             formants_os = snack_formants(fn, snack_method, data_len, frame_shift=f_len, window_size=25, pre_emphasis=0.96, lpc_order=12, tcl_shell_cmd=tcl_cmd)
 
-            # Get VoiceSauce data
-            # NB: It doesn't matter which output file we use, the sF0 column is
-            # the same in all of them.
-            formants_vs = {}
-            for n in sformant_names:
-                formants_vs[n] = get_raw_data(fn, n, 'strF0', 'FMTs', 'estimated')
-
-            # Either corresponding entries for OpenSauce and VoiceSauce data
-            # have to both be nan, or they need to be "close" enough in
-            # floating precision
-            # XXX: In later versions of NumPy (v1.10+), you can use NumPy's
-            #      allclose() function with the argument equal_nan = True.
-            #      But since we can't be sure that the user will have a new
-            #      enough version of NumPy, we have to use the complicated
-            #      expression below which involves .all()
             tol = 1e-03
             for n in sformant_names:
-                self.assertTrue((np.isclose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(formants_vs[n]))).all())
+                # Get VoiceSauce data
+                # NB: It doesn't matter which output file we use, the sF0 column is
+                # the same in all of them.
+                vs_data = get_raw_data(fn, n, 'strF0', 'FMTs', 'estimated')
 
-                if not (np.isclose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(formants_vs[n]))).all():
-                    idx = np.where(np.isclose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(formants_vs[n])) == False)[0]
+                # Either corresponding entries for OpenSauce and VoiceSauce data
+                # have to both be nan, or they need to be "close" enough in
+                # floating precision
+                # XXX: In later versions of NumPy (v1.10+), you can use NumPy's
+                #      allclose() function with the argument equal_nan = True.
+                #      But since we can't be sure that the user will have a new
+                #      enough version of NumPy, we have to use the complicated
+                #      expression below which involves .all()
+                self.assertTrue((np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data))).all())
+
+                if not (np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data))).all():
+                    idx = np.where(np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data)) == False)[0]
                     print('\nChecking {} data in {} using rtol={}, atol=1e-08:'.format(n, fn, tol))
                     print('Out of {} array entries in {} snack data, discrepancies in {} indices'.format(len(formants_os[n]), n, len(idx)))
                     #for i in idx:
