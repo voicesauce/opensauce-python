@@ -22,11 +22,11 @@ if user_default_snack_method is not None:
         snack_method = user_default_snack_method
     else:
         raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
-elif platform == "win32" or platform == "cygwin":
+elif platform == 'win32' or platform == 'cygwin':
     snack_method = 'exe'
-elif platform.startswith("linux"):
+elif platform.startswith('linux'):
     snack_method = 'tcl'
-elif platform == "darwin":
+elif platform == 'darwin':
     snack_method = 'tcl'
 else:
     snack_method = 'tcl'

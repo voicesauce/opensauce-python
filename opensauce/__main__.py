@@ -281,27 +281,27 @@ class CLI(object):
             default_snack_method = user_default_snack_method
         else:
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
-    elif sys.platform == "win32" or sys.platform == "cygwin":
+    elif sys.platform == 'win32' or sys.platform == 'cygwin':
         default_snack_method = 'exe'
-    elif sys.platform.startswith("linux"):
+    elif sys.platform.startswith('linux'):
         default_snack_method = 'tcl'
-    elif sys.platform == "darwin":
+    elif sys.platform == 'darwin':
         default_snack_method = 'tcl'
     else:
         default_snack_method = 'tcl'
 
     if user_tcl_shell_cmd is not None:
         default_tcl_shell_cmd = user_tcl_shell_cmd
-    elif sys.platform == "darwin":
+    elif sys.platform == 'darwin':
         default_tcl_shell_cmd = 'tclsh8.4'
     else:
         default_tcl_shell_cmd = 'tclsh'
 
     if user_praat_path is not None:
         default_praat_path = user_praat_path
-    elif sys.platform == "darwin":
+    elif sys.platform == 'darwin':
         default_praat_path = '/Applications/Praat.app/Contents/MacOS/Praat'
-    elif sys.platform == "win32" or sys.platform == "cygwin":
+    elif sys.platform == 'win32' or sys.platform == 'cygwin':
         default_praat_path = 'C:\Program Files\Praat\Praat.exe'
     else:
         default_praat_path = '/usr/bin/praat'
