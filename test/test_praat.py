@@ -23,7 +23,7 @@ if user_praat_path is not None:
 elif platform == "darwin":
     default_praat_path = '/Applications/Praat.app/Contents/MacOS/Praat'
 elif platform == "win32" or platform == "cygwin":
-    default_praat_path = 'C:\Program Files\Praat.exe'
+    default_praat_path = 'C:\Program Files\Praat\Praat.exe'
 else:
     default_praat_path = '/usr/bin/praat'
 

@@ -119,7 +119,7 @@ class TestSnackPitch(TestCase):
                 # redoing the check
                 idx = np.where(np.isclose(F0_raw, sample_data) == False)[0]
                 print('\nChecking F0 data using rtol=1e-05, atol=1e-08 in {}:'.format(fn))
-                print('Out of {} array entries in F0 snack data, discrepancies in these indices'.format(len(F0)))
+                print('Out of {} array entries in F0 snack data, discrepancies in these indices'.format(len(F0_raw)))
                 for i in idx:
                     print('idx {}, OpenSauce F0 = {}, sample F0 = {}'.format(i, F0_raw[i], sample_data[i]))
                 print('Reducing relative tolerance to rtol=3e-05 and redoing check:')

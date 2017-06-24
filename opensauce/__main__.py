@@ -302,7 +302,7 @@ class CLI(object):
     elif sys.platform == "darwin":
         default_praat_path = '/Applications/Praat.app/Contents/MacOS/Praat'
     elif sys.platform == "win32" or sys.platform == "cygwin":
-        default_praat_path = 'C:\Program Files\Praat.exe'
+        default_praat_path = 'C:\Program Files\Praat\Praat.exe'
     else:
         default_praat_path = '/usr/bin/praat'
 
