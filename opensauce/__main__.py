@@ -444,6 +444,6 @@ if __name__ == '__main__':
     try:
         my_cli = CLI()
         my_cli.process()
-    except (OSError, IOError) as err:
+    except (OSError, IOError, ValueError) as err:
         print(err)
         sys.exit(1)

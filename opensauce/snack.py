@@ -8,6 +8,7 @@ Snack can be called in several ways:
 
 from __future__ import division
 
+from sys import platform
 from subprocess import call
 
 import os
@@ -111,6 +112,9 @@ def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
     The vectors returned here are the raw Snack output, without padding.
     For more info, see documentation for snack_pitch().
     """
+    # Check that we are on a Windows machine
+    if platform != 'win32' and platform != 'cygwin':
+         raise ValueError("Cannot use 'exe' as Snack calling method on non-Windows machine")
     # Call Snack using system command to run standalone executable
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
     snack_cmd = [exe_path, 'pitch', wav_fn, '-method', 'esps']
@@ -354,6 +358,9 @@ def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     The vectors returned here are the raw Snack output, without padding.
     For more info, see documentation for snack_formants().
     """
+    # Check that we are on a Windows machine
+    if platform != 'win32' and platform != 'cygwin':
+         raise ValueError("Cannot use 'exe' as Snack calling method on non-Windows machine")
     # Call Snack using system command to run standalone executable
     exe_path = os.path.join(os.path.dirname(__file__), 'Windows', 'snack.exe')
     snack_cmd = [exe_path, 'formant', wav_fn]
