@@ -43,7 +43,7 @@ def round_half_away_from_zero(x):
        round_half_away_from_zero(-2.7) = -3
        round_half_away_from_zero(-4.3) = -4
     """
-    q = np.sign(x) * np.floor(np.abs(x) + 0.5)
+    q = np.int_(np.sign(x) * np.floor(np.abs(x) + 0.5))
 
     return q
 

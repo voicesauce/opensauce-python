@@ -55,7 +55,7 @@ class TestSnackPitch(TestCase):
             # Need ns (number of samples) and sampling rate (Fs) from wav file
             # to compute data length
             sound_file = SoundFile(fn)
-            data_len = np.int_(np.floor(sound_file.ns / sound_file.fs / f_len * 1000));
+            data_len = np.int_(np.floor(sound_file.ns / sound_file.fs / f_len * 1000))
 
             # Compute OpenSauce Snack F0 and V
             F0_os, V_os = snack_pitch(fn, snack_method, data_len, frame_shift=f_len, window_size=25, max_pitch=500, min_pitch=40, tcl_shell_cmd=tcl_cmd)
@@ -146,7 +146,7 @@ class TestSnackFormants(TestCase):
             # Need ns (number of samples) and sampling rate (Fs) from wav file
             # to compute data length
             sound_file = SoundFile(fn)
-            data_len = np.int_(np.floor(sound_file.ns / sound_file.fs / f_len * 1000));
+            data_len = np.int_(np.floor(sound_file.ns / sound_file.fs / f_len * 1000))
 
             # Compute OpenSauce formant and bandwidth estimates
             formants_os = snack_formants(fn, snack_method, data_len, frame_shift=f_len, window_size=25, pre_emphasis=0.96, lpc_order=12, tcl_shell_cmd=tcl_cmd)
