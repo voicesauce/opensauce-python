@@ -36,17 +36,20 @@ def main(wav_dir, out_dir):
                                         voice_threshold=0.45, octave_cost=0.01,
                                         octave_jumpcost=0.35,
                                         voiced_unvoiced_cost=0.14,
-                                        smooth_bandwidth=5,
-                                        kill_octave_jumps=0, smooth=0,
-                                        interpolate=0)
-
+                                        kill_octave_jumps=0,
+                                        interpolate=0
+                                        smooth=0,
+                                        smooth_bandwidth=5)
         # Save raw Praat pitch samples
         # Save F0 data to text file
+        save_samples(t_raw, wav_basename, 'ptF0', '1ms', out_dir)
         save_samples(F0_raw, wav_basename, 'pF0', '1ms', out_dir)
 
         # Generate raw Praat formant samples
         # Use VoiceSauce default parameter values
-        estimates_raw = praat_raw_formants(wav_file, praat_path, frame_shift=1, window_size=25, num_formants=4, max_formant_freq=6000)
+        estimates_raw = praat_raw_formants(wav_file, praat_path, frame_shift=1,
+                                           window_size=25, num_formants=4,
+                                           max_formant_freq=6000)
 
         # Save raw Praat formant samples to text files
         for n in estimates_raw:

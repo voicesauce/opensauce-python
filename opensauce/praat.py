@@ -30,8 +30,8 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
                     min_pitch=40, max_pitch=500, silence_threshold=0.03,
                     voice_threshold=0.45, octave_cost=0.01,
                     octave_jumpcost=0.35, voiced_unvoiced_cost=0.14,
-                    smooth_bandwidth=5, kill_octave_jumps=0, smooth=0,
-                    interpolate=0):
+                    kill_octave_jumps=0, interpolate=0, smooth=0,
+                    smooth_bandwidth=5):
     """
     """
     # Determine extension of Praat output file
@@ -102,7 +102,7 @@ def praat_raw_formants(wav_fn, praat_path, frame_shift=1, window_size=25, num_fo
 
     # Put data into dictionary
     estimates_raw = {}
-    estimates_raw['pt'] = data_raw[:, 0]
+    estimates_raw['ptFormants'] = data_raw[:, 0]
     for i in range(1, num_formants + 1):
         estimates_raw['pF' + str(i)] = data_raw[:, 2*i]
         estimates_raw['pB' + str(i)] = data_raw[:, 2*i+1]
