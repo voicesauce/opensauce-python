@@ -1,3 +1,19 @@
+Users
+=====
+If you came here because you wanted to submit an issue, thanks for reading!
+We depend on users like you to help us find bugs and suggest enhancements.
+
+If you are planning on submitting an issue on the GitHub issue tracker, please
+search first, to make sure the issue has not already been raised.  Other than
+that, please feel free to submit an issue regarding any topic including
+
+* Questions about using the software
+* Bugs you've found
+* Ideas for improvements
+
+Developers
+==========
+
 # Workflow
 
 To contribute code, edit, etc:

@@ -17,7 +17,15 @@ If you want to use Snack to estimate parameters:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
 * [Snack Sound Toolkit](http://www.speech.kth.se/snack/)
 
-Note that on some Linux distributions, people report a [bug that prevents Snack from working on Python with Tcl/Tk 8.6](https://bugs.launchpad.net/ubuntu/+source/snack/+bug/1510562).
+Note that on some Linux distributions, people report a
+[bug that prevents Snack from working on Python with Tcl/Tk 8.6](https://bugs.launchpad.net/ubuntu/+source/snack/+bug/1510562).
+
+If you want to use Praat to estimate parameters, you need to download the
+Praat software
+* [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.03+)
+
+and specify the path where OpenSauce can find the Praat executable.  OpenSauce
+has only been tested with Praat v6.0.29.
 
 # Installation
 
@@ -35,15 +43,20 @@ Note that on some Linux distributions, people report a [bug that prevents Snack 
     on the console if you don't have a `/dev/mixer`.  You don't *need* a mixer
     for opensauce-python, so it is okay to ignore that message.
 
-2.  Install Git, if you don't have it on your machine.  See the official Git
+2.  Download Praat, if you don't already have it.  On Linux, if you have
+    trouble with the full featured Praat executable, you can download and use
+    the "barren" version instead.  The barren version lacks the GUI and other
+    features, but those aren't needed for OpenSauce.
+
+3.  Install Git, if you don't have it on your machine.  See the official Git
     website for [recommendations on how to install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-3.  Finally, navigate to the directory where you want to download opensauce and
+4.  Finally, navigate to the directory where you want to download opensauce and
     clone this repository using Git.
 
         $ git clone https://github.com/voicesauce/opensauce-python.git
 
-4.  To get updates to the software, use the `git pull` command inside the
+5.  To get updates to the software, use the `git pull` command inside the
     `opensauce-python` directory.
 
         $ git pull
@@ -119,6 +132,34 @@ specified after measurements,
 or specify the sound file at the beginning.
 
     $ python -m opensauce /path/to/file.wav --measurements SHR
+
+# Adjusting settings for Snack and Praat
+
+OpenSauce tries to use default values for the Tcl shell command and the path
+to the Praat executable based on your operating system.  If the default values
+don't match your installation, you will need to explicitly specify the correct
+ones.
+
+If you are calling Snack via the Tcl shell, you can set the command that runs
+the Tcl shell interpreter using the `--tcl-cmd` command line option.  For
+example, if we use run
+
+    $ python -m opensauce --measurements snackF0 --tcl-cmd tclsh8.5 /path/to/file.wav
+
+this tells OpenSauce to use the command `tclsh8.5` to run the Tcl shell
+interpreter (specifically Tcl version 8.5).  This is especially useful if you
+have multiple versions of Tcl installed on your machine.
+
+To specify your own path for the Praat executable, use the command line option
+`--praat-path`.  For example,
+
+    $ python -m opensauce --measurements praatF0 --praat-path /home/username/praat /path/to/file.wav
+
+will run the Praat executable located at `/home/username/praat`.
+
+Since you will probably be running Snack and Praat the same way every time you
+use OpenSauce, it is best to set these preferences automatically through a
+settings file, as described in the next section.
 
 # Settings and measurement files
 
