@@ -42,10 +42,10 @@ form Create Pitch Tracks
     positive octave_cost 0.01
     positive octave_jump_cost 0.35
     positive voiced_unvoiced_cost 0.14
-    boolean kill_octave_jumps 0
-    boolean smooth 0
+    boolean kill_octave_jumps no
+    boolean smooth no
     positive smooth_bandwidth 5
-    boolean interpolate 0
+    boolean interpolate no
     sentence Method cc
 endform
 

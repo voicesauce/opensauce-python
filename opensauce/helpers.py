@@ -75,3 +75,16 @@ def remove_empty_lines_from_file(fn):
             print(stripped_line)
 
     f.close()
+
+def convert_boolean_for_praat(b):
+    """ Convert Python boolean for use in Praat
+
+    Praat uses "yes"/"no" or 1/0 values instead of True/False.
+    Convert True to "yes", False to "no"
+    """
+    if b == True:
+        return "yes"
+    elif b == False:
+        return "no"
+    else:
+        raise ValueError('Input must be a Boolean')
