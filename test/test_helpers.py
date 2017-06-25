@@ -2,7 +2,7 @@ import os
 import shutil
 import numpy as np
 
-from opensauce.helpers import wavread, round_half_away_from_zero, remove_empty_lines_from_file
+from opensauce.helpers import wavread, round_half_away_from_zero, remove_empty_lines_from_file, convert_boolean_for_praat
 
 from test.support import TestCase, data_file_path, sound_file_path, load_json
 
@@ -45,3 +45,9 @@ class TestSupport(TestCase):
                 idx += 1
         # Copy should not contain any extra information
         self.assertEqual(idx, len(lines_rm))
+
+    def test_convert_boolean_for_praat(self):
+        self.assertEqual(convert_boolean_for_praat(True), "yes")
+        self.assertEqual(convert_boolean_for_praat(False), "no")
+        with self.assertRaisesRegex(ValueError, 'Input must be a Boolean'):
+            convert_boolean_for_praat(42)
