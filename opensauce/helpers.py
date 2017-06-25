@@ -8,11 +8,16 @@ from scipy.io import wavfile
 
 
 def wavread(fn):
-    """Emulate the parts of the matlab wavread function that we need.
+    """Read in a WAV file for processing
 
-        y, Fs = wavread(fn)
+    Args:
+        fn - filename of WAV file [string]
 
-    y is the vector of audio samples, Fs is the frame rate.
+    Returns:
+         y - Audio samples [NumPy vector]
+        Fs - Sampling frequency in Hz [integer]
+
+    Emulate the parts of the Matlab wavread function that we need.
 
     Matlab's wavread is used by voicesauce to read in the wav files for
     processing.  As a consequence, all the translated algorithms assume the
@@ -23,7 +28,6 @@ def wavread(fn):
     default and voicesauce uses the default).  Consequently, after reading the
     data using scipy's io.wavfile, we convert to float by dividing each integer
     by 32768.
-
     """
     # For reference, I figured this out from:
     # http://mirlab.org/jang/books/audiosignalprocessing/matlab4waveRead.asp?title=4-2%20Reading%20Wave%20Files
@@ -37,7 +41,13 @@ def wavread(fn):
 def round_half_away_from_zero(x):
     """Rounds a number according to round half away from zero method
 
-       For example:
+    Args:
+        x - number [float]
+
+    Returns:
+        q - rounded number [integer]
+
+    For example:
        round_half_away_from_zero(3.5) = 4
        round_half_away_from_zero(3.2) = 3
        round_half_away_from_zero(-2.7) = -3
@@ -49,6 +59,13 @@ def round_half_away_from_zero(x):
 
 def remove_empty_lines_from_file(fn):
     """ Remove empty lines from a text file
+
+    Args:
+        fn - filename [string]
+
+    Returns: nothing
+
+    Has side effect of removing empty lines from file specified by fn
     """
     f = fileinput.FileInput(fn, inplace=True)
 
