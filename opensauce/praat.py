@@ -182,6 +182,10 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
     f0_fn = wav_fn.split('.')[0] + ext
     # Load data from f0 file
     if os.path.isfile(f0_fn):
+        # Check if file is empty
+        if os.stat(f0_fn).st_size == 0:
+            os.remove(f0_fn)
+            raise OSError('Praat error -- pitch calculation failed, check input parameters')
         t_raw, F0_raw = np.loadtxt(f0_fn, unpack=True, converters={0: undef, 1: undef})
         # Cleanup and remove f0 file
         os.remove(f0_fn)
@@ -321,7 +325,7 @@ def praat_raw_formants(wav_fn, praat_path, frame_shift=1, window_size=25, num_fo
     # Put results into dictionary
     estimates_raw = {}
     estimates_raw['ptFormants'] = data_raw[:, 0]
-    for i in range(1, num_formants + 1):
+    for i in range(1, round_half_away_from_zero(num_formants) + 1):
         estimates_raw['pF' + str(i)] = data_raw[:, 2*i]
         estimates_raw['pB' + str(i)] = data_raw[:, 2*i+1]
 
