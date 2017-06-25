@@ -93,7 +93,9 @@ def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
                     max_pitch=500, min_pitch=40, tcl_shell_cmd=None):
     """Return raw F0 and voicing vectors estimated by Snack Sound Toolkit
 
-    Args: See snack_pitch() documentation
+    Args:
+        See snack_pitch() documentation.
+        snack_raw_pitch() doesn't have the data_len argument.
 
     Returns:
         F0 - Raw F0 estimates [NumPy vector]
@@ -350,7 +352,9 @@ def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
                        pre_emphasis=0.96, lpc_order=12, tcl_shell_cmd=None):
     """Return raw formant and bandwidth vectors estimated by Snack Sound Toolkit
 
-    Args: See snack_formants() documentation
+    Args:
+        See snack_formants() documentation.
+        snack_raw_formants() doesn't have the data_len argument.
 
     Returns:
         estimates_raw - Raw formant and bandwidth vectors [dictionary of NumPy vectors]
