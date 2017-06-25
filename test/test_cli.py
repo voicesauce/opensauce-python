@@ -11,35 +11,6 @@ from opensauce.__main__ import CLI
 from test.support import TestCase, data_file_path, sound_file_path, py2, parameterize
 
 
-class TestOldCLI(TestCase):
-
-    def test_default_setup(self):
-        tmp = self.tmpdir()
-
-        def d(fn):
-            return os.path.join(tmp, fn)
-        os.mkdir(d('output'))
-        copytree(os.path.join('legacy', 'defaults'), d('defaults'))
-        p = Popen([sys.executable, os.path.join('opensauce','process_legacy.py'),
-                        '-i', d(os.path.join('defaults','sounds')),
-                        '-o', d('output'),
-                        '-s', d(os.path.join('defaults', 'settings', 'default.csv')),
-                        '-p', d(os.path.join('defaults', 'parameters', 'default.csv')),
-                        ],
-                    stdout=PIPE,
-                    )
-        # For now, just ignore the output.
-        with p.stdout:
-            p.stdout.read()
-        rc = p.wait()
-        self.assertEqual(rc, 0)
-        # f0 calculated by command from process.py
-        f0 = np.loadtxt(d(os.path.join('defaults', 'sounds', 'cant_c5_19a.f0')), dtype=float)
-        # f0 loaded from data
-        f0_data = np.loadtxt(data_file_path(os.path.join('cli', 'cant_c5_19a.f0')), dtype=float)
-        # Check that calculated f0 and data f0 are "close"
-        self.assertTrue(np.allclose(f0, f0_data, rtol=1e-05, atol=1e-08))
-
 @parameterize
 class TestCLI(TestCase):
 

@@ -19,7 +19,7 @@ else
     # path to the list of measurements you want to extract from the input
     params="$root/legacy/defaults/parameters/default.csv"
 
-    python $root/opensauce/process_legacy.py -i $inputDir -o $outputDir -s $settings -p $params
+    python $root/legacy/process_legacy.py -i $inputDir -o $outputDir -s $settings -p $params
 
     echo "f0 measurement numbers in legacy/defaults/sounds/cant_c5_19a.f0 should match cant_c5_19a_comparison.f0"
 fi
