@@ -104,27 +104,28 @@ def praat_pitch(wav_fn, data_len, praat_path, frame_shift=1, method='cc',
     # Initialize F0 measurement vector with NaN
     F0 = np.full(data_len, np.nan)
     # Convert time from seconds to nearest whole millisecond
-    t_raw = np.int_(np.round(t_raw * 1000))
+    t_raw_ms = np.int_(round_half_away_from_zero(t_raw * 1000))
 
     # Raw Praat estimates are at time points that don't completely match
     # the time points in our measurement vectors, so we need to interpolate.
     # We use a crude interpolation method, that has precision set by
     # frame_precision.
 
-    # Determine start and end times
+    # Determine start and stop times
     start = 0
-    end = t_raw[-1]
+    if t_raw_ms[-1] % frame_shift == 0:
+        stop = t_raw_ms[-1] + frame_shift
+    else:
+        stop = t_raw_ms[-1]
     # Iterate through timepoints corresponding to each frame in time range
-    for t_f in range(start, end + frame_shift, frame_shift):
+    for idx_f, t_f in enumerate(range(start, stop, frame_shift)):
         # Find closest time point among calculated Praat values
-        min_idx = np.argmin(np.abs(t_raw - t_f))
+        min_idx = np.argmin(np.abs(t_raw_ms - t_f))
 
         # If closest time point is too far away, skip
-        if np.abs(t_raw[min_idx] - t_f) > frame_precision * frame_shift:
+        if np.abs(t_raw_ms[min_idx] - t_f) > frame_precision * frame_shift:
              continue
 
-        # Get index corresponding to frame's time point
-        idx_f = np.int_(np.round(t_f / frame_shift))
         # If index is in range, set value of F0
         if (idx_f >= 0) and (idx_f < data_len):
             F0[idx_f] = F0_raw[min_idx]
@@ -250,22 +251,23 @@ def praat_formants(wav_fn, data_len, praat_path, frame_shift=1, window_size=25,
     # frame_precision.
 
     # Convert time from seconds to nearest whole millisecond
-    t_raw = np.int_(np.round(estimates_raw['ptFormants'] * 1000))
+    t_raw_ms = np.int_(round_half_away_from_zero(estimates_raw['ptFormants'] * 1000))
 
-    # Determine start and end times
+    # Determine start and stop times
     start = 0
-    end = t_raw[-1]
+    if t_raw_ms[-1] % frame_shift == 0:
+        stop = t_raw_ms[-1] + frame_shift
+    else:
+        stop = t_raw_ms[-1]
     # Iterate through timepoints corresponding to each frame in time range
-    for t_f in range(start, end + frame_shift, frame_shift):
+    for idx_f, t_f in enumerate(range(start, stop, frame_shift)):
         # Find closest time point among calculated Praat values
-        min_idx = np.argmin(np.abs(t_raw - t_f))
+        min_idx = np.argmin(np.abs(t_raw_ms - t_f))
 
         # If closest time point is too far away, skip
-        if np.abs(t_raw[min_idx] - t_f) > frame_precision * frame_shift:
+        if np.abs(t_raw_ms[min_idx] - t_f) > frame_precision * frame_shift:
              continue
 
-        # Get index corresponding to frame's time point
-        idx_f = np.int_(np.round(t_f / frame_shift))
         # If index is in range, set measurement value
         if (idx_f >= 0) and (idx_f < data_len):
             for k in estimates_raw:
