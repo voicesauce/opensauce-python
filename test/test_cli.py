@@ -79,7 +79,7 @@ class TestCLI(TestCase):
             '--include-empty-labels',
             sound_file_path('beijing_f3_50_a.wav')
             ])
-        self.assertEqual(len(lines), 2347)
+        self.assertEqual(len(lines), 2346)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 101)
 
     def test_no_f0_column(self):
@@ -113,7 +113,7 @@ class TestCLI(TestCase):
         # ones with blank labels) in this sample, there are five more records
         # in the --include-empty-labels case above than there are here, where
         # we have no repeated frames.
-        self.assertEqual(len(lines), 2342)
+        self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 3)
         self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
         self.assertEqual(len([x for x in lines if 'C1' in x]), 0)
@@ -167,16 +167,16 @@ class TestCLI(TestCase):
             sound_file_path('beijing_m5_17_c.wav'),
             sound_file_path('hmong_f4_24_d.wav'),
             ])
-        self.assertEqual(len(lines), 6121)
+        self.assertEqual(len(lines), 6118)
         # The first of these is one less than the number lines in the single
         # file equivalent test above because there we were counting the header
         # line and here we are not.
         self.assertEqual(len([x for x in lines
-                              if 'beijing_f3_50_a.wav' in x]), 2346)
+                              if 'beijing_f3_50_a.wav' in x]), 2345)
         self.assertEqual(len([x for x in lines
-                              if 'beijing_m5_17_c.wav' in x]), 1673)
+                              if 'beijing_m5_17_c.wav' in x]), 1672)
         self.assertEqual(len([x for x in lines
-                              if 'hmong_f4_24_d.wav' in x]), 2101)
+                              if 'hmong_f4_24_d.wav' in x]), 2100)
 
     @contextlib.contextmanager
     def assertArgparseError(self, expected_regex, expected_regex_3=None):
@@ -222,7 +222,7 @@ class TestCLI(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             ])
-        self.assertEqual(len(lines), 2347 - 119)
+        self.assertEqual(len(lines), 2346 - 119)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
 
     def test_settings_default_file(self):
@@ -234,7 +234,7 @@ class TestCLI(TestCase):
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
                 ])
-            self.assertEqual(len(lines), 2347)
+            self.assertEqual(len(lines), 2346)
 
     def test_settings_option_invalid_in_settings_file(self):
         settingsfn = self._make_file("""
@@ -254,7 +254,7 @@ class TestCLI(TestCase):
             '--settings', settingsfn,
             sound_file_path('beijing_f3_50_a.wav'),
             ])
-        self.assertEqual(len(lines), 2347)
+        self.assertEqual(len(lines), 2346)
         self.assertIn('snackF0', lines[0])
         self.assertEqual(len(lines[1]), 6)
 
@@ -328,7 +328,7 @@ class TestCLI(TestCase):
         self.assertEqual(lines[0][-1:], ['shrF0'])
         self.assertEqual(len(lines[1]), 6)
         self.assertEqual(lines[100],
-            ['beijing_f3_50_a.wav', 'C1', '0.766', '0.866', '865.000',
+            ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865',
              '222.251'])
 
     def test_invalid_F0(self):
@@ -352,7 +352,7 @@ class TestCLI(TestCase):
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
             ])
-        self.assertEqual(len(lines), 2347)
+        self.assertEqual(len(lines), 2346)
         self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
         self.assertEqual(len(lines[1]), 8)
         self.assertEqual(lines[1][-2:], ['NaN', 'NaN'])
@@ -365,7 +365,7 @@ class TestCLI(TestCase):
             '--include-empty-labels',
             '--NaN', 'mylabel',
             ])
-        self.assertEqual(len(lines), 2347)
+        self.assertEqual(len(lines), 2346)
         self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
         self.assertEqual(len(lines[1]), 8)
         self.assertEqual(lines[1][-2:], ['mylabel', 'mylabel'])

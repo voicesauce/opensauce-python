@@ -191,6 +191,11 @@ class CLI(object):
                             results[k] = computed_result[k]
                     else:
                         results[measurement] = computed_result
+
+            # end_time is time for last sample in seconds
+            end_time = soundfile.ns / soundfile.fs
+            # Determine intervals
+            # Intervals are expressed in seconds
             if self.args.use_textgrid and soundfile.textgrid:
                 intervals = soundfile.textgrid_intervals
             else:
@@ -198,25 +203,29 @@ class CLI(object):
                     # XXX covert this to use logging.
                     print("Found no TextGrid for {}, reporting all"
                           " data".format(soundfile.wavfn))
-                intervals = (('no textgrid', 0,
-                              int(soundfile.ms_len//self.args.frame_shift)),)
+                intervals = (('no textgrid', 0, end_time),)
+
             frame_shift = self.args.frame_shift
             for (label, start, stop) in intervals:
                 if label in self.args.ignore_label:
                     continue
                 if not label.strip() and not self.args.include_empty_labels:
                     continue
-                fstart = int(round(start*1000/frame_shift))
-                fstop = min(int(round(stop*1000/frame_shift)),
-                            int(soundfile.ms_len//self.args.frame_shift))
-                start_str = format(start, '.3f')
-                stop_str = format(stop, '.3f')
-                for s in range(fstart, fstop+1):
+                # Convert intervals from seconds to frame number
+                fstart = np.int_(round_half_away_from_zero(start * 1000 / frame_shift))
+                # The -1 is because we use fstop + 1 in the loop below
+                fstop = min(np.int_(round_half_away_from_zero(stop * 1000 / frame_shift)),
+                            np.int_(np.floor(end_time * 1000 / frame_shift)) - 1)
+                # Print intervals in milliseconds
+                start_str = format(start * 1000, '.3f')
+                stop_str = format(stop * 1000, '.3f')
+                # Using fstop + 1, causes endpoints of intervals to be doubled
+                for s in range(fstart, fstop + 1):
                     output.writerow(
                         self._assemble_fields(
                             filename=soundfile.wavfn,
                             textgrid_data=[label, start_str, stop_str],
-                            offset=format(s * frame_shift, '.3f'),
+                            offset=format(s * frame_shift, 'd'),
                             data=[self._get_value(results[x], s)
                                   for x in data_fields]
                         ))
