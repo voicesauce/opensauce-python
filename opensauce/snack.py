@@ -282,7 +282,7 @@ def snack_formants(wav_fn, method, data_len, frame_shift=1,
                    tcl_shell_cmd=None):
     """Return formant and bandwidth vectors estimated by Snack Sound Toolkit
 
-    Use Snack to estimate formants and bandwidths for each frame.
+    Use Snack to estimate first four formants and bandwidths for each frame.
     Includes padding to fill out entire data vectors.  The Snack pitch
     values don't start until a half frame into the audio, so the first
     half-frame is NaN.
