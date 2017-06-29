@@ -1,6 +1,5 @@
 import os
 import shutil
-import numpy as np
 
 from opensauce.helpers import wavread, round_half_away_from_zero, remove_empty_lines_from_file, convert_boolean_for_praat
 
@@ -14,7 +13,7 @@ class TestSupport(TestCase):
         samples, Fs = wavread(fn)
         expected = load_json(os.path.join('helpers', 'beijing_f3_50_a-wavread-expected'))
         self.assertEqual(Fs, expected['Fs'])
-        self.assertTrue(np.allclose(samples, expected['y'], rtol=1e-05, atol=1e-08))
+        self.assertAllClose(samples, expected['y'], rtol=1e-05, atol=1e-08)
 
     def test_round_half_away_from_zero(self):
         self.assertEqual(round_half_away_from_zero(3.5), 4)

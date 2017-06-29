@@ -155,6 +155,31 @@ class TestCase(unittest.TestCase):
         assertRaisesRegex = unittest.TestCase.assertRaisesRegexp
         assertRegex = unittest.TestCase.assertRegexpMatches
 
+    def assertAllClose(self, first, second, rtol=1e-05, atol=1e-08, equal_nan=False, msg=None):
+        """Fail if the two NumPy arrays are not close enough as determined by
+        relative tolerance (rtol) and absolute tolerance (atol)
+        """
+        if not isinstance(first, np.ndarray):
+            raise self.failureException('First object is not a NumPy array')
+        if not isinstance(second, np.ndarray):
+            raise self.failureException('Second object is not a NumPy array')
+
+        if first.shape != second.shape:
+            raise self.failureException('Numpy arrays being compared have different shapes')
+
+        if equal_nan:
+            all_close = (np.isclose(first, second, rtol=rtol, atol=atol) | (np.isnan(first) & np.isnan(second))).all()
+            if not all_close:
+                idx = np.where(np.isclose(first, second, rtol=rtol, atol=atol) | (np.isnan(first) & np.isnan(second)) == False)
+        else:
+            all_close = np.allclose(first, second, rtol=rtol, atol=atol)
+            if not all_close:
+                idx = np.where(np.isclose(first, second, rtol=rtol, atol=atol) == False)
+
+        if not all_close:
+            msg = self._formatMessage(msg, "NumPy arrays fail to be close within rtol = %s and atol = %s.  Out of %s entries, %s differ." % (rtol, atol, first.size, len(idx[0])))
+            raise self.failureException(msg)
+
     @contextlib.contextmanager
     def captured_output(self, stream_name):
         """Return a context manager that temporarily replaces the sys stream

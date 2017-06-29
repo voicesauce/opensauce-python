@@ -82,7 +82,7 @@ class TestPraatPitch(TestCase):
             self.assertEqual(len(t_raw), len(sample_data))
             # Check that computed time and sample_data are "close enough" for
             # floating precision
-            self.assertTrue(np.allclose(t_raw, sample_data, rtol=1e-05, atol=1e-08))
+            self.assertAllClose(t_raw, sample_data, rtol=1e-05, atol=1e-08)
 
             # Get sample F0 data
             sample_data = get_sample_data(fn, 'praat', 'pF0', '1ms')

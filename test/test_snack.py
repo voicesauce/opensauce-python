@@ -69,12 +69,7 @@ class TestSnackPitch(TestCase):
             # Either corresponding entries for OpenSauce and VoiceSauce data
             # have to both be nan, or they need to be "close" enough in
             # floating precision
-            # XXX: In later versions of NumPy (v1.10+), you can use NumPy's
-            #      allclose() function with the argument equal_nan = True.
-            #      But since we can't be sure that the user will have a new
-            #      enough version of NumPy, we have to use the complicated
-            #      expression below which involves .all()
-            self.assertTrue((np.isclose(V_os, V_vs, rtol=1e-05, atol=1e-08) | (np.isnan(V_os) & np.isnan(V_vs))).all())
+            self.assertAllClose(V_os, V_vs, rtol=1e-05, atol=1e-08, equal_nan=True)
             if not (np.isclose(F0_os, F0_vs, rtol=1e-05, atol=1e-08) | (np.isnan(F0_os) & np.isnan(F0_vs))).all():
                 # If first check fails, try lowering relative tolerance and
                 # redoing the check
@@ -84,10 +79,10 @@ class TestSnackPitch(TestCase):
                 for i in idx:
                     print('idx {}, OpenSauce F0 = {}, VoiceSauce F0 = {}'.format(i, F0_os[i], F0_vs[i]))
                 print('Reducing relative tolerance to rtol=3e-05 and redoing check:')
-                self.assertTrue((np.isclose(F0_os, F0_vs, rtol=3e-05) | (np.isnan(F0_os) & np.isnan(F0_vs))).all())
+                self.assertAllClose(F0_os, F0_vs, rtol=3e-05, atol=1e-08, equal_nan=True)
                 print('OK')
             else:
-                self.assertTrue((np.isclose(F0_os, F0_vs, rtol=1e-05, atol=1e-08) | (np.isnan(F0_os) & np.isnan(F0_vs))).all())
+                self.assertAllClose(F0_os, F0_vs, rtol=1e-05, atol=1e-08, equal_nan=True)
 
     def test_pitch_raw(self):
         # Test against previously generated data to make sure nothing has
@@ -106,7 +101,7 @@ class TestSnackPitch(TestCase):
             self.assertEqual(len(V_raw), len(sample_data))
             # Check actual data values are "close enough",
             # within floating precision
-            self.assertTrue(np.allclose(V_raw, sample_data))
+            self.assertAllClose(V_raw, sample_data, rtol=1e-05, atol=1e-08)
 
             # Check F0 data
             sample_data = get_sample_data(fn, 'snack', 'sF0', '1ms')
@@ -123,10 +118,10 @@ class TestSnackPitch(TestCase):
                 for i in idx:
                     print('idx {}, OpenSauce F0 = {}, sample F0 = {}'.format(i, F0_raw[i], sample_data[i]))
                 print('Reducing relative tolerance to rtol=3e-05 and redoing check:')
-                self.assertTrue(np.allclose(F0_raw, sample_data, rtol=3e-05))
+                self.assertAllClose(F0_raw, sample_data, rtol=3e-05, atol=1e-08)
                 print('OK')
             else:
-                self.assertTrue(np.allclose(F0_raw, sample_data, rtol=1e-05, atol=1e-08))
+                self.assertAllClose(F0_raw, sample_data, rtol=1e-05, atol=1e-08)
 
 
 class TestSnackFormants(TestCase):
@@ -161,13 +156,7 @@ class TestSnackFormants(TestCase):
                 # Either corresponding entries for OpenSauce and VoiceSauce data
                 # have to both be nan, or they need to be "close" enough in
                 # floating precision
-                # XXX: In later versions of NumPy (v1.10+), you can use NumPy's
-                #      allclose() function with the argument equal_nan = True.
-                #      But since we can't be sure that the user will have a new
-                #      enough version of NumPy, we have to use the complicated
-                #      expression below which involves .all()
-                self.assertTrue((np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data))).all())
-
+                self.assertAllClose(formants_os[n], vs_data, rtol=tol, atol=1e-08, equal_nan=True)
                 if not (np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data))).all():
                     idx = np.where(np.isclose(formants_os[n], vs_data, rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(vs_data)) == False)[0]
                     print('\nChecking {} data in {} using rtol={}, atol=1e-08:'.format(n, fn, tol))
@@ -175,7 +164,7 @@ class TestSnackFormants(TestCase):
                     #for i in idx:
                         #print('idx {}, OpenSauce {} = {}, VoiceSauce {} = {}'.format(i, n, formants_os[n][i], n, formants_vs[n][i]))
                 else:
-                    self.assertTrue((np.isclose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08) | (np.isnan(formants_os[n]) & np.isnan(formants_vs[n]))).all())
+                    self.assertAllClose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08, equal_nan=True)
 
     def test_formants_raw(self):
         # Test against previously generated data to make sure nothing has
@@ -197,4 +186,4 @@ class TestSnackFormants(TestCase):
             for n in sformant_names:
                 # Increase rtol from 1e-5 to 1e-3 to account for random seed
                 # used in Snack formants
-                self.assertTrue(np.allclose(estimates_raw[n], sample_data[n], rtol=1e-03, atol=1e-08))
+                self.assertAllClose(estimates_raw[n], sample_data[n], rtol=1e-03, atol=1e-08)
