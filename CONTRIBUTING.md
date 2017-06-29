@@ -56,7 +56,14 @@ To contribute code, edit, etc:
 
         $ python -m unittest -h
 
-6. To run code checkers on Python code (.py files), use one or more of these
+6. Write code, edit code, test code.  Ideally, add tests to the set of
+   unit tests in the tests directory to cover any new or changed code.
+   New tests will be automatically picked up by the test runner if
+   (a) any test class subclasses unittest.TestCase and (b) any
+   test method name starts with the string 'test_'.
+
+7. Automatically check the Python code you've written by using code checkers.
+   To run code checkers on Python code (.py files), use one or more of these
    Python packages:
 
         * [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
@@ -72,13 +79,39 @@ To contribute code, edit, etc:
         $ pycodestyle /path/to/python_file
         $ pyflakes /path/to/python_file
 
-7. Write code, edit code, test code.  Ideally, add tests to the set of
-   unit tests in the tests directory to cover any new or changed code.
-   New tests will be automatically picked up by the test runner if
-   (a) any test class subclasses unittest.TestCase and (b) any
-   test method name starts with the string 'test_'.
+8. To make sure you've written enough tests to cover the code you've written,
+   run the test coverage script `run_coverage.sh` if you have a bash shell on
+   your machine, or run the following commands:
 
-8. To track added or changed files, use "git add":
+        $ coverage run -m unittest test
+        $ coverage report -m --include=opensauce/*
+
+   This will show you a report of how many lines of code have been covered by
+   the unit tests, and which lines have not been covered, for each Python
+   module.  For example, you might get a report like this:
+
+        Name                     Stmts   Miss  Cover   Missing
+        ------------------------------------------------------
+        opensauce/__init__.py        0      0   100%
+        opensauce/__main__.py      273     44    84%   28, 62, 132-133, 160, 162-164, 198-199, 206-207, 219-220, 229, 248, 320-335, 359-364, 366, 369-372, 375, 377, 383-388, 639-644
+        opensauce/helpers.py        24      0   100%
+        opensauce/praat.py          95      5    95%   158, 180, 194, 310, 325
+        opensauce/shrp.py          213     14    93%   51, 268, 281-282, 304-306, 318, 322, 333, 449, 457, 483, 487
+        opensauce/snack.py         232    125    46%   109, 111, 115, 129-153, 165-212, 232, 260-261, 273, 367, 369, 373, 387-420, 432-483, 504, 526-528, 531-532, 545
+        opensauce/soundfile.py      46      4    91%   79-81, 99
+        opensauce/textgrid.py      229    115    50%   166-167, 170-173, 193-200, 219-220, 224, 227-230, 241-246, 261-277, 284-306, 349-350, 355, 365-371, 378-383, 400-403, 409-413, 415, 425, 433-439, 446, 453, 460, 463, 466, 470-478, 483-488, 673
+        ------------------------------------------------------
+        TOTAL                     1112    307    72%
+
+   For instance, we see that for the module `soundfile.py`, 46 lines of code
+   were covered by the tests, but 4 lines were not -- which results in 91%
+   coverage.  Specifically, the lines numbered 79-81 and 99 were not covered
+   by the tests.
+
+   Running coverage requires the Python package
+   [coverage](https://coverage.readthedocs.io/) to be installed.
+
+9. To track added or changed files, use "git add":
 
         $ git add path/to/file
 
@@ -89,7 +122,7 @@ To contribute code, edit, etc:
 
    if you wanted to add large .psd files.
 
-9. Once you're ready to commit your changes, use "git commit":
+10. Once you're ready to commit your changes, use "git commit":
 
         $ git commit
 
@@ -97,7 +130,7 @@ To contribute code, edit, etc:
    one line summary of the change, a blank line, and then a paragraph or two
    about the motivation for the change and what the changes are.
 
-10. Push your changes to the cloud (it'll ask for your GitHub username and
+11. Push your changes to the cloud (it'll ask for your GitHub username and
     password):
 
         $ git push
