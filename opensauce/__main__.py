@@ -58,9 +58,16 @@ class CLI(object):
                 self.args.measurements = self._measurements_from_default_file()
         if self.args.include_f0_column:
             self.args.measurements.append(self.args.f0)
+        if self.args.include_formant_cols:
+            self.args.measurements.append(self.args.formants)
         if not self.args.measurements:
             self.parser.error("No measurements requested")
+        # Cache for measurement results
         self._cached_results = {}
+        # Cache for keys of measurements with multiple measurement vectors
+        self._cached_measurement_keys = {}
+        # Initialize length of measurement vectors
+        # There is a distinct data_len for each sound file
         self.data_len = 0
 
     def _settings_from_file(self, filepath):
@@ -146,6 +153,7 @@ class CLI(object):
                 remove_empty_lines_from_file(self.args.output_filepath)
 
     def _process(self, of):
+        # Data fields to be printed to output
         data_fields = []
         for m in self.args.measurements:
             if m == 'snackFormants':
@@ -168,32 +176,49 @@ class CLI(object):
 
         for wavfile in self.args.wavfiles:
             self._cached_results.clear()
-            soundfile = SoundFile(wavfile)
+            self._cached_measurement_keys.clear()
 
+            soundfile = SoundFile(wavfile)
             # Length of all measurement vectors written to output
             self.data_len = np.int_(np.floor(soundfile.ns / soundfile.fs / self.args.frame_shift * 1000))
 
             results = {}
+            # Compute default F0 for parameters dependent on F0
             results[self.args.f0] = self._algorithm(self.args.f0)(soundfile)
+            # Compute default formants for parameters dependent on formants
+            formant_results = self._algorithm(self.args.formants)(soundfile)
+            for k in formant_results:
+                results[k] = formant_results[k]
+            # Compute other measurements
             for measurement in self.args.measurements:
+                # Check if result previously cached
                 if measurement in self._cached_results:
-                    cached_result = self._cached_results[measurement]
-                    if isinstance(cached_result, dict):
-                        for k in cached_result:
-                            results[k] = cached_result[k]
-                    else:
-                        results[measurement] = cached_result
+                    results[measurement] = self._cached_results[measurement]
+                elif measurement in self._cached_measurement_keys:
+                    for k in self._cached_measurement_keys[measurement]:
+                        results[k] = self._cached_results[k]
+                # Otherwise, compute measurement
                 else:
                     compute_measurement = self._algorithm(measurement)
                     computed_result = compute_measurement(soundfile)
                     if isinstance(computed_result, dict):
+                        # Case of multiple measurements in dictionary
                         for k in computed_result:
                             results[k] = computed_result[k]
                     else:
+                        # Case of single measurement vector
                         results[measurement] = computed_result
 
             # end_time is time for last sample in seconds
-            end_time = soundfile.ns / soundfile.fs
+            if self.args.time_starts_at_zero:
+                # Time starts at zero
+                beg_time = 0
+                end_time = soundfile.ns / soundfile.fs
+            else:
+                # Otherwise, shift by one frame shift
+                beg_time = frame_shift / 1000
+                end_time = soundfile.ns / soundfile.fs + frame_shift / 1000
+
             # Determine intervals
             # Intervals are expressed in seconds
             if self.args.use_textgrid and soundfile.textgrid:
@@ -203,7 +228,7 @@ class CLI(object):
                     # XXX covert this to use logging.
                     print("Found no TextGrid for {}, reporting all"
                           " data".format(soundfile.wavfn))
-                intervals = (('no textgrid', 0, end_time),)
+                intervals = (('no textgrid', beg_time, end_time),)
 
             frame_shift = self.args.frame_shift
             for (label, start, stop) in intervals:
@@ -219,8 +244,9 @@ class CLI(object):
                 # Print intervals in milliseconds
                 start_str = format(start * 1000, '.3f')
                 stop_str = format(stop * 1000, '.3f')
-                # Using fstop + 1, causes endpoints of intervals to be doubled
-                for s in range(fstart, fstop + 1):
+                if self.args.include_interval_endpoint:
+                    fstop = fstop + 1
+                for s in range(fstart, fstop):
                     output.writerow(
                         self._assemble_fields(
                             filename=soundfile.wavfn,
@@ -301,22 +327,28 @@ class CLI(object):
                                    lpc_order=self.args.lpc_order,
                                    tcl_shell_cmd=self.args.tcl_cmd
                                   )
-        self._cached_results['snackFormants'] = estimates
+
+        self._cached_measurement_keys['snackFormants'] = estimates.keys()
+        for k in estimates:
+            self._cached_results[k] = estimates[k]
 
         return estimates
 
     def DO_praatFormants(self, soundfile):
         from .praat import praat_formants
-        F0 = praat_formants(soundfile.wavpath, self.data_len,
-                            self.args.praat_path,
-                            frame_shift=self.args.frame_shift,
-                            window_size=self.args.window_size,
-                            frame_precision=self.args.frame_precision,
-                            num_formants=self.args.num_formants,
-                            max_formant_freq=self.args.max_formant_freq)
+        estimates = praat_formants(soundfile.wavpath, self.data_len,
+                                   self.args.praat_path,
+                                   frame_shift=self.args.frame_shift,
+                                   window_size=self.args.window_size,
+                                   frame_precision=self.args.frame_precision,
+                                   num_formants=self.args.num_formants,
+                                   max_formant_freq=self.args.max_formant_freq)
 
-        self._cached_results['praatF0'] = F0
-        return F0
+        self._cached_measurement_keys['praatFormants'] = estimates.keys()
+        for k in estimates:
+            self._cached_results[k] = estimates[k]
+
+        return estimates
 
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
@@ -437,8 +469,26 @@ class CLI(object):
                         help="Include the TextGrid labels and interval "
                              "information in the output "
                              "(default %(default)s).")
+    parser.add_argument('--time-starts-at-zero', default=True,
+                        help="If set to True, first time point in each "
+                             "measurement vector is t = 0.  If set to False, "
+                             "first time point is t = frame shift."
+                             "(default %(default)s).")
+    parser.add_argument('--include-interval-endpoint', action="store_true",
+                        dest='include_interval_endpoint',
+                        help="Include interval endpoint in measurement "
+                              "output, so that the upper endpoint is "
+                              "included in the reported time points, i.e. "
+                              "[a,b].")
+    parser.add_argument('--exclude-interval-endpoint', action="store_false",
+                        dest='include_interval_endpoint',
+                        help="Exclude interval endpoint in measurement "
+                              "output, so that the upper endpoint is not in "
+                              "the reported time points, i.e. [a,b).")
+
     parser.set_defaults(include_f0_column=False, include_formant_cols=False,
-                        use_textgrid=True, include_labels=True)
+                        use_textgrid=True, include_labels=True,
+                        include_interval_endpoint=False)
     parser.add_argument('--NaN', default='NaN',
                         help="String to use for measurement values that do "
                              "not exist or whose value is invalid "
