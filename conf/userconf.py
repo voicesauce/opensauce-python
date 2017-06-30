@@ -1,3 +1,5 @@
+# Licensed under Apache v2 (see LICENSE)
+
 # Additional configuration for testing purposes
 # Do not change these options unless you are a developer or advanced user
 # Users should set these options through the command line interface
