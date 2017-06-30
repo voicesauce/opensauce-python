@@ -21,7 +21,7 @@ class TestSoundFile(TestCase):
         s = SoundFile(spath)
         self.assertEqual(s.wavpath, spath)
         data, fs = wavread(spath)
-        np.testing.assert_array_equal(data, s.wavdata)
+        self.assertAllClose(data, s.wavdata)
         self.assertEqual(fs, s.fs)
         self.assertEqual(s.fs, 22050)
         self.assertEqual(s.ns, 51597)
