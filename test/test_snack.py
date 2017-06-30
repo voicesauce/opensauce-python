@@ -164,7 +164,7 @@ class TestSnackFormants(TestCase):
                     #for i in idx:
                         #print('idx {}, OpenSauce {} = {}, VoiceSauce {} = {}'.format(i, n, formants_os[n][i], n, formants_vs[n][i]))
                 else:
-                    self.assertAllClose(formants_os[n], formants_vs[n], rtol=tol, atol=1e-08, equal_nan=True)
+                    self.assertAllClose(formants_os[n], vs_data, rtol=tol, atol=1e-08, equal_nan=True)
 
     def test_formants_raw(self):
         # Test against previously generated data to make sure nothing has
