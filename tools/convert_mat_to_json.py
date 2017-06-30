@@ -1,5 +1,7 @@
 # Script to convert proprietary .mat files into json
 
+# Licensed under Apache v2 (see LICENSE)
+
 import sys
 import os
 import glob

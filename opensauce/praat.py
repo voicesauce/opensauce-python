@@ -1,5 +1,11 @@
 """Estimate F0 and formants using Praat
+
 """
+
+# Licensed under Apache v2 (see LICENSE)
+# Based on VoiceSauce files func_PraatPitch.m (authored by Yen-Liang Shue
+# and Kristine Yu) and func_PraatFormants.m (authored by Yen-Liang Shue and
+# Kristine Yu)
 
 from __future__ import division
 

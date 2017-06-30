@@ -1,7 +1,9 @@
-"""
-SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic Ratio.
+""" SHRP - a pitch determination algorithm based on Subharmonic-to-Harmonic
+Ratio.
 
 """
+
+# Licensed under Apache v2 (see LICENSE)
 
 from __future__ import division
 

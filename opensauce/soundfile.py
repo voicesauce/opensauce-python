@@ -5,6 +5,8 @@ the sound data and, if it exists, associated textgrid annotation information.
 
 """
 
+# Licensed under Apache v2 (see LICENSE)
+
 from __future__ import division
 
 import math

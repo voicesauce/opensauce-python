@@ -1,6 +1,8 @@
 # Script to generate raw Snack samples from test wav files
 # The data is used for comparison in unit tests
 
+# Licensed under Apache v2 (see LICENSE)
+
 import sys
 import os
 import glob

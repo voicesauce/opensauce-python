@@ -1,3 +1,11 @@
+"""Command line interface for OpenSauce, process measurements for output
+
+"""
+
+# Licensed under Apache v2 (see LICENSE)
+# Based on VoiceSauce files vs_ParameterEstimation.m, vs_OutputToText.m,
+# vs_Initialize.m, and vs_Settings.m
+
 from __future__ import division
 
 import argparse

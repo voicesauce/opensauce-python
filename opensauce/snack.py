@@ -1,10 +1,16 @@
-"""Parameter estimation using Snack Sound Toolkit
+"""F0 and formant estimation using Snack Sound Toolkit
 
 Snack can be called in several ways:
   1) On Windows, Snack can be run via a standalone binary executable
   2) Snack can be called through the Python/Tkinter inteface
   3) Snack can be called on the system command line through the Tcl shell
+
 """
+
+# Licensed under Apache v2 (see LICENSE)
+# Based on VoiceSauce files func_SnackPitch.m (authored by Yen-Liang Shue),
+# func_SnackFormants.m (authored by Yen-Liang Shue), and
+# vs_ParameterEstimation.m
 
 from __future__ import division
 

@@ -1,3 +1,9 @@
+"""Helper functions for OpenSauce
+
+"""
+
+# Licensed under Apache v2 (see LICENSE)
+
 from __future__ import division
 
 import math
