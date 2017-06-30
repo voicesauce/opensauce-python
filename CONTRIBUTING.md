@@ -66,13 +66,15 @@ To contribute code, edit, etc:
    To run code checkers on Python code (.py files), use one or more of these
    Python packages:
 
-        * [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
-        * [pyflakes](https://pypi.python.org/pypi/pyflakes)
-        * [pydocstyle](https://pypi.python.org/pypi/pydocstyle)
-        * [pylint](https://www.pylint.org/)
+   * [pycodestyle](https://pypi.python.org/pypi/pycodestyle)
+   * [pyflakes](https://pypi.python.org/pypi/pyflakes)
+   * [pydocstyle](https://pypi.python.org/pypi/pydocstyle)
+   * [pylint](https://www.pylint.org/)
 
-   If you don't have these packages, you need to install them using pip.  It's
-   good to start with pycodestyle and pyflakes, which work well for basic checking.
+   If you don't have these packages, you need to install them using pip.  Most
+   of these packages (pycodestyle, pyflakes, pylint) are also available as
+   Anaconda packages.  It's good to start with pycodestyle and pyflakes, which
+   work well for basic checking.
 
    Some examples of how to run the code checkers for pycodestyle and pyflakes:
 
@@ -108,8 +110,10 @@ To contribute code, edit, etc:
    coverage.  Specifically, the lines numbered 79-81 and 99 were not covered
    by the tests.
 
-   Running coverage requires the Python package
-   [coverage](https://coverage.readthedocs.io/) to be installed.
+   Running coverage requires the Python package coverage to be installed.  See
+   the [coverage documentation](https://coverage.readthedocs.io/) for
+   installation instructions.  Coverage is also available as a package on
+   Anaconda.
 
 9. To track added or changed files, use "git add":
 
