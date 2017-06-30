@@ -25,6 +25,9 @@ installing and setting up Tcl/Tk and Snack.
 
 # Alternate setup: Allows Snack to be called from Python
 
+Note: We currently do not recommend calling Snack from Python/Tkinter because
+of [#26](https://github.com/voicesauce/opensauce-python/issues/26).
+
 If you want to setup your machine so that opensauce-python can call Snack from
 Python, the steps are more complicated.
 

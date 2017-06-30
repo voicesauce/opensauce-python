@@ -41,15 +41,17 @@ opensauce-python.
     This will install both Tcl/Tk version 8.4 and Snack 2.2.
 
     Sometimes, Tcl/Tk is already installed.  If not, you may need to install
-    Tcl/Tk using the package manager.  If you want to call Snack from Python,
-    you may need to do additional setup.  To find information about this,
-    search for "Tkinter <name of Linux distribution you're using>".
-
-    Many Linux distributions allow you to install Snack from their package
-    repository, including distributions based on Fedora and Arch.  This is the
-    easiest way to install Snack on Linux.
+    Tcl/Tk using the package manager.  Many Linux distributions allow you to
+    install Snack from their package repository, including distributions based
+    on Fedora and Arch.  This is the easiest way to install Snack on Linux.
 
     Note that the code will probably work with a later versions of Tcl/Tk; it
     has been tested with tk8.4 and tk8.5 on Linux.  Note that on some Linux
     distributions, people report a [bug that prevents Snack from working on Python with Tcl/Tk 8.6](https://bugs.launchpad.net/ubuntu/+source/snack/+bug/1510562).
+
+    If you want to call Snack from Python, you may need to do additional setup.
+    To find information about this, search for "Tkinter <name of Linux
+    distribution you're using>".  However, we do not currently recommend
+    Snack from Python/Tkinter because of
+    [#26](https://github.com/voicesauce/opensauce-python/issues/26).
 

@@ -58,6 +58,9 @@ knowledge.
 
 # Alternate setup: Allows Snack to be called from Python
 
+Note: We do not currently recommend calling Snack from Python/Tkinter because
+of [#26](https://github.com/voicesauce/opensauce-python/issues/26).
+
 If you want to setup your machine so that opensauce-python can call Snack from
 Python, the steps are more complicated.  Thanks to Shinya Fujie for this
 [guide on setting up Mac machines to run Snack in Python](http://qiita.com/fujie/items/afa463275a5e581667e9).
