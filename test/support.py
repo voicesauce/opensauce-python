@@ -13,6 +13,7 @@ except ImportError:
 
 import scipy.io
 
+from opensauce.__main__ import CLI
 from opensauce.textgrid import TextGrid
 
 try:
@@ -181,6 +182,24 @@ class TestCase(unittest.TestCase):
             raise self.failureException(msg)
 
     @contextlib.contextmanager
+    def assertArgparseError(self, expected_regex, expected_regex_3=None):
+        with self.assertRaises(SystemExit):
+            with self.captured_output('stderr') as out:
+                yield out
+        msg = out.getvalue()
+        if not py2 and expected_regex_3 is not None:
+            expected_regex = expected_regex_3
+
+        # HACK: Change backslashes to normal slashes on Windows
+        #       because backslashes are special characters in regex
+        if sys.platform == 'win32' or sys.platform == 'cygwin':
+            msg = msg.replace('\\\\', '/')
+            expected_regex = [regex.replace('\\', '/') for regex in expected_regex]
+
+        for regex in expected_regex:
+            self.assertRegex(msg, regex)
+
+    @contextlib.contextmanager
     def captured_output(self, stream_name):
         """Return a context manager that temporarily replaces the sys stream
         *stream_name* with a StringIO and returns it."""
@@ -283,3 +302,9 @@ def parameterize(cls):
     for key, value in testfuncs.items():
         setattr(cls, key, value)
     return cls
+
+def CLI_output(test_case, args):
+    with test_case.captured_output('stdout') as sout:
+        CLI(args).process()
+    lines = sout.getvalue().splitlines()
+    return [l.split('\t') for l in lines]

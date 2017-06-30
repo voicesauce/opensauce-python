@@ -56,9 +56,9 @@ class CLI(object):
                                             self.args.default_measurements_file)
             else:
                 self.args.measurements = self._measurements_from_default_file()
-        if self.args.include_f0_column:
+        if self.args.include_f0_column and self.args.f0 not in self.args.measurements:
             self.args.measurements.append(self.args.f0)
-        if self.args.include_formant_cols:
+        if self.args.include_formant_cols and self.args.formants not in self.args.measurements:
             self.args.measurements.append(self.args.formants)
         if not self.args.measurements:
             self.parser.error("No measurements requested")
@@ -161,6 +161,7 @@ class CLI(object):
             elif m == 'praatFormants':
                 for i in range(1, round_half_away_from_zero(self.args.num_formants) + 1):
                     data_fields.append('pF' + str(i))
+                for i in range(1, round_half_away_from_zero(self.args.num_formants) + 1):
                     data_fields.append('pB' + str(i))
             else:
                 data_fields.append(m)
@@ -210,15 +211,9 @@ class CLI(object):
                         results[measurement] = computed_result
 
             # end_time is time for last sample in seconds
-            if self.args.time_starts_at_zero:
-                # Time starts at zero
-                beg_time = 0
-                end_time = soundfile.ns / soundfile.fs
-            else:
-                # Otherwise, shift by one frame shift
-                beg_time = frame_shift / 1000
-                end_time = soundfile.ns / soundfile.fs + frame_shift / 1000
-
+            # Time starts at zero
+            beg_time = 0
+            end_time = soundfile.ns / soundfile.fs
             # Determine intervals
             # Intervals are expressed in seconds
             if self.args.use_textgrid and soundfile.textgrid:
@@ -238,9 +233,11 @@ class CLI(object):
                     continue
                 # Convert intervals from seconds to frame number
                 fstart = np.int_(round_half_away_from_zero(start * 1000 / frame_shift))
-                # The -1 is because we use fstop + 1 in the loop below
                 fstop = min(np.int_(round_half_away_from_zero(stop * 1000 / frame_shift)),
-                            np.int_(np.floor(end_time * 1000 / frame_shift)) - 1)
+                            np.int_(np.floor(end_time * 1000 / frame_shift)))
+                if not self.args.time_starts_at_zero:
+                    fstart = fstart + 1
+                    fstop = fstop + 1
                 # Print intervals in milliseconds
                 start_str = format(start * 1000, '.3f')
                 stop_str = format(stop * 1000, '.3f')
@@ -457,37 +454,43 @@ class CLI(object):
                         help="Do not include the TextGrid interval "
                              "information for analysis.")
     parser.add_argument('--use-textgrid', action="store_true",
-                        dest='use_textgrid',
+                        dest='use_textgrid', default=True,
                         help="Include the TextGrid interval information for "
                              "analysis (default %(default)s).")
     parser.add_argument('--no-labels', action="store_false",
-                        dest='include_labels', default=True,
+                        dest='include_labels',
                         help="Do not include the TextGrid labels or interval "
                              "information in the output.")
-    parser.add_argument('--include-labels', action="store_true",
+    parser.add_argument('--include-labels', action='store_true',
                         dest='include_labels',
                         help="Include the TextGrid labels and interval "
                              "information in the output "
                              "(default %(default)s).")
-    parser.add_argument('--time-starts-at-zero', default=True,
-                        help="If set to True, first time point in each "
-                             "measurement vector is t = 0.  If set to False, "
-                             "first time point is t = frame shift."
+    parser.add_argument('--time-starts-at-zero', action="store_true",
+                        dest='time_starts_at_zero', default=True,
+                        help="First time point in each measurement vector is "
+                             " t = 0. "
                              "(default %(default)s).")
-    parser.add_argument('--include-interval-endpoint', action="store_true",
+    parser.add_argument('--time-starts-at-frameshift', action='store_false',
+                        dest='time_starts_at_zero',
+                        help="First time point in each measurement vector is "
+                             " t = frame shift.")
+    parser.add_argument('--include-interval-endpoint', action='store_true',
                         dest='include_interval_endpoint',
                         help="Include interval endpoint in measurement "
                               "output, so that the upper endpoint is "
                               "included in the reported time points, i.e. "
                               "[a,b].")
-    parser.add_argument('--exclude-interval-endpoint', action="store_false",
-                        dest='include_interval_endpoint',
+    parser.add_argument('--exclude-interval-endpoint', action='store_false',
+                        dest='include_interval_endpoint', default=False,
                         help="Exclude interval endpoint in measurement "
                               "output, so that the upper endpoint is not in "
-                              "the reported time points, i.e. [a,b).")
+                              "the reported time points, i.e. [a,b). "
+                             "By default, endpoints are excluded.")
 
     parser.set_defaults(include_f0_column=False, include_formant_cols=False,
                         use_textgrid=True, include_labels=True,
+                        time_starts_at_zero=True,
                         include_interval_endpoint=False)
     parser.add_argument('--NaN', default='NaN',
                         help="String to use for measurement values that do "

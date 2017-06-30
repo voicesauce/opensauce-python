@@ -23,6 +23,9 @@ class TestSoundFile(TestCase):
         data, fs = wavread(spath)
         np.testing.assert_array_equal(data, s.wavdata)
         self.assertEqual(fs, s.fs)
+        self.assertEqual(s.fs, 22050)
+        self.assertEqual(s.ns, 51597)
+        self.assertEqual(s.ms_len, 2340)
 
     def test_no_textgrid(self):
         fn = 'beijing_f3_50_a.wav'
