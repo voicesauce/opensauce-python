@@ -11,10 +11,9 @@ of Tcl/Tk8.4 comes with Snack 2.2
 
 So we can simply run Snack commands through the Tcl interpreter using `tclsh`.
 
-Then it only remains to install Python 2.7 and the Python packages
-[NumPy](http://www.numpy.org/) and [Scipy](https://www.scipy.org/).  (Python
-3.x support for opensauce-python is still in progress.)  There are several ways
-to do this.
+Then it only remains to install Python 2.7 or 3.6+ and the Python packages
+[NumPy](http://www.numpy.org/) and [Scipy](https://www.scipy.org/).  There are
+several ways to do this.
 
 *   Mac OS X comes with Python 2.7 pre-installed. If you choose to use this
     pre-installed Python, you only need to install Numpy and Scipy.
@@ -38,12 +37,18 @@ to do this.
 
         $ brew install python numpy scipy
 
+    If you want to install the Python 3 versions, use
+
+        $ brew install python3
+        $ brew install numpy --with-python3
+        $ brew install matplotlib --with-python3
+
     Now the Homebrew package versions of Python, NumPy, and SciPy are
     installed.
 
 *   You can install the Anaconda distribution of Python.  Follow the
     directions on the [Anaconda website](https://www.continuum.io) and install
-    the Python 2.7 version.  NumPy and SciPy come pre-installed.
+    Python.  NumPy and SciPy come pre-installed.
 
 If you only want to play with the software and don't use Python very often,
 using the pre-installed Python (Method 1) might be appropriate.  If you use

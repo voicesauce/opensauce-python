@@ -4,8 +4,8 @@ Linux instructions
 Here are specific instructions on how to setup your Linux machine to run
 opensauce-python.
 
-1.  Install [Python 2.7](https://www.python.org/), if you don't already have
-    it.
+1.  Install [Python 2.7 or 3.6+](https://www.python.org/), if you don't already
+    have it.
 
 2.  Install the Python packages [NumPy](http://www.numpy.org/) and
     [SciPy](https://www.scipy.org/).
@@ -16,10 +16,16 @@ opensauce-python.
         $ python -m pip install --upgrade pip
         $ pip install --user numpy scipy
 
+    (You may need to substitute `python2` or `python3` for `python` and `pip2`
+    or `pip3` for `pip`, depending on which version of Python you want to use
+    and which Linux distribution you are using.)
+
     Debian / Ubuntu users might prefer to install NumPy and SciPy system-wide
     via their package manager:
 
         $ sudo apt-get install python-numpy python-scipy
+
+    (For Python 3, instead use `python3-numpy` and `python3-scipy`.)
 
     If you have trouble, look at the
     [SciPy documentation](https://www.scipy.org/install.html).

@@ -11,10 +11,9 @@ When opensauce-python is asked to estimate parameters using Snack, it will use
 a stand-alone binary executable `snack.exe`.  This allows the user to skip
 installing and setting up Tcl/Tk and Snack.
 
-1.  Install [Anaconda](https://www.continuum.io/), the Python 2.7 version.
-    Anaconda comes with the NumPy and SciPy packages pre-installed.  Currently,
-    only Python 2.7 is supported on opensauce-python.  Python 3.x support is
-    still in progress.
+1.  Install [Anaconda](https://www.continuum.io/) and pick the Python version
+    you would like, either Python 2.7 or Python 3.6+.  Anaconda comes with the
+    NumPy and SciPy packages pre-installed.
 
     Be sure to select the option to make Anaconda your default Python by
     setting the system environment variables accordingly.  (This option is
@@ -29,11 +28,9 @@ installing and setting up Tcl/Tk and Snack.
 If you want to setup your machine so that opensauce-python can call Snack from
 Python, the steps are more complicated.
 
-1.  Install [Anaconda](https://www.continuum.io/), the 32-bit Python 2.7
-    version.  Anaconda comes with the NumPy and SciPy packages pre-installed.
-    Be sure to use 32-bit version, even if you have a 64-bit Windows operating
-    system.  Currently, only Python 2.7 is supported on opensauce-python.
-    Python 3.x support is still in progress.
+1.  Install [Anaconda](https://www.continuum.io/), the 32-bit version.
+    Anaconda comes with the NumPy and SciPy packages pre-installed.  Be sure to
+    use 32-bit version, even if you have a 64-bit Windows operating system.
 
 2.  Download [Snack Speech Toolkit](http://www.speech.kth.se/snack/) "Binary
     release for Windows with Python 2.3" and unzip the file.  Read the

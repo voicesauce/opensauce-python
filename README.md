@@ -10,8 +10,11 @@ from audio recordings.
 # Requirements
 
 * Windows, Mac OS X, or Linux operating system
-* Python 2.7
+* Python 2.7 or 3.6+
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
+
+Earlier versions of Python 3 may work, but OpenSauce has only been tested on
+Python 3.6+
 
 If you want to use Snack to estimate parameters:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
@@ -27,9 +30,9 @@ has only been tested with Praat v6.0.29.
 # Installation
 
 1.  Install Python, the Pythons package NumPy and SciPy, and Snack Sound
-    Toolkit, if you don't already have them. Installing Snack is non-trivial,
-    so we recommend that you follow the recommendations in the instructions
-    below for this step.
+    Toolkit, if you don't already have them. Installing Snack can be
+    non-trivial, so we recommend that you follow the recommendations in the
+    instructions below for this step.
 
     * [Windows specific instructions](WINDOWS.md)
     * [Mac OS X specific instructions](MAC-OS-X.md)
