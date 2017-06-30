@@ -32,7 +32,7 @@ from .praat import valid_praat_f0_methods
 # when opensauce is run using -m.
 class MyArgumentParser(argparse.ArgumentParser):
     def error(self, message):
-        if self.prog.startswith('__main__'):
+        if self.prog.startswith('__main__'): # pragma: no cover
             self.prog = os.path.split(os.path.split(__file__)[0])[1]
         self.exit(2, "{}: error: {}\n".format(self.prog, message))
 
@@ -360,36 +360,36 @@ class CLI(object):
     _valid_formants = [x for x in _valid_measurements if x.endswith('Formants')]
     # Determine default method for calling Snack
 
-    if user_default_snack_method is not None:
+    if user_default_snack_method is not None: # pragma: no cover
         if user_default_snack_method in valid_snack_methods:
             if user_default_snack_method == 'exe' and (sys.platform != 'win32' and sys.platform != 'cygwin'):
                 raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
             default_snack_method = user_default_snack_method
         else:
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
-    elif sys.platform == 'win32' or sys.platform == 'cygwin':
+    elif sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         default_snack_method = 'exe'
-    elif sys.platform.startswith('linux'):
+    elif sys.platform.startswith('linux'): # pragma: no cover
         default_snack_method = 'tcl'
-    elif sys.platform == 'darwin':
+    elif sys.platform == 'darwin': # pragma: no cover
         default_snack_method = 'tcl'
-    else:
+    else: # pragma: no cover
         default_snack_method = 'tcl'
 
-    if user_tcl_shell_cmd is not None:
+    if user_tcl_shell_cmd is not None: # pragma: no cover
         default_tcl_shell_cmd = user_tcl_shell_cmd
-    elif sys.platform == 'darwin':
+    elif sys.platform == 'darwin': # pragma: no cover
         default_tcl_shell_cmd = 'tclsh8.4'
-    else:
+    else: # pragma: no cover
         default_tcl_shell_cmd = 'tclsh'
 
-    if user_praat_path is not None:
+    if user_praat_path is not None: # pragma: no cover
         default_praat_path = user_praat_path
-    elif sys.platform == 'darwin':
+    elif sys.platform == 'darwin': # pragma: no cover
         default_praat_path = '/Applications/Praat.app/Contents/MacOS/Praat'
-    elif sys.platform == 'win32' or sys.platform == 'cygwin':
+    elif sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         default_praat_path = 'C:\Program Files\Praat\Praat.exe'
-    else:
+    else: # pragma: no cover
         default_praat_path = '/usr/bin/praat'
 
     #
@@ -647,9 +647,9 @@ class CLI(object):
 
 
 if __name__ == '__main__':
-    try:
+    try: # pragma: no cover
         my_cli = CLI()
         my_cli.process()
-    except (OSError, IOError, ValueError) as err:
+    except (OSError, IOError, ValueError) as err: # pragma: no cover
         print(err)
         sys.exit(1)

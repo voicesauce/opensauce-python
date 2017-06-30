@@ -117,7 +117,7 @@ def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
             F0_raw, V_raw = snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
         elif method == 'tcl':
             F0_raw, V_raw = snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd)
-    else:
+    else: # pragma: no cover
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return F0_raw, V_raw
@@ -173,7 +173,7 @@ def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitc
     except ImportError:
         try:
             import Tkinter as tkinter
-        except ImportError:
+        except ImportError: # pragma: no cover
             print("Need Python library tkinter. Is it installed?")
 
     # HACK: Need to replace single backslash with two backslashes,
@@ -191,7 +191,7 @@ def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitc
         # suppress the message without modifying the snack source.  Fortunately
         # most people running opensauce will in fact have a /dev/mixer.
         tcl.eval('package require snack')
-    except tkinter.TclError as err:
+    except tkinter.TclError as err: # pragma: no cover
         log.critical('Cannot load snack (is it installed?): %s', err)
         return
     tcl.eval('snack::sound s')
@@ -262,7 +262,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
         os.remove(tcl_file)
         raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_shell_cmd))
     else:
-        if return_code != 0:
+        if return_code != 0: # pragma: no cover
             os.remove(tcl_file)
             raise OSError('Error when trying to call Snack via Tcl shell script.')
 
@@ -275,7 +275,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
         V_raw = data[:, 1]
         # Cleanup and remove f0 file
         os.remove(f0_file)
-    else:
+    else: # pragma: no cover
         raise OSError('Snack Tcl shell error -- unable to locate .f0 file')
 
     # Cleanup and remove Tcl script file
@@ -375,7 +375,7 @@ def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
             estimates_raw = snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
         elif method == 'tcl':
             estimates_raw = snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order, tcl_shell_cmd)
-    else:
+    else: # pragma: no cover
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
 
     return estimates_raw
@@ -440,7 +440,7 @@ def snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lp
     except ImportError:
         try:
             import Tkinter as tkinter
-        except ImportError:
+        except ImportError: # pragma: no cover
             print("Need Python library tkinter. Is it installed?")
 
     # HACK: Need to replace single backslash with two backslashes,
@@ -458,7 +458,7 @@ def snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lp
         # suppress the message without modifying the snack source.  Fortunately
         # most people running opensauce will in fact have a /dev/mixer.
         tcl.eval('package require snack')
-    except tkinter.TclError as err:
+    except tkinter.TclError as err: # pragma: no cover
         log.critical('Cannot load snack (is it installed?): %s', err)
         return
     tcl.eval('snack::sound s')
@@ -529,11 +529,11 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     # Run Tcl script
     try:
         return_code = call([tcl_shell_cmd, tcl_file])
-    except OSError:
+    except OSError: # pragma: no cover
         os.remove(tcl_file)
         raise OSError('Error while attempting to call Snack via Tcl shell.  Is Tcl shell command {} correct?'.format(tcl_shell_cmd))
     else:
-        if return_code != 0:
+        if return_code != 0: # pragma: no cover
             os.remove(tcl_file)
             raise OSError('Error when trying to call Snack via Tcl shell script.')
 
@@ -547,7 +547,7 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
             estimates_raw[sformant_names[i]] = frm_results[:, i]
         # Cleanup and remove f0 file
         os.remove(frm_file)
-    else:
+    else: # pragma: no cover
         raise OSError('Snack Tcl shell error -- unable to locate .frm file')
 
     # Cleanup and remove Tcl script file

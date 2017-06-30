@@ -160,7 +160,7 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
         ext = '.praatac'
     elif method == 'cc':
         ext = '.praatcc'
-    else:
+    else: # pragma: no cover
         raise ValueError('Invalid Praat F0 method. Choices are {}'.format(valid_praat_f0_methods))
 
     # Convert Boolean variables to Praat values
@@ -182,7 +182,7 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
     # Run Praat F0 script
     return_code = call(praat_cmd)
 
-    if return_code != 0:
+    if return_code != 0: # pragma: no cover
         raise OSError('Praat error')
 
     # Path for Praat F0 output file corresponding to wav_fn
@@ -196,7 +196,7 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
         t_raw, F0_raw = np.loadtxt(f0_fn, unpack=True, converters={0: undef, 1: undef})
         # Cleanup and remove f0 file
         os.remove(f0_fn)
-    else:
+    else: # pragma: no cover
         raise OSError('Praat error -- unable to locate {} file'.format(ext))
 
     return t_raw, F0_raw
@@ -312,7 +312,7 @@ def praat_raw_formants(wav_fn, praat_path, frame_shift=1, window_size=25, num_fo
     # Run Praat F0 script
     return_code = call(praat_cmd)
 
-    if return_code != 0:
+    if return_code != 0: # pragma: no cover
         raise OSError('Praat error')
 
     # Path for Praat output file corresponding to wav_fn
@@ -327,7 +327,7 @@ def praat_raw_formants(wav_fn, praat_path, frame_shift=1, window_size=25, num_fo
         data_raw = np.loadtxt(fmt_fn, dtype=float, skiprows=1, converters=undef_dict)
         # Cleanup and remove Praat file
         os.remove(fmt_fn)
-    else:
+    else: # pragma: no cover
         raise OSError('Praat error -- unable to locate .pfmt file')
 
     # Put results into dictionary
