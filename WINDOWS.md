@@ -32,8 +32,9 @@ Python, the steps are more complicated.
     Anaconda comes with the NumPy and SciPy packages pre-installed.  Be sure to
     use 32-bit version, even if you have a 64-bit Windows operating system.
 
-2.  Download [Snack Speech Toolkit](http://www.speech.kth.se/snack/) "Binary
-    release for Windows with Python 2.3" and unzip the file.  Read the
+2.  Download the latest version of
+    [Snack Speech Toolkit](http://www.speech.kth.se/snack/) "Binary release for
+    Windows with Python 2.3" and unzip the file.  Read the
     [installation notes for Snack and Python](http://www.speech.kth.se/snack/pyinstall.html).
 
 3.  Open a Windows command prompt and type

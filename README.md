@@ -18,7 +18,7 @@ Python 3.6+
 
 If you want to use Snack to estimate parameters:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
-* [Snack Sound Toolkit](http://www.speech.kth.se/snack/)
+* [Snack Sound Toolkit](http://www.speech.kth.se/snack/) (v2.2)
 
 If you want to use Praat to estimate parameters, you need to download the
 Praat software
