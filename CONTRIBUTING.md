@@ -37,17 +37,17 @@ To contribute code, edit, etc:
 
         $ python -m unittest test
 
-   To run tests in one test file (for example, the tests in `test_cli.py`):
+   To run tests in one test file (for example, the tests in `test_soundfile.py`):
 
-        $ python -m unittest test.test_cli
+        $ python -m unittest test.test_soundfile
 
-   To run tests in one class of one test file (for example, `TestCLI`):
+   To run tests in one class of one test file (for example, `TestSoundFile`):
 
-        $ python -m unittest test.test_cli.TestCLI
+        $ python -m unittest test.test_soundfile.TestSoundFile
 
-   To run a single test in one class of one test file (for example, `test_m`):
+   To run a single test in one class of one test file (for example, `test_no_textgrid`):
 
-        $ python -m unittest test.test_cli.TestCLI.test_m
+        $ python -m unittest test.test_soundfile.TestSoundFile.test_no_textgrid
 
    Following the convention of `unittest`, all tests and test files begin with
    `test_`.
