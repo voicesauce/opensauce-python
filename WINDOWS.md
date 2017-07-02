@@ -23,6 +23,23 @@ installing and setting up Tcl/Tk and Snack.
     program.  You should see a command line prompt, where you can now run
     commands like `> python -m opensauce -h`
 
+# Alternate setup: Call Snack in Tcl shell
+
+1. Install Anaconda as described in the previous section.  Either 32-bit or
+   64-bit versions should work.
+
+2. Install ActiveState's [ActiveTcl](https://www.activestate.com/activetcl).
+   Be sure to pick the 32-bit version.  The 64-bit version will not work with
+   Snack.
+
+3. Download Snack v2.2.10,
+   [Binary release for Windows with Tcl/Tk 8.1-8.4](http://www.speech.kth.se/snack/dist/snack2210-tcl.zip)
+
+4. Unzip the file to a folder, and in the resulting folder, double-click on
+   `install.tcl`.  This will install Snack.
+
+We have successfully run Snack in Tcl using Active Tcl version 8.5, 32-bit.
+
 # Alternate setup: Allows Snack to be called from Python
 
 Note: We currently do not recommend calling Snack from Python/Tkinter because
