@@ -7,6 +7,10 @@ This is a Python port of
 It provides a set of command-line tools for taking automatic voice measurements
 from audio recordings.
 
+# Project status
+
+![Travis CI build status](https://travis-ci.org/voicesauce/opensauce-python.svg?branch=master)
+
 # Requirements
 
 * Windows, Mac OS X, or Linux operating system
