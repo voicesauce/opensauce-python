@@ -1,0 +1,21 @@
+language: python
+sudo: enabled
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+# command to run tests
+script: python -m unittest test
+install: pip install --only-binary=numpy,scipy numpy scipy
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y tk8.4 libsnack2
+  - wget http://www.fon.hum.uva.nl/praat/praat6029_linux64barren.tar.gz -O /tmp/praat.tar.gz
+  - tar -xzvf /tmp/praat.tar.gz
+  - sudo cp praat /usr/bin/praat
+  - pip install --upgrade pip setuptools wheel
+
+notifications:
+  email:
+    - terri@terriyu.info
