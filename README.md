@@ -15,11 +15,8 @@ from audio recordings.
 # Requirements
 
 * Windows, Mac OS X, or Linux operating system
-* Python 2.7 or 3.6+
+* Python 2.7 or 3.4+
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
-
-Earlier versions of Python 3 may work, but OpenSauce has only been tested on
-Python 3.6+
 
 If you want to use Snack to estimate parameters:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)

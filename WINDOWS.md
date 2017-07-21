@@ -12,7 +12,7 @@ a stand-alone binary executable `snack.exe`.  This allows the user to skip
 installing and setting up Tcl/Tk and Snack.
 
 1.  Install [Anaconda](https://www.continuum.io/) and pick the Python version
-    you would like, either Python 2.7 or Python 3.6+.  Anaconda comes with the
+    you would like, either Python 2.7 or Python 3.4+.  Anaconda comes with the
     NumPy and SciPy packages pre-installed.
 
     Be sure to select the option to make Anaconda your default Python by

@@ -11,7 +11,7 @@ of Tcl/Tk8.4 comes with Snack 2.2
 
 So we can simply run Snack commands through the Tcl interpreter using `tclsh`.
 
-Then it only remains to install Python 2.7 or 3.6+ and the Python packages
+Then it only remains to install Python 2.7 or 3.4+ and the Python packages
 [NumPy](http://www.numpy.org/) and [Scipy](https://www.scipy.org/).  There are
 several ways to do this.
 

@@ -4,7 +4,7 @@ Linux instructions
 Here are specific instructions on how to setup your Linux machine to run
 opensauce-python.
 
-1.  Install [Python 2.7 or 3.6+](https://www.python.org/), if you don't already
+1.  Install [Python 2.7 or 3.4+](https://www.python.org/), if you don't already
     have it.
 
 2.  Install the Python packages [NumPy](http://www.numpy.org/) and
