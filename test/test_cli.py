@@ -43,7 +43,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(p.returncode, 2)
 
     def test_ignore_label(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
             sound_file_path('beijing_f3_50_a.wav')
@@ -55,7 +55,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_ignore_multiple_labels(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
             '--ignore-label', 'V1',
@@ -68,7 +68,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_include_empty_labels(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--include-empty-labels',
             sound_file_path('beijing_f3_50_a.wav')
@@ -77,7 +77,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'C1' in x]), 100)
 
     def test_no_f0_column(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--no-f0-column',
             sound_file_path('beijing_f3_50_a.wav')
@@ -87,7 +87,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines[0] if 'F0' in x]), 0)
 
     def test_include_f0_column(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--include-f0-column',
             sound_file_path('beijing_f3_50_a.wav')
@@ -97,7 +97,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines[0] if 'F0' in x]), 1)
 
     def test_no_formant_cols(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--no-formant-cols',
             sound_file_path('beijing_f3_50_a.wav')
@@ -108,7 +108,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines[0] if 'pB' in x]), 0)
 
     def test_include_formant_cols(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'praatFormants',
             '--include-formant-cols',
             '--num-formants', '4',
@@ -121,7 +121,7 @@ class TestCommandIO(TestCase):
         self.assertListEqual(lines[0][-8:], formant_col_names)
 
     def test_no_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--no-textgrid',
             sound_file_path('beijing_f3_50_a.wav')
@@ -135,7 +135,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
 
     def test_use_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -147,7 +147,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_use_textgrid_but_doesnt_exist(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             data_file_path(os.path.join('cli', 'beijing_f3_50_a.wav')),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -161,7 +161,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
 
     def test_no_labels(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--no-labels',
             sound_file_path('beijing_f3_50_a.wav')
@@ -175,7 +175,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 0)
 
     def test_include_labels(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--include-labels',
@@ -187,7 +187,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_multiple_input_files(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--include-empty-labels',
             sound_file_path('beijing_f3_50_a.wav'),
@@ -218,7 +218,7 @@ class TestCommandIO(TestCase):
             include-empty-labels
             ignore-label C2
             """)
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--settings', settingsfn,
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
@@ -231,7 +231,7 @@ class TestCommandIO(TestCase):
             include-empty-labels
             """)
         with self.patch(CLI, 'settings_locs', [settingsfn]):
-            lines = CLI_output(self, [
+            lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
                 ])
@@ -251,7 +251,7 @@ class TestCommandIO(TestCase):
             measurements snackF0
             include-empty-labels
             """)
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--settings', settingsfn,
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -278,7 +278,7 @@ class TestCommandIO(TestCase):
             CLI(['--settings', settingsfn])
 
     def test_multiple_measurements(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'shrF0', 'snackF0', 'SHR',
             ])
@@ -291,7 +291,7 @@ class TestCommandIO(TestCase):
             snackF0
             shrF0
             """)
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             "--default-measurements-file", measurefn,
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -305,7 +305,7 @@ class TestCommandIO(TestCase):
             shrF0
             """)
         with self.patch(CLI, 'measurements_locs', [measurefn]):
-            lines = CLI_output(self, [
+            lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 ])
         self.assertEqual(len(lines), 585)
@@ -330,8 +330,28 @@ class TestCommandIO(TestCase):
             lines = f.readlines()
             self.assertEqual(len(lines), 585)
 
+    def test_output_delimiter_tab(self):
+        lines = CLI_output(self, '\t', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+            '--no-textgrid',
+            '--output-delimiter', 'tab',
+            ])
+        self.assertEqual(len(lines), 2341)
+        self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
+
+    def test_output_delimiter_comma(self):
+        lines = CLI_output(self, ',', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'snackF0',
+            '--no-textgrid',
+            '--output-delimiter', 'comma',
+            ])
+        self.assertEqual(len(lines), 2341)
+        self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
+
     def test_time_starts_at_zero_no_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--no-textgrid',
@@ -348,7 +368,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[-1][1], '2339')
 
     def test_time_starts_at_zero_use_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -377,7 +397,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(V2_lines[-1][-2], '1349')
 
     def test_time_starts_at_frameshift_no_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--no-textgrid',
@@ -395,7 +415,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[-1][1], '2340')
 
     def test_time_starts_at_frameshift_use_textgrid(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -424,7 +444,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(V2_lines[-1][-2], '1350')
 
     def test_exclude_interval_endpoint(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -454,7 +474,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(V2_lines[-1][-2], '1349')
 
     def test_include_interval_endpoint(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
@@ -484,7 +504,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(V2_lines[-1][-2], '1350')
 
     def test_default_NaN(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
@@ -496,7 +516,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[-1][-3:], ['NaN', 'NaN', 'NaN'])
 
     def test_alternate_NaN(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
@@ -512,7 +532,7 @@ class TestCommandIO(TestCase):
 class TestCommandF0(TestCase):
 
     def test_alternate_F0(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--F0', 'shrF0',
             '--include-F0-column',
             sound_file_path('beijing_f3_50_a.wav'),
@@ -531,7 +551,7 @@ class TestCommandF0(TestCase):
 
     def test_invalid_tcl_shell_cmd(self):
         with self.assertRaisesRegex(OSError, 'nosuchcmd'):
-            lines = CLI_output(self, [
+            lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
                 '--snack-method', 'tcl',
@@ -543,7 +563,7 @@ class TestCommandF0(TestCase):
             CLI(['--praat-f0-method', 'nosuchmethod'])
 
     def test_snackF0_method_tcl(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'tcl',
@@ -557,7 +577,7 @@ class TestCommandF0(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_snackF0_method_python(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'python',
@@ -573,7 +593,7 @@ class TestCommandF0(TestCase):
     @unittest.skipUnless(platform == 'win32' or platform == 'cygwin',
                          'Requires Windows operating system')
     def test_snackF0_method_exe(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'exe',
@@ -587,7 +607,7 @@ class TestCommandF0(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_praatF0(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'praatF0',
             ])
@@ -602,7 +622,7 @@ class TestCommandF0(TestCase):
     def test_praat_f0_empty_output_file(self):
         err_msg = 'Praat error -- pitch calculation failed, check input parameters'
         with self.assertRaisesRegex(OSError, err_msg):
-            lines = CLI_output(self, [
+            lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'praatF0',
                 '--praat-min-f0', '400',
@@ -611,7 +631,7 @@ class TestCommandF0(TestCase):
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
     def test_praat_F0_alternate_method(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--measurements', 'praatF0',
             '--praat-f0-method', 'ac',
             sound_file_path('beijing_f3_50_a.wav'),
@@ -638,7 +658,7 @@ class TestCommandF0(TestCase):
         self._check_algos(self.pitch_algo1_params.keys())
 
     def pitch_algo1_as_default_settings(self, pitch_algo, line_count, v100):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
             sound_file_path('beijing_f3_50_a.wav'),
@@ -649,7 +669,7 @@ class TestCommandF0(TestCase):
     pitch_algo2_params = CLI._valid_f0
 
     def pitch_algo2_as_frame_shift(self, pitch_algo):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
             '--frame-shift', '2',
@@ -668,7 +688,7 @@ class TestCommandF0(TestCase):
         self._check_algos(self.pitch_algo3_params.keys())
 
     def pitch_algo3_as_window_size(self, pitch_algo, v100):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
             '--window-size', '10',
@@ -686,7 +706,7 @@ class TestCommandF0(TestCase):
         self._check_algos(self.pitch_algo4_params.keys())
 
     def pitch_algo4_as_min_f0(self, pitch_algo, min_f0_arg, v100):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
             min_f0_arg, '200',
@@ -704,7 +724,7 @@ class TestCommandF0(TestCase):
         self._check_algos(self.pitch_algo5_params.keys())
 
     def pitch_algo5_as_max_f0(self, pitch_algo, max_f0_arg, v100):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
             max_f0_arg, '200',
@@ -718,7 +738,7 @@ class TestCommandFormants(TestCase):
                          'pB1', 'pB2', 'pB3', 'pB4']
 
     def test_default_formants(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--include-formant-cols',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -727,7 +747,7 @@ class TestCommandFormants(TestCase):
         self.assertListEqual(lines[0][-8:], self.formant_col_names)
 
     def test_alternate_formants(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             '--formants', 'snackFormants',
             '--include-formant-cols',
             sound_file_path('beijing_f3_50_a.wav'),
@@ -741,7 +761,7 @@ class TestCommandFormants(TestCase):
             CLI(['--formants', 'nosuchalgorithm'])
 
     def test_snackFormants_method_tcl(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'tcl',
@@ -755,7 +775,7 @@ class TestCommandFormants(TestCase):
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
     def test_snackFormants_method_python(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'python',
@@ -771,7 +791,7 @@ class TestCommandFormants(TestCase):
     @unittest.skipUnless(platform == 'win32' or platform == 'cygwin',
                          'Requires Windows operating system')
     def test_snackFormants_method_exe(self):
-        lines = CLI_output(self, [
+        lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'exe',

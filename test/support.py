@@ -303,8 +303,8 @@ def parameterize(cls):
         setattr(cls, key, value)
     return cls
 
-def CLI_output(test_case, args):
+def CLI_output(test_case, delimiter, args):
     with test_case.captured_output('stdout') as sout:
         CLI(args).process()
     lines = sout.getvalue().splitlines()
-    return [l.split('\t') for l in lines]
+    return [l.split(delimiter) for l in lines]

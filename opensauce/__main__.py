@@ -174,7 +174,13 @@ class CLI(object):
             else:
                 data_fields.append(m)
 
-        output = csv.writer(of, dialect=csv.excel_tab)
+        if self.args.output_delimiter == 'comma':
+            output = csv.writer(of, dialect=csv.excel)
+        elif self.args.output_delimiter == 'tab':
+            output = csv.writer(of, dialect=csv.excel_tab)
+        else: # pragma: no cover
+            raise ValueError('Unknown output delimiter {}'.format(self.args.output_delimiter))
+
         output.writerow(
             self._assemble_fields(
                 filename='Filename',
@@ -358,6 +364,7 @@ class CLI(object):
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
     _valid_formants = [x for x in _valid_measurements if x.endswith('Formants')]
+    _valid_delimiters = ['comma', 'tab']
     # Determine default method for calling Snack
 
     if user_default_snack_method is not None: # pragma: no cover
@@ -510,6 +517,10 @@ class CLI(object):
                              "write to the shell standard output, which can "
                              "also be specified explicitly by specifying "
                              "'-' as the OUTPUT_FILEPATH.")
+    parser.add_argument('--output-delimiter', default='tab',
+                        choices=_valid_delimiters,
+                        help="Delimiter to use for output file.  It defaults "
+                             "to %(default)s.")
     # These options are general settings for the analysis
     parser.add_argument('-f', '--f0', '--F0', default='snackF0',
                         choices=_valid_f0,
