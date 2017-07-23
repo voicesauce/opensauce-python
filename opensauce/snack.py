@@ -111,7 +111,7 @@ def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
     For more info, see documentation for snack_pitch().
     """
     if method in valid_snack_methods:
-        if method == 'exe':
+        if method == 'exe': # pragma: no cover
             F0_raw, V_raw = snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
         elif method == 'python':
             F0_raw, V_raw = snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
@@ -122,7 +122,7 @@ def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
 
     return F0_raw, V_raw
 
-def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
+def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch): # pragma: no cover
     """Implement snack_raw_pitch() by calling Snack through a Windows
        standalone binary executable
 
@@ -178,7 +178,7 @@ def snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitc
 
     # HACK: Need to replace single backslash with two backslashes,
     #       so that the Tcl shell reads the file path correctly on Windows
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         wav_fn = wav_fn.replace('\\', '\\\\')
 
     # XXX I'm assuming Hz for pitch; the docs don't actually say that.
@@ -234,7 +234,7 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
     # invalid/inconsistent parameters -- exiting.
 
     # HACK: Tcl shell expects double backslashes in Windows path
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         in_file = in_file.replace('\\', '\\\\')
 
     # Name of the file containing the Tcl script
@@ -369,7 +369,7 @@ def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
     For more info, see documentation for snack_formants().
     """
     if method in valid_snack_methods:
-        if method == 'exe':
+        if method == 'exe': # pragma: no cover
             estimates_raw = snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
         elif method == 'python':
             estimates_raw = snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
@@ -380,7 +380,7 @@ def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
 
     return estimates_raw
 
-def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order):
+def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order): # pragma: no cover
     """Implement snack_raw_formants() by calling Snack through a Windows
        standalone binary executable
 
@@ -445,7 +445,7 @@ def snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lp
 
     # HACK: Need to replace single backslash with two backslashes,
     #       so that the Tcl shell reads the file path correctly on Windows
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         wav_fn = wav_fn.replace('\\', '\\\\')
 
     # XXX I'm assuming Hz for pitch; the docs don't actually say that.
@@ -506,7 +506,7 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     # invalid/inconsistent parameters -- exiting.
 
     # HACK: Tcl shell expects double backslashes in Windows path
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
+    if sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
         in_file = in_file.replace('\\', '\\\\')
 
     tcl_file = os.path.join(os.path.dirname(wav_fn), 'tclforsnackformant.tcl')
