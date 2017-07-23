@@ -2,7 +2,7 @@ Test data
 =========
 
 Sound files (.wav and corresponding .TextGrid files) are in the directory
-`sound-files`.  These are the input data to the algorithms.
+`wav-files`.  These are the input data to the algorithms.
 
 Raw VoiceSauce data is in the directory `raw-vs-output`.  This data is from the
 intermediary .mat files produced by VoiceSauce.  The .mat files were converted

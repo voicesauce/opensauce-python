@@ -7,7 +7,7 @@ from sys import platform
 from opensauce.helpers import wavread
 from opensauce.soundfile import SoundFile
 
-from test.support import TestCase, sound_file_path
+from test.support import TestCase, data_file_path, sound_file_path
 
 
 class TestSoundFile(TestCase):
@@ -78,6 +78,24 @@ class TestSoundFile(TestCase):
 
     def test_textgrid_intervals(self):
         s = SoundFile(sound_file_path('beijing_f3_50_a.wav'))
+        expected = (
+            ('', 0, 0.7660623496874233),
+            ('C1', 0.7660623496874233, 0.865632223379142),
+            ('V1', 0.865632223379142, 1.0740775664347026),
+            ('C2', 1.0740775664347026, 1.1922586314706678),
+            ('V2', 1.1922586314706678, 1.350453757896763),
+            ('', 1.350453757896763, 2.34),
+            )
+        actual = s.textgrid_intervals
+        for i in range(len(actual)):
+            self.assertEqual(actual[i][0], expected[i][0], 'row %s' % i)
+            self.assertAlmostEqual(actual[i][1], expected[i][1], 'elt %s,1' % i)
+            self.assertAlmostEqual(actual[i][2], expected[i][2], 'elt %s,2' % i)
+
+    def test_textgrid_not_intervaltier(self):
+        # Test that tiers which are not of IntervalTier class are skipped
+        # in TextGrid intervals
+        s = SoundFile(data_file_path(os.path.join('soundfile', 'beijing_f3_50_a-texttier.wav')))
         expected = (
             ('', 0, 0.7660623496874233),
             ('C1', 0.7660623496874233, 0.865632223379142),

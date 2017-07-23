@@ -55,17 +55,17 @@ except ImportError:
 py2 = sys.version_info[0] < 3
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
-sound_path = os.path.join(data_path, 'sound-files')
+wav_path = os.path.join(data_path, 'wav-files')
 
 
 def data_file_path(fn):
     return os.path.join(data_path, fn)
 
 def sound_file_path(fn):
-    return os.path.join(data_path, 'sound-files', fn)
+    return os.path.join(wav_path, fn)
 
 
-wav_fns = sorted([sound_file_path(fn) for fn in os.listdir(sound_path) if fn.endswith('.wav')])
+wav_fns = sorted([sound_file_path(fn) for fn in os.listdir(wav_path) if fn.endswith('.wav')])
 
 
 def sample_data_fn(fn, folder, col_name, sample):
