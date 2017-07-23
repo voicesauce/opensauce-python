@@ -133,7 +133,7 @@ def praat_pitch(wav_fn, data_len, praat_path, frame_shift=1, method='cc',
              continue
 
         # If index is in range, set value of F0
-        if (idx_f >= 0) and (idx_f < data_len):
+        if (idx_f >= 0) and (idx_f < data_len): # pragma: no branch
             F0[idx_f] = F0_raw[min_idx]
 
     return F0
@@ -275,7 +275,7 @@ def praat_formants(wav_fn, data_len, praat_path, frame_shift=1, window_size=25,
              continue
 
         # If index is in range, set measurement value
-        if (idx_f >= 0) and (idx_f < data_len):
+        if (idx_f >= 0) and (idx_f < data_len): # pragma: no branch
             for k in estimates_raw:
                 if k != 'ptFormants':
                     estimates[k][idx_f] = estimates_raw[k][min_idx]

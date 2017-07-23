@@ -115,7 +115,7 @@ def snack_raw_pitch(wav_fn, method, frame_shift=1, window_size=25,
             F0_raw, V_raw = snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
         elif method == 'python':
             F0_raw, V_raw = snack_raw_pitch_python(wav_fn, frame_shift, window_size, max_pitch, min_pitch)
-        elif method == 'tcl':
+        elif method == 'tcl': # pragma: no branch
             F0_raw, V_raw = snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, tcl_shell_cmd)
     else: # pragma: no cover
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
@@ -373,7 +373,7 @@ def snack_raw_formants(wav_fn, method, frame_shift=1, window_size=25,
             estimates_raw = snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
         elif method == 'python':
             estimates_raw = snack_raw_formants_python(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order)
-        elif method == 'tcl':
+        elif method == 'tcl': # pragma: no branch
             estimates_raw = snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_order, tcl_shell_cmd)
     else: # pragma: no cover
         raise ValueError('Invalid Snack calling method. Choices are {}'.format(valid_snack_methods))
