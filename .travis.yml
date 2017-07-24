@@ -21,6 +21,6 @@ after_success:
 notifications:
   email:
     recipients:
-      - terri@terriyu.info
+      - teryu@alum.mit.edu
     on_success: always
     on_failure: always
