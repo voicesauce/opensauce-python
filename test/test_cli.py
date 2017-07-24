@@ -15,7 +15,6 @@ from opensauce.snack import sformant_names
 from test.support import TestCase, data_file_path, sound_file_path, py2, parameterize, CLI_output
 
 
-@parameterize
 class TestCommandIO(TestCase):
 
     def _make_file(self, lines):
@@ -529,6 +528,7 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[-1][-3:], ['mylabel', 'mylabel', 'mylabel'])
 
 
+@parameterize
 class TestCommandF0(TestCase):
 
     def test_alternate_F0(self):
