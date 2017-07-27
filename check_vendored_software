@@ -16,8 +16,8 @@ import opensauce
 software = [
     [
         "textgrid.py",
-         "https://github.com/nltk/nltk_contrib/raw/master/"
-             "nltk_contrib/textgrid.py"
+        "https://raw.githubusercontent.com/kylebgorman/textgrid/master/"
+             "textgrid/textgrid.py"
          ],
     ]
 
