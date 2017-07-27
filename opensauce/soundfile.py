@@ -13,7 +13,7 @@ import math
 import os
 
 from opensauce.helpers import wavread
-from opensauce.textgrid import TextGrid
+from opensauce.textgrid import TextGrid, IntervalTier
 
 
 class SoundFile(object):
@@ -85,7 +85,7 @@ class SoundFile(object):
     @property
     def textgrid(self):
         if os.path.exists(self.tgpath):
-            res = TextGrid.load(self.tgpath)
+            res = TextGrid.fromFile(self.tgpath)
         else:
             res = None
         self.__dict__['textgrid'] = res
@@ -97,9 +97,9 @@ class SoundFile(object):
             raise ValueError("Textgrid file {!r} not found".format(self.tgpath))
         res = []
         for tier in self.textgrid.tiers:
-            if tier.classid.lower() != 'intervaltier':
+            if tier.__class__ != IntervalTier:
                 continue
-            for start, stop, label in tier.simple_transcript:
-                res.append((label, float(start), float(stop)))
+            for i in tier.intervals:
+                res.append((i.mark, float(i.minTime), float(i.maxTime)))
         self.__dict__['textgrid_intervals'] = res
         return res
