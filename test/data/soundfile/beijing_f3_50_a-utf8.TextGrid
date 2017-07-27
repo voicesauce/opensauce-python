@@ -1,0 +1,50 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0
+xmax = 2.34
+tiers? <exists>
+size = 2
+item []:
+    item [1]:
+        class = "IntervalTier"
+        name = "日本語"
+        xmin = 0
+        xmax = 2.34
+        intervals: size = 6
+        intervals [1]:
+            xmin = 0
+            xmax = 0.7660623496874233
+            text = "ニコニコ"
+        intervals [2]:
+            xmin = 0.7660623496874233
+            xmax = 0.865632223379142
+            text = "C1"
+        intervals [3]:
+            xmin = 0.865632223379142
+            xmax = 1.0740775664347026
+            text = "V1"
+        intervals [4]:
+            xmin = 1.0740775664347026
+            xmax = 1.1922586314706678
+            text = "C2"
+        intervals [5]:
+            xmin = 1.1922586314706678
+            xmax = 1.350453757896763
+            text = "V2"
+        intervals [6]:
+            xmin = 1.350453757896763
+            xmax = 2.34
+            text = "にゃあ"
+    item [2]:
+        class = "TextTier"
+        name = "鐘"
+        xmin = 0
+        xmax = 2.34
+        points: size = 2
+        points [1]:
+            time = 1.56
+            mark = "ガシャンッ"
+        points [2]:
+            time = 2.03
+            mark = "カリ"
