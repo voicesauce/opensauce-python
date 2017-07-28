@@ -3,6 +3,8 @@
 # the full Snack Tcl library ('tcl' method) and the Windows standalone
 # executable ('exe' method)
 
+# Licensed under Apache v2 (see LICENSE)
+
 import sys
 import os
 import glob
