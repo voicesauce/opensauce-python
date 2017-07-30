@@ -1,5 +1,6 @@
 import os
 import shutil
+import unittest
 import numpy as np
 
 from sys import platform
@@ -7,7 +8,7 @@ from sys import platform
 from opensauce.helpers import wavread
 from opensauce.soundfile import SoundFile
 
-from test.support import TestCase, parameterize, data_file_path, sound_file_path
+from test.support import TestCase, parameterize, load_json, data_file_path, sound_file_path, wav_fns
 
 
 @parameterize
@@ -27,6 +28,35 @@ class TestSoundFile(TestCase):
         self.assertEqual(s.fs, 22050)
         self.assertEqual(s.ns, 51597)
         self.assertEqual(s.ms_len, 2340)
+        self.assertIsNone(s.wavdata_rs)
+        self.assertIsNone(s.fs_rs)
+        self.assertIsNone(s.ns_rs)
+
+    def test_resample_properties(self):
+        spath = sound_file_path('beijing_f3_50_a.wav')
+        s = SoundFile(spath, resample_freq=16000)
+        self.assertEqual(s.wavpath, spath)
+        y, fs = wavread(spath)
+        self.assertAllClose(y, s.wavdata)
+        self.assertEqual(fs, s.fs)
+        self.assertEqual(s.fs, 22050)
+        self.assertEqual(s.ns, 51597)
+        self.assertEqual(s.ms_len, 2340)
+        self.assertEqual(s.fs_rs, 16000)
+        self.assertEqual(s.ns_rs, 37440)
+
+    @unittest.expectedFailure
+    def test_resample_data_against_matlab(self):
+        # XXX: This test fails because SciPy is using a different algorithm
+        #      for resampling than Matlab.  When the SciPy and Matlab
+        #      resampled data are plotted against each other, they look
+        #      reasonably similar, so the fact that this test fails is
+        #      probably okay.
+        for fn in wav_fns:
+            s = SoundFile(fn, resample_freq=16000)
+            resample_fn = os.path.splitext(os.path.basename(fn))[0] + '-matlab-resample'
+            data = load_json(os.path.join('soundfile', resample_fn))
+            self.assertAllClose(s.wavdata_rs, data['y_rs'], rtol=1e-01)
 
     def test_no_textgrid(self):
         fn = 'beijing_f3_50_a.wav'

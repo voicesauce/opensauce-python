@@ -11,6 +11,9 @@ from __future__ import division
 
 import math
 import os
+import numpy as np
+
+from scipy.signal import resample
 
 from opensauce.helpers import wavread
 from opensauce.textgrid import TextGrid, IntervalTier
@@ -18,8 +21,10 @@ from opensauce.textgrid import TextGrid, IntervalTier
 
 class SoundFile(object):
 
-    def __init__(self, wavpath, tgdir=None, tgfn=None):
-        """Load sound data from wavpath and TextGrid from tgdir+tgfn.
+    def __init__(self, wavpath, tgdir=None, tgfn=None, resample_freq=None):
+        """Load sound data from wavpath and TextGrid from tgdir+tgfn.  If
+        resample_freq is specified, then also resample the sound data and
+        save the resampled data, in addition to the original data.
 
         If tgdir is not specified look for the TextGrid in the same directory
         as the sound file.  if tgfn is not specified, look for a file with
@@ -33,6 +38,12 @@ class SoundFile(object):
             wavdata                 An ndarray of the wavfile samples
             fs                      The number of samples per second
             ns                      Total number of samples
+            wavdata_rs              An ndarray of the wavfile samples after
+                                    resampling (None if resample_freq = None)
+            fs_rs                   The number of samples per second after
+                                    resampling (None if resample_freq = None)
+            ns_rs                   Total number of samples after resampling
+                                    (None if resample_freq = None)
             tgpath                  Full path to the textgrid file.
             textgrid                A TextGrid object loaded from tgpath if
                                         a file exists at tgpath, else None.
@@ -58,6 +69,13 @@ class SoundFile(object):
         if tgdir is None:
             tgdir = os.path.dirname(wavpath)
         self.tgpath = os.path.join(tgdir, tgfn)
+        # Check that resample_freq has valid value
+        if resample_freq is not None:
+            if not isinstance(resample_freq, int): # pragma: no cover
+                raise ValueError('Resample frequency must be an integer')
+            if resample_freq <= 0:
+                raise ValueError('Resample frequency must be positive')
+        self.fs_rs = resample_freq
 
     @property
     def wavdata(self):
@@ -75,6 +93,27 @@ class SoundFile(object):
         data, fs = wavread(self.wavpath)
         self.__dict__['wavdata'], self.__dict__['fs'] = data, fs
         return data, fs
+
+    @property
+    def wavdata_rs(self):
+        return self._wavdata_rs()[0]
+
+    @property
+    def ns_rs(self):
+        return self._wavdata_rs()[1]
+
+    def _wavdata_rs(self):
+        if self.fs_rs is not None:
+            # Number of points in resample
+            ns_rs = np.int_(np.ceil(self.ns * self.fs_rs / self.fs))
+            # Do resample
+            # XXX: Tried using a Hamming window as a low pass filter, but it
+            #      didn't seem to make a big difference, so it's not used
+            #      here.
+            data_rs = resample(self.wavdata, ns_rs)
+            return data_rs, ns_rs
+        else:
+            return None, None
 
     @property
     def ms_len(self):
