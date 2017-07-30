@@ -1,6 +1,7 @@
 Soundfile data files
---------------------
+====================
 
+## TextGrid files
 The `.TextGrid` files in this directory are for testing the TextGrid parser
 `opensauce/textgrid.py`.
 
@@ -21,3 +22,11 @@ encoded and contains non-ASCII text labels in the TextGrid tiers.
 
 We test UTF-8 and UTF-16 encoded TextGrid files to make sure that we can
 handle non-ASCII characters in the TextGrid files.
+
+## Resample json files
+
+The `*-matlab-resample.json` files contain the data for each wav file after
+resampling in Matlab at 16 kHz.  The Matlab command used is
+`y = resample(y, 16000, Fs)` where `y` is the original data and `Fs` is the
+sampling frequency for the original data.  These data are for comparing against
+SciPy's resample function.
