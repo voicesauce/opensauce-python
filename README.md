@@ -29,6 +29,15 @@ Praat software
 and specify the path where OpenSauce can find the Praat executable.  OpenSauce
 has only been tested with Praat v6.0.29.
 
+*Note: Currently, the only input files supported are WAV files in 16-bit PCM
+format.  Praat can only read certain file types described
+in their
+[documentation](http://www.fon.hum.uva.nl/praat/manual/Sound_files_3__Files_that_Praat_can_read.html).
+Snack can only read the file types described in their
+[documentation](http://www.speech.kth.se/snack/man/snack2.2/tcl-man.html#sound).
+If you would like to see other file types supported, please let us
+know in the issue tracker!*
+
 # Installation
 
 1.  Install Python, the Pythons package NumPy and SciPy, and Snack Sound
@@ -90,7 +99,8 @@ Or alternatively, you can put file path to the sound file first.
 
     $ python -m opensauce /path/to/file.wav --measurements snackF0 SHR -o out.csv
 
-The CSV format used is Excel tab delimited.
+The default output format used is Excel tab delimited.  You can also output
+files that are comma delimited using the option `--output-delimiter`.
 
 You can process multiple wav files by using shell wildcards.  Suppose
 your wav files are in the directory `data/sample1`.  You can process
