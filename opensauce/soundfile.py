@@ -14,6 +14,7 @@ import os
 import numpy as np
 
 from scipy.signal import resample
+from scipy.io import wavfile
 
 from opensauce.helpers import wavread
 from opensauce.textgrid import TextGrid, IntervalTier
@@ -25,6 +26,10 @@ class SoundFile(object):
         """Load sound data from wavpath and TextGrid from tgdir+tgfn.  If
         resample_freq is specified, then also resample the sound data and
         save the resampled data, in addition to the original data.
+
+        Assume that input wav files are 16-bit PCM (integers between -32767
+        and 32767).  Output resampled wav files are also written as 16-bit
+        PCM.
 
         If tgdir is not specified look for the TextGrid in the same directory
         as the sound file.  if tgfn is not specified, look for a file with
@@ -38,6 +43,8 @@ class SoundFile(object):
             wavdata                 An ndarray of the wavfile samples
             fs                      The number of samples per second
             ns                      Total number of samples
+            wavpath_rs              Path for wav file corresponding to
+                                    resampled data
             wavdata_rs              An ndarray of the wavfile samples after
                                     resampling (None if resample_freq = None)
             fs_rs                   The number of samples per second after
@@ -71,7 +78,7 @@ class SoundFile(object):
         self.tgpath = os.path.join(tgdir, tgfn)
         # Check that resample_freq has valid value
         if resample_freq is not None:
-            if not isinstance(resample_freq, int): # pragma: no cover
+            if not isinstance(resample_freq, int):
                 raise ValueError('Resample frequency must be an integer')
             if resample_freq <= 0:
                 raise ValueError('Resample frequency must be positive')
@@ -95,12 +102,16 @@ class SoundFile(object):
         return data, fs
 
     @property
-    def wavdata_rs(self):
+    def wavpath_rs(self):
         return self._wavdata_rs()[0]
 
     @property
-    def ns_rs(self):
+    def wavdata_rs(self):
         return self._wavdata_rs()[1]
+
+    @property
+    def ns_rs(self):
+        return self._wavdata_rs()[2]
 
     def _wavdata_rs(self):
         if self.fs_rs is not None:
@@ -111,9 +122,16 @@ class SoundFile(object):
             #      didn't seem to make a big difference, so it's not used
             #      here.
             data_rs = resample(self.wavdata, ns_rs)
-            return data_rs, ns_rs
+            wavpath_rs = self.wavpath.split('.')[0] + '-resample-' + str(self.fs_rs) + 'Hz.wav'
+            # Write resampled data to wav file
+            # Convert data from 32-bit floating point to 16-bit PCM
+            wavfile.write(wavpath_rs, self.fs_rs, np.int16(data_rs * 32768))
+            # XXX: Was worried that Python might continue executing code
+            #      before the file write is finished, but it seems like it's
+            #      not an issue.
+            return wavpath_rs, data_rs, ns_rs
         else:
-            return None, None
+            return None, None, None
 
     @property
     def ms_len(self):

@@ -32,18 +32,27 @@ class TestSoundFile(TestCase):
         self.assertIsNone(s.fs_rs)
         self.assertIsNone(s.ns_rs)
 
+    def test_resample_invalid_value(self):
+        with self.assertRaisesRegex(ValueError, 'Resample frequency must be an integer'):
+            spath = sound_file_path('beijing_f3_50_a.wav')
+            s = SoundFile(spath, resample_freq='string')
+
     def test_resample_properties(self):
-        spath = sound_file_path('beijing_f3_50_a.wav')
-        s = SoundFile(spath, resample_freq=16000)
-        self.assertEqual(s.wavpath, spath)
-        y, fs = wavread(spath)
-        self.assertAllClose(y, s.wavdata)
-        self.assertEqual(fs, s.fs)
+        fn = 'beijing_f3_50_a.wav'
+        t = self.tmpdir()
+        tmp_path = os.path.join(t, fn)
+        shutil.copy(sound_file_path(fn), tmp_path)
+        s = SoundFile(tmp_path, resample_freq=16000)
         self.assertEqual(s.fs, 22050)
         self.assertEqual(s.ns, 51597)
         self.assertEqual(s.ms_len, 2340)
+        self.assertEqual(os.path.basename(s.wavpath_rs), 'beijing_f3_50_a-resample-16000Hz.wav')
         self.assertEqual(s.fs_rs, 16000)
         self.assertEqual(s.ns_rs, 37440)
+        y_rs, fs_rs = wavread(s.wavpath_rs)
+        self.assertEqual(fs_rs, s.fs_rs)
+        self.assertEqual(len(y_rs), s.ns_rs)
+        self.assertAllClose(y_rs * 32768, np.int16(s.wavdata_rs * 32768))
 
     @unittest.expectedFailure
     def test_resample_data_against_matlab(self):
@@ -53,9 +62,13 @@ class TestSoundFile(TestCase):
         #      reasonably similar, so the fact that this test fails is
         #      probably okay.
         for fn in wav_fns:
-            s = SoundFile(fn, resample_freq=16000)
+            t = self.tmpdir()
+            tmp_path = os.path.join(t, os.path.basename(fn))
+            shutil.copy(fn, tmp_path)
+            s = SoundFile(tmp_path, resample_freq=16000)
             resample_fn = os.path.splitext(os.path.basename(fn))[0] + '-matlab-resample'
             data = load_json(os.path.join('soundfile', resample_fn))
+            self.assertEqual(len(s.wavdata_rs), len(data['y_rs']))
             self.assertAllClose(s.wavdata_rs, data['y_rs'], rtol=1e-01)
 
     def test_no_textgrid(self):

@@ -527,6 +527,27 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[1][-2:], ['mylabel', 'mylabel'])
         self.assertEqual(lines[-1][-3:], ['mylabel', 'mylabel', 'mylabel'])
 
+    def test_resample_negative_integer(self):
+        with self.assertRaisesRegex(ValueError, 'Resample frequency must be positive'):
+            lines = CLI_output(self, '\t', [
+                sound_file_path('beijing_f3_50_a.wav'),
+                '--measurements', 'snackF0',
+                '--resample-freq', '-5',
+                ])
+
+    def test_resample_output(self):
+        spath = sound_file_path('beijing_f3_50_a.wav')
+        lines = CLI_output(self, '\t', [
+            spath,
+            '--measurements', 'snackF0',
+            '--include-empty-labels',
+            '--resample-freq', '16000',
+            ])
+        self.assertEqual(len(lines), 2341)
+        self.assertEqual(lines[0][-1], 'snackF0')
+        self.assertEqual(len(lines[1]), 6)
+        self.assertFalse(os.path.exists(spath.split('.')[0] + '-resample-16000Hz.wav'))
+
 
 @parameterize
 class TestCommandF0(TestCase):
@@ -732,19 +753,39 @@ class TestCommandF0(TestCase):
             ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
+    pitch_algo6_params = {
+        'snackF0': ('snackF0', 585, '216.709'),
+        'praatF0': ('praatF0', 585, '224.755'),
+        'shrF0': ('shrF0', 585, '219.583'),
+        }
 
+    def test_f0_resample_tests(self):
+        self._check_algos(self.pitch_algo6_params.keys())
+
+    def pitch_algo6_as_resample(self, pitch_algo, line_count, v100):
+        lines = CLI_output(self, '\t', [
+            '--f0', pitch_algo,
+            '--include-F0-column',
+            '--resample-freq', '16000',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), line_count)
+        self.assertEqual(lines[100], self.line100_prefix + [v100])
+
+
+@parameterize
 class TestCommandFormants(TestCase):
-    formant_col_names = ['pF1', 'pF2', 'pF3', 'pF4',
-                         'pB1', 'pB2', 'pB3', 'pB4']
 
     def test_default_formants(self):
         lines = CLI_output(self, '\t', [
             '--include-formant-cols',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
+        formant_col_names = ['pF1', 'pF2', 'pF3', 'pF4',
+                             'pB1', 'pB2', 'pB3', 'pB4']
         self.assertEqual(len(lines), 585)
         self.assertEqual(len(lines[1]), 13)
-        self.assertListEqual(lines[0][-8:], self.formant_col_names)
+        self.assertListEqual(lines[0][-8:], formant_col_names)
 
     def test_alternate_formants(self):
         lines = CLI_output(self, '\t', [
@@ -803,3 +844,77 @@ class TestCommandFormants(TestCase):
         self.assertEqual(len([x for x in lines if 'V1' in x]), 208)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
+
+    line100_prefix = ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865']
+
+    def _check_algos(self, algo_list):
+        self.assertEqual(sorted(algo_list), sorted(CLI._valid_formants), "Tests we have do not match tests we need")
+
+    formant_algo1_params = {
+        'snackFormants': ('snackFormants', 585,
+                          ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4'],
+                          ['573.595', '1658.767', '3277.449', '4422.382'],
+                          ['447.585', '139.099', '163.150', '405.460']),
+        'praatFormants': ('praatFormants', 585,
+                          ['pF1', 'pF2', 'pF3', 'pF4', 'pB1', 'pB2', 'pB3', 'pB4'],
+                          ['502.944', '1681.375', '3320.657', '4673.634'],
+                          ['406.819', '1058.742', '979.097', '646.462']),
+        }
+
+    def test_formant_default_settings_tests(self):
+        self._check_algos(self.formant_algo1_params.keys())
+
+    def formant_algo1_as_default_settings(self, formant_algo, line_count, formant_names, fvals, bvals):
+        lines = CLI_output(self, '\t', [
+            '--formants', formant_algo,
+            '--include-formant-cols',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), line_count)
+        self.assertEqual(len(lines[0]), 13)
+        self.assertEqual(lines[0][:5], ['Filename', 'Label', 'seg_Start', 'seg_End', 't_ms'])
+        self.assertEqual(lines[0][-8:], formant_names)
+        self.assertEqual(lines[100][:5], self.line100_prefix)
+        self.assertEqual(lines[100][-8:-4], fvals)
+        self.assertEqual(lines[100][-4:], bvals)
+
+    formant_algo2_params = {
+        'snackFormants': ('snackFormants', 585,
+                          ['sF1', 'sF2', 'sF3', 'sF4', 'sB1', 'sB2', 'sB3', 'sB4'],
+                          ['554.597', '1439.074', '3263.611', '4235.368'],
+                          ['152.857', '199.713', '425.234', '485.668']),
+        'praatFormants': ('praatFormants', 585,
+                          ['pF1', 'pF2', 'pF3', 'pF4', 'pB1', 'pB2', 'pB3', 'pB4'],
+                          ['502.948', '1682.217', '3321.440', '4674.870'],
+                          ['407.967', '1064.119', '984.181', '651.117']),
+        }
+
+    def test_formant_resample_tests(self):
+        self._check_algos(self.formant_algo2_params.keys())
+
+    def formant_algo2_as_resample(self, formant_algo, line_count, formant_names, fvals, bvals):
+        lines = CLI_output(self, '\t', [
+            '--formants', formant_algo,
+            '--include-formant-cols',
+            '--resample-freq', '16000',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), line_count)
+        self.assertEqual(len(lines[0]), 13)
+        self.assertEqual(lines[0][:5], ['Filename', 'Label', 'seg_Start', 'seg_End', 't_ms'])
+        self.assertEqual(lines[0][-8:], formant_names)
+        self.assertEqual(lines[100][:5], self.line100_prefix)
+        if lines[100][-8:-4] != fvals:
+            f_rtol = 1e-05
+            f_atol = 1e-08
+            print('\nAbsolute equality check for formant values using {} algorithm failed, try equality with rtol={}, atol={}'.format(formant_algo, f_rtol, f_atol))
+            self.assertAllClose(np.float_(lines[100][-8:-4]), np.float_(fvals), rtol=f_rtol, atol=f_atol)
+        else:
+            self.assertEqual(lines[100][-8:-4], fvals)
+        if lines[100][-4:] != bvals:
+            b_rtol = 1e-05
+            b_atol = 1e-08
+            print('\nAbsolute equality check for bandwidth values {} algorithm failed, try equality with rtol={}, atol={}'.format(formant_algo, b_rtol, b_atol))
+            self.assertAllClose(np.float_(lines[100][-4:]), np.float_(bvals), rtol=b_rtol, atol=b_atol)
+        else:
+            self.assertEqual(lines[100][-4:], bvals)

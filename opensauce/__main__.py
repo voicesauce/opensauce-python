@@ -193,9 +193,14 @@ class CLI(object):
             self._cached_results.clear()
             self._cached_measurement_keys.clear()
 
-            soundfile = SoundFile(wavfile)
-            # Length of all measurement vectors written to output
-            self.data_len = np.int_(np.floor(soundfile.ns / soundfile.fs / self.args.frame_shift * 1000))
+            if self.args.resample_freq is None:
+                soundfile = SoundFile(wavfile)
+                # Length of all measurement vectors written to output
+                self.data_len = np.int_(np.floor(soundfile.ns / soundfile.fs / self.args.frame_shift * 1000))
+            else:
+                soundfile = SoundFile(wavfile, resample_freq=self.args.resample_freq)
+                # Length of all measurement vectors written to output
+                self.data_len = np.int_(np.floor(soundfile.ns_rs / soundfile.fs_rs / self.args.frame_shift * 1000))
 
             results = {}
             # Compute default F0 for parameters dependent on F0
@@ -227,7 +232,10 @@ class CLI(object):
             # end_time is time for last sample in seconds
             # Time starts at zero
             beg_time = 0
-            end_time = soundfile.ns / soundfile.fs
+            if self.args.resample_freq is None:
+                end_time = soundfile.ns / soundfile.fs
+            else:
+                end_time = soundfile.ns_rs / soundfile.fs_rs
             # Determine intervals
             # Intervals are expressed in seconds
             if self.args.use_textgrid and soundfile.textgrid:
@@ -266,6 +274,10 @@ class CLI(object):
                             data=[self._get_value(results[x], s)
                                   for x in data_fields]
                         ))
+            # Cleanup: remove wav file corresponding to resample,
+            #          if necessary
+            if self.args.resample_freq is not None:
+                os.remove(soundfile.wavpath_rs)
 
     #
     # Algorithm wrappers.
@@ -273,7 +285,11 @@ class CLI(object):
 
     def DO_snackF0(self, soundfile):
         from .snack import snack_pitch
-        F0, V = snack_pitch(soundfile.wavpath,
+        if soundfile.fs_rs is None:
+             wavpath = soundfile.wavpath
+        else:
+             wavpath = soundfile.wavpath_rs
+        F0, V = snack_pitch(wavpath,
                             self.args.snack_method,
                             self.data_len,
                             frame_shift=self.args.frame_shift,
@@ -288,7 +304,11 @@ class CLI(object):
 
     def DO_praatF0(self, soundfile):
         from .praat import praat_pitch
-        F0 = praat_pitch(soundfile.wavpath, self.data_len,
+        if soundfile.fs_rs is None:
+             wavpath = soundfile.wavpath
+        else:
+             wavpath = soundfile.wavpath_rs
+        F0 = praat_pitch(wavpath, self.data_len,
                          self.args.praat_path,
                          frame_shift=self.args.frame_shift,
                          method=self.args.praat_f0_method,
@@ -310,8 +330,13 @@ class CLI(object):
 
     def DO_shrF0(self, soundfile):
         from .shrp import shr_pitch
-        SHR, F0 = shr_pitch(soundfile.wavdata,
-                            soundfile.fs,
+        if soundfile.fs_rs is None:
+             wavdata = soundfile.wavdata
+             fs = soundfile.fs
+        else:
+             wavdata = soundfile.wavdata_rs
+             fs = soundfile.fs_rs
+        SHR, F0 = shr_pitch(wavdata, fs,
                             window_length=self.args.window_size,
                             frame_shift=self.args.frame_shift,
                             min_pitch=self.args.shr_min_f0,
@@ -329,7 +354,11 @@ class CLI(object):
 
     def DO_snackFormants(self, soundfile):
         from .snack import snack_formants
-        estimates = snack_formants(soundfile.wavpath,
+        if soundfile.fs_rs is None:
+             wavpath = soundfile.wavpath
+        else:
+             wavpath = soundfile.wavpath_rs
+        estimates = snack_formants(wavpath,
                                    self.args.snack_method,
                                    self.data_len,
                                    frame_shift=self.args.frame_shift,
@@ -347,7 +376,11 @@ class CLI(object):
 
     def DO_praatFormants(self, soundfile):
         from .praat import praat_formants
-        estimates = praat_formants(soundfile.wavpath, self.data_len,
+        if soundfile.fs_rs is None:
+             wavpath = soundfile.wavpath
+        else:
+             wavpath = soundfile.wavpath_rs
+        estimates = praat_formants(wavpath, self.data_len,
                                    self.args.praat_path,
                                    frame_shift=self.args.frame_shift,
                                    window_size=self.args.window_size,
@@ -522,6 +555,9 @@ class CLI(object):
                         help="Delimiter to use for output file.  It defaults "
                              "to %(default)s.")
     # These options are general settings for the analysis
+    parser.add_argument('--resample-freq', type=int,
+                        help="Resample sound files at specified frequency in"
+                             " Hz.")
     parser.add_argument('-f', '--f0', '--F0', default='snackF0',
                         choices=_valid_f0,
                         help="The algorithm to use to compute F0 for use as "
