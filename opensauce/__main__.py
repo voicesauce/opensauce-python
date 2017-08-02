@@ -408,7 +408,7 @@ class CLI(object):
         else:
             raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
     elif sys.platform == 'win32' or sys.platform == 'cygwin': # pragma: no cover
-        default_snack_method = 'exe'
+        default_snack_method = 'tcl'
     elif sys.platform.startswith('linux'): # pragma: no cover
         default_snack_method = 'tcl'
     elif sys.platform == 'darwin': # pragma: no cover
@@ -594,9 +594,8 @@ class CLI(object):
     # These options control the Snack analysis
     parser.add_argument('--snack-method', default=default_snack_method,
                         choices=valid_snack_methods,
-                        help="Method to use in calling Snack.  On Windows, "
-                             "the default is 'exe'.  On Linux and OS X, the "
-                             "default is 'tcl'.")
+                        help="Method to use in calling Snack.  The default is "
+                             "'tcl'.")
     parser.add_argument('--tcl-cmd', default=default_tcl_shell_cmd,
                         help="Command to use when calling Tcl shell for Snack "
                              "F0 analysis.  On OS X, the default is "

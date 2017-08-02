@@ -6,7 +6,7 @@
 
 # Snack calling method (equivalent to --snack-method CLI option)
 # Choices are 'exe', 'python', 'tcl'
-# Setting it to None, uses the default for your operating system
+# Setting it to None, uses the default which is 'tcl'
 user_default_snack_method = None
 
 # Tcl shell command name (equivalent to --tcl-cmd CLI option)
@@ -18,5 +18,8 @@ user_default_snack_method = None
 user_tcl_shell_cmd = None
 
 # Path for Praat executable
-# For Mac OS X, use the path '/Applications/Praat.app/Contents/MacOS/Praat'
+# If the variable is set to None, the default is used.  For Mac OS X, the
+# default is '/Applications/Praat.app/Contents/MacOS/Praat'.  On Windows,
+# the default is 'C:\Program Files\Praat.exe'.  On Linux, the default is
+# '/usr/bin/praat'.
 user_praat_path = None

@@ -5,25 +5,7 @@ Here are specific instructions on how to setup your Windows machine to run
 opensauce-python.  On Windows, it is recommended to install Anaconda's Python
 distribution, not the release from the official Python organization.
 
-# Recommended setup: Call Snack using binary executable
-
-When opensauce-python is asked to estimate parameters using Snack, it will use
-a stand-alone binary executable `snack.exe`.  This allows the user to skip
-installing and setting up Tcl/Tk and Snack.
-
-1.  Install [Anaconda](https://www.continuum.io/) and pick the Python version
-    you would like, either Python 2.7 or Python 3.4+.  Anaconda comes with the
-    NumPy and SciPy packages pre-installed.
-
-    Be sure to select the option to make Anaconda your default Python by
-    setting the system environment variables accordingly.  (This option is
-    selected by default.)
-
-2.  From your Windows start menu, search for "Anaconda Prompt" and run this
-    program.  You should see a command line prompt, where you can now run
-    commands like `> python -m opensauce -h`
-
-# Alternate setup: Call Snack in Tcl shell
+# Recommended setup: Call Snack in Tcl shell
 
 1. Install Anaconda as described in the previous section.  Either 32-bit or
    64-bit versions should work.
@@ -42,8 +24,9 @@ We have successfully run Snack in Tcl using Active Tcl version 8.5, 32-bit.
 
 # Alternate setup: Allows Snack to be called from Python
 
-Note: We currently do not recommend calling Snack from Python/Tkinter because
-of [#26](https://github.com/voicesauce/opensauce-python/issues/26).
+*Note: Please take a look at
+[#26](https://github.com/voicesauce/opensauce-python/issues/26), so you are
+aware of the issue involved in using Python's Tkinter library.*
 
 If you want to setup your machine so that opensauce-python can call Snack from
 Python, the steps are more complicated.
@@ -75,5 +58,27 @@ Python, the steps are more complicated.
     Now Python will be able to find Snack and call its methods.
 
 5.  From your Windows start menu, search for "Anaconda Prompt" and run this
+    program.  You should see a command line prompt, where you can now run
+    commands like `> python -m opensauce -h`
+
+# Alternate setup: Call Snack using binary executable
+
+When opensauce-python is asked to estimate parameters using Snack, it can use
+a stand-alone binary executable `snack.exe`.  This allows the user to skip
+installing and setting up Tcl/Tk and Snack.
+
+*Note: Currently, we don't recommend using the binary executable.  For
+details, see
+[#27](https://github.com/voicesauce/opensauce-python/issues/27).*
+
+1.  Install [Anaconda](https://www.continuum.io/) and pick the Python version
+    you would like, either Python 2.7 or Python 3.4+.  Anaconda comes with the
+    NumPy and SciPy packages pre-installed.
+
+    Be sure to select the option to make Anaconda your default Python by
+    setting the system environment variables accordingly.  (This option is
+    selected by default.)
+
+2.  From your Windows start menu, search for "Anaconda Prompt" and run this
     program.  You should see a command line prompt, where you can now run
     commands like `> python -m opensauce -h`

@@ -24,7 +24,7 @@ if user_default_snack_method is not None:
     else:
         raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
 elif platform == 'win32' or platform == 'cygwin':
-    snack_method = 'exe'
+    snack_method = 'tcl'
 elif platform.startswith('linux'):
     snack_method = 'tcl'
 elif platform == 'darwin':
