@@ -45,6 +45,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585 - 118)
@@ -58,6 +59,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0',
             '--ignore-label', 'C2',
             '--ignore-label', 'V1',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585 - 118 - 208)
@@ -70,6 +72,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--include-empty-labels',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 2341)
@@ -79,6 +82,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--no-f0-column',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585)
@@ -89,6 +93,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--include-f0-column',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585)
@@ -99,6 +104,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'SHR',
             '--no-formant-cols',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585)
@@ -111,6 +117,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'praatFormants',
             '--include-formant-cols',
             '--num-formants', '4',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         formant_col_names = ['pF1', 'pF2', 'pF3', 'pF4',
@@ -123,6 +130,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--no-textgrid',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 2341)
@@ -138,6 +146,7 @@ class TestCommandIO(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--use-textgrid',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 100)
@@ -150,6 +159,7 @@ class TestCommandIO(TestCase):
             data_file_path(os.path.join('cli', 'beijing_f3_50_a.wav')),
             '--measurements', 'snackF0',
             '--use-textgrid',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2342)
         self.assertEqual(len(lines[0]), 6)
@@ -163,6 +173,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--no-labels',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav')
             ])
         self.assertEqual(len(lines), 585)
@@ -178,6 +189,7 @@ class TestCommandIO(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--include-labels',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(len([x for x in lines if 'C1' in x]), 100)
@@ -189,6 +201,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'snackF0',
             '--include-empty-labels',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             sound_file_path('beijing_m5_17_c.wav'),
             sound_file_path('hmong_f4_24_d.wav'),
@@ -221,6 +234,7 @@ class TestCommandIO(TestCase):
             '--settings', settingsfn,
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341 - 118)
         self.assertEqual(len([x for x in lines if 'C2' in x]), 0)
@@ -233,6 +247,7 @@ class TestCommandIO(TestCase):
             lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
+                '--no-output-settings',
                 ])
             self.assertEqual(len(lines), 2341)
 
@@ -252,6 +267,7 @@ class TestCommandIO(TestCase):
             """)
         lines = CLI_output(self, '\t', [
             '--settings', settingsfn,
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 2341)
@@ -280,6 +296,7 @@ class TestCommandIO(TestCase):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'shrF0', 'snackF0', 'SHR',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-3:], ['shrF0', 'snackF0', 'SHR'])
@@ -291,7 +308,8 @@ class TestCommandIO(TestCase):
             shrF0
             """)
         lines = CLI_output(self, '\t', [
-            "--default-measurements-file", measurefn,
+            '--default-measurements-file', measurefn,
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 585)
@@ -305,6 +323,7 @@ class TestCommandIO(TestCase):
             """)
         with self.patch(CLI, 'measurements_locs', [measurefn]):
             lines = CLI_output(self, '\t', [
+                '--no-output-settings',
                 sound_file_path('beijing_f3_50_a.wav'),
                 ])
         self.assertEqual(len(lines), 585)
@@ -335,6 +354,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0',
             '--no-textgrid',
             '--output-delimiter', 'tab',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
@@ -345,9 +365,196 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0',
             '--no-textgrid',
             '--output-delimiter', 'comma',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(lines[0], ['Filename', 't_ms', 'snackF0'])
+
+    def test_output_settings_stdout(self):
+        # Make sure there isn't already a settings file
+        # If so, remove it
+        if os.path.isfile('stdout.settings'):
+            os.remove('stdout.settings')
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertTrue(os.path.isfile('stdout.settings'))
+        # Check generated settings file
+        with open('stdout.settings') as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 33)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+        # Cleanup
+        os.remove('stdout.settings')
+
+    def test_output_settings_with_output_filepath(self):
+        tmp = self.tmpdir()
+        outfile = os.path.join(tmp, 'output.txt')
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            '-o', outfile,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        settings_path = outfile.split('.')[0] + '.settings'
+        self.assertTrue(os.path.isfile(settings_path))
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 33)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+
+    def test_no_output_settings_stdout(self):
+        if os.path.isfile('stdout.settings'):
+            os.remove('stdout.settings')
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            '--no-output-settings',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertFalse(os.path.isfile('stdout.settings'))
+
+    def test_no_output_settings_with_output_filepath(self):
+        tmp = self.tmpdir()
+        outfile = os.path.join(tmp, 'output.txt')
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            '-o', outfile,
+            '--no-output-settings',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        settings_path = outfile.split('.')[0] + '.settings'
+        self.assertFalse(os.path.isfile(settings_path))
+
+    def test_output_settings_path_stdout(self):
+        tmp = self.tmpdir()
+        settings_path = os.path.join(tmp, 'output.settings')
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            '--output-settings-path', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 585)
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 33)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+
+    def test_output_settings_path_with_output_filepath(self):
+        tmp = self.tmpdir()
+        outfile = os.path.join(tmp, 'output.txt')
+        settings_path = outfile.split('.')[0] + '_unittest.settings'
+        lines = CLI_output(self, '\t', [
+            '--include-f0-column',
+            '-o', outfile,
+            '--output-settings-path', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertTrue(os.path.isfile(settings_path))
+        self.assertFalse(os.path.isfile(outfile.split('.')[0] + '.settings'))
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 33)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+
+    def test_output_settings_check_consistency(self):
+        # Output from using the generated settings file should match
+        # the original CLI execution
+        tmp = self.tmpdir()
+        settings_path = os.path.join(tmp, 'output.settings')
+        lines_stdout = CLI_output(self, '\t', [
+            '--measurements', 'snackF0',
+            '--use-textgrid',
+            '--no-labels',
+            '--output-settings-path', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        lines_sfile = CLI_output(self, '\t', [
+            '--settings', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+
+        self.assertEqual(len(lines_stdout), 585)
+        self.assertEqual(len(lines_stdout[0]), 3)
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 33)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+        # Check consistency of output using generated settings file
+        self.assertEqual(lines_sfile, lines_stdout)
+
+    def test_output_settings_check_consistency_alternate_parameters(self):
+        # Output from using the generated settings file should match
+        # the original CLI execution
+        tmp = self.tmpdir()
+        settings_path = os.path.join(tmp, 'output.settings')
+        lines_stdout = CLI_output(self, '\t', [
+            '--measurements', 'praatFormants',
+            '--include-f0-column',
+            '--no-textgrid',
+            '--time-starts-at-frameshift',
+            '--include-interval-endpoint',
+            '--kill-octave-jumps',
+            '--interpolate',
+            '--smooth',
+            '--smooth-bandwidth', '10',
+            '--output-settings-path', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        lines_sfile = CLI_output(self, '\t', [
+            '--settings', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+
+        self.assertEqual(len(lines_stdout), 2342)
+        self.assertEqual(len(lines_stdout[0]), 11)
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 37)
+            self.assertEqual(slines[0].strip(), '--measurements praatFormants snackF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 37)
+        # Check consistency of output using generated settings file
+        self.assertEqual(lines_sfile, lines_stdout)
+
+    def test_output_settings_check_consistency_more_alternate_parameters(self):
+        # Output from using the generated settings file should match
+        # the original CLI execution
+        tmp = self.tmpdir()
+        settings_path = os.path.join(tmp, 'output.settings')
+        lines_stdout = CLI_output(self, '\t', [
+            '--measurements', 'snackF0',
+            '--include-formant-cols',
+            '--use-textgrid',
+            '--include-empty-labels',
+            '--output-settings-path', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        lines_sfile = CLI_output(self, '\t', [
+            '--settings', settings_path,
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+
+        self.assertEqual(len(lines_stdout), 2341)
+        self.assertEqual(len(lines_stdout[0]), 14)
+        # Check generated settings file
+        with open(settings_path) as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 34)
+            self.assertEqual(slines[0].strip(), '--measurements snackF0 praatFormants')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 34)
+        # Check consistency of output using generated settings file
+        self.assertEqual(lines_sfile, lines_stdout)
 
     def test_time_starts_at_zero_no_textgrid(self):
         lines = CLI_output(self, '\t', [
@@ -355,6 +562,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0',
             '--no-textgrid',
             '--time-starts-at-zero',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 3)
@@ -373,6 +581,7 @@ class TestCommandIO(TestCase):
             '--use-textgrid',
             '--include-empty-labels',
             '--time-starts-at-zero',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 6)
@@ -402,6 +611,7 @@ class TestCommandIO(TestCase):
             '--no-textgrid',
             '--time-starts-at-frameshift',
             '--frame-shift', '1',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 3)
@@ -420,6 +630,7 @@ class TestCommandIO(TestCase):
             '--use-textgrid',
             '--include-empty-labels',
             '--time-starts-at-frameshift',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 6)
@@ -450,6 +661,7 @@ class TestCommandIO(TestCase):
             '--include-empty-labels',
             '--time-starts-at-zero',
             '--exclude-interval-endpoint',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(len(lines[1]), 6)
@@ -480,6 +692,7 @@ class TestCommandIO(TestCase):
             '--include-empty-labels',
             '--time-starts-at-zero',
             '--include-interval-endpoint',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2347)
         self.assertEqual(len(lines[1]), 6)
@@ -507,6 +720,7 @@ class TestCommandIO(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
@@ -520,6 +734,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0', 'shrF0', 'SHR',
             '--include-empty-labels',
             '--NaN', 'mylabel',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(lines[0][-3:], ['snackF0', 'shrF0', 'SHR'])
@@ -542,6 +757,7 @@ class TestCommandIO(TestCase):
             '--measurements', 'snackF0',
             '--include-empty-labels',
             '--resample-freq', '16000',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 2341)
         self.assertEqual(lines[0][-1], 'snackF0')
@@ -556,6 +772,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             '--F0', 'shrF0',
             '--include-F0-column',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 585)
@@ -588,6 +805,7 @@ class TestCommandF0(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'tcl',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-1:], ['snackF0'])
@@ -602,6 +820,7 @@ class TestCommandF0(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'python',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-1:], ['snackF0'])
@@ -618,6 +837,7 @@ class TestCommandF0(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackF0',
             '--snack-method', 'exe',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-1:], ['snackF0'])
@@ -631,6 +851,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'praatF0',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-1:], ['praatF0'])
@@ -655,6 +876,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             '--measurements', 'praatF0',
             '--praat-f0-method', 'ac',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 585)
@@ -682,6 +904,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)
@@ -694,6 +917,7 @@ class TestCommandF0(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--frame-shift', '2',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 293)
@@ -713,6 +937,7 @@ class TestCommandF0(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--window-size', '10',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(lines[100], self.line100_prefix + [v100])
@@ -730,6 +955,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
+            '--no-output-settings',
             min_f0_arg, '200',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -748,6 +974,7 @@ class TestCommandF0(TestCase):
         lines = CLI_output(self, '\t', [
             '--f0', pitch_algo,
             '--include-F0-column',
+            '--no-output-settings',
             max_f0_arg, '200',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -767,6 +994,7 @@ class TestCommandF0(TestCase):
             '--f0', pitch_algo,
             '--include-F0-column',
             '--resample-freq', '16000',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)
@@ -779,6 +1007,7 @@ class TestCommandFormants(TestCase):
     def test_default_formants(self):
         lines = CLI_output(self, '\t', [
             '--include-formant-cols',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         formant_col_names = ['pF1', 'pF2', 'pF3', 'pF4',
@@ -791,6 +1020,7 @@ class TestCommandFormants(TestCase):
         lines = CLI_output(self, '\t', [
             '--formants', 'snackFormants',
             '--include-formant-cols',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), 585)
@@ -806,6 +1036,7 @@ class TestCommandFormants(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'tcl',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-8:], sformant_names)
@@ -820,6 +1051,7 @@ class TestCommandFormants(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'python',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-8:], sformant_names)
@@ -836,6 +1068,7 @@ class TestCommandFormants(TestCase):
             sound_file_path('beijing_f3_50_a.wav'),
             '--measurements', 'snackFormants',
             '--snack-method', 'exe',
+            '--no-output-settings',
             ])
         self.assertEqual(len(lines), 585)
         self.assertEqual(lines[0][-8:], sformant_names)
@@ -868,6 +1101,7 @@ class TestCommandFormants(TestCase):
         lines = CLI_output(self, '\t', [
             '--formants', formant_algo,
             '--include-formant-cols',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)
@@ -897,6 +1131,7 @@ class TestCommandFormants(TestCase):
             '--formants', formant_algo,
             '--include-formant-cols',
             '--resample-freq', '16000',
+            '--no-output-settings',
             sound_file_path('beijing_f3_50_a.wav'),
             ])
         self.assertEqual(len(lines), line_count)

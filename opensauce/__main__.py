@@ -7,6 +7,7 @@
 # vs_Initialize.m, and vs_Settings.m
 
 from __future__ import division
+from __future__ import print_function
 
 import argparse
 import csv
@@ -39,12 +40,33 @@ class MyArgumentParser(argparse.ArgumentParser):
 
 class CLI(object):
 
+    # Default settings file locations
     settings_locs = ('./opensauce.settings',
                      '~/.config/opensauce/settings',
                      '~/.opensaucerc')
+    # Default measurements file locations
     measurements_locs = ('./opensauce.measurements',
                          '~/.config/opensauce/measurements',
                          '~/.opensauce.measurements')
+    # Order to print arguments in output measurement file
+    included_args_order = ['default_measurements_file', 'measurements',
+                           'include_f0_column', 'include_formant_cols',
+                           'use_textgrid', 'include_labels',
+                           'include_empty_labels', 'ignore_label',
+                           'time_starts_at_zero', 'include_interval_endpoint',
+                           'NaN', 'output_delimiter', 'resample_freq', 'f0',
+                           'formants', 'frame_shift', 'window_size',
+                           'frame_precision', 'snack_method', 'tcl_cmd',
+                           'snack_min_f0', 'snack_max_f0', 'pre_emphasis',
+                           'lpc_order', 'shr_min_f0', 'shr_max_f0',
+                           'praat_path', 'praat_f0_method', 'praat_min_f0',
+                           'praat_max_f0', 'silence_threshold',
+                           'voice_threshold', 'octave_cost', 'octave_jumpcost',
+                           'voiced_unvoiced_cost', 'kill_octave_jumps',
+                           'interpolate', 'smooth', 'smooth_bandwidth',
+                           'num_formants', 'max_formant_freq']
+    excluded_args = ['wavfiles', 'settings', 'output_filepath',
+                     'output_settings', 'output_settings_path']
 
     #
     # Command Line Parsing and Execution.
@@ -147,6 +169,75 @@ class CLI(object):
 
         return res
 
+    def _write_settings(self, args_dict, path):
+        with open(path, 'w') as oset:
+            for a in self.included_args_order:
+                val = args_dict[a]
+                # Skip argument for these cases
+                if val is None:
+                    continue
+                if isinstance(val, list) and (not val):
+                    # Case of empty list
+                    continue
+
+                # Print argument in output settings file
+                if isinstance(val, list):
+                    # Case where arg is a list of unknown size
+                    print('--{} {}'.format(a.replace('_', '-'), ' '.join(val)), file=oset)
+                elif isinstance(val, bool):
+                    # Boolean args have to be handled on case-by-case basis
+                    if a == 'include_f0_column':
+                        if val:
+                            print('--include-f0-column', file=oset)
+                        else:
+                            print('--no-f0-column', file=oset)
+                    elif a == 'include_formant_cols':
+                        if val:
+                            print('--include-formant-cols', file=oset)
+                        else:
+                            print('--no-formant-cols', file=oset)
+                    elif a == 'use_textgrid':
+                        if val:
+                            print('--use-textgrid', file=oset)
+                        else:
+                            print('--no-textgrid', file=oset)
+                    elif a == 'include_labels':
+                        if val:
+                            print('--include-labels', file=oset)
+                        else:
+                            print('--no-labels', file=oset)
+                    elif a == 'time_starts_at_zero':
+                        if val:
+                            print('--time-starts-at-zero', file=oset)
+                        else:
+                            print('--time-starts-at-frameshift', file=oset)
+                    elif a == 'include_interval_endpoint':
+                        if val:
+                            print('--include-interval-endpoint', file=oset)
+                        else:
+                            print('--exclude-interval-endpoint', file=oset)
+                    elif a == 'include_empty_labels':
+                        if val:
+                            print('--include-empty-labels', file=oset)
+                    elif a == 'kill_octave_jumps':
+                        if val:
+                            print('--kill-octave-jumps', file=oset)
+                    elif a == 'interpolate':
+                        if val:
+                            print('--interpolate', file=oset)
+                    elif a == 'smooth':
+                        if val:
+                            print('--smooth', file=oset)
+                    else: # pragma: no cover
+                        raise ValueError('Unknown Boolean argument {} while writing settings file'.format(a))
+                else:
+                    # Don't put --smooth-bandwidth in settings output
+                    # unless --smooth is set to True
+                    if (a == 'smooth_bandwidth') and (not args_dict['smooth']):
+                        continue
+                    # Generic case
+                    print('--{} {}'.format(a.replace('_', '-'), val), file=oset)
+
     def process(self):
         use_stdout = self.args.output_filepath in (None, '-')
         if use_stdout:
@@ -155,6 +246,26 @@ class CLI(object):
             of = open(self.args.output_filepath, 'w')
         try:
             self._process(of)
+        except:
+            raise
+        else:
+            # Write settings file
+            if self.args.output_settings:
+                args_dict = vars(self.args)
+                # Make sure args we have are the same as the ones from the parser
+                assert set(self.included_args_order + self.excluded_args) == set(args_dict.keys())
+                # Path for output settings file
+                if self.args.output_settings_path:
+                    # User defined settings file path
+                    output_settings_path = self.args.output_settings_path
+                elif use_stdout:
+                    # Default for stdout
+                    output_settings_path = 'stdout.settings'
+                else:
+                    # Default if user requests output file
+                    output_settings_path = self.args.output_filepath.split('.')[0] + '.settings'
+                # Write settings to file
+                self._write_settings(args_dict, output_settings_path)
         finally:
             if not use_stdout:
                 of.close()
@@ -514,6 +625,14 @@ class CLI(object):
                         help="Include the TextGrid labels and interval "
                              "information in the output "
                              "(default %(default)s).")
+    parser.add_argument('--include-empty-labels', default=False,
+                        action='store_true',
+                        help="Include TextGrid entries with empty or blank"
+                             " labels in the analysis and output. "
+                             "Default is %(default)s.")
+    parser.add_argument('--ignore-label', action='append', default=[],
+                        help="A TextGrid label to exclude from the analysis"
+                             " and output.  May be specified more than once.")
     parser.add_argument('--time-starts-at-zero', action="store_true",
                         dest='time_starts_at_zero', default=True,
                         help="First time point in each measurement vector is "
@@ -530,7 +649,7 @@ class CLI(object):
                               "included in the reported time points, i.e. "
                               "[a,b].")
     parser.add_argument('--exclude-interval-endpoint', action='store_false',
-                        dest='include_interval_endpoint', default=False,
+                        dest='include_interval_endpoint',
                         help="Exclude interval endpoint in measurement "
                               "output, so that the upper endpoint is not in "
                               "the reported time points, i.e. [a,b). "
@@ -546,7 +665,7 @@ class CLI(object):
                              "(default %(default)s).")
     parser.add_argument('-o', '--output-filepath',
                         help="Path to the output file.  If the file already "
-                             "exists it will be overwritten.  Default is to "
+                             "exists, it will be overwritten.  Default is to "
                              "write to the shell standard output, which can "
                              "also be specified explicitly by specifying "
                              "'-' as the OUTPUT_FILEPATH.")
@@ -554,6 +673,24 @@ class CLI(object):
                         choices=_valid_delimiters,
                         help="Delimiter to use for output file.  It defaults "
                              "to %(default)s.")
+    parser.add_argument('--no-output-settings', action="store_false",
+                        dest='output_settings',
+                        help="Do not write settings file corresponding to "
+                             "this command line execution.")
+    parser.add_argument('--output-settings', action="store_true",
+                        dest='output_settings', default=True,
+                        help="Write settings file corresponding to this "
+                             "command line execution. "
+                             "(default %(default)s).")
+    parser.add_argument('--output-settings-path',
+                        help="Path to use for writing settings file.  If not "
+                             "specified, then the defaults are as follows. "
+                             "If output is written to stdout, the default is "
+                             "'stdout.settings'. If output is written to "
+                             "file, the default is the basename of the output "
+                             "file plus the file extension '.settings' (e.g. "
+                             "if the output file is 'output.txt', the settings "
+                             "file path used is 'output.settings').")
     # These options are general settings for the analysis
     parser.add_argument('--resample-freq', type=int,
                         help="Resample sound files at specified frequency in"
@@ -563,133 +700,141 @@ class CLI(object):
                         help="The algorithm to use to compute F0 for use as "
                              "input to the other measurements.  It will "
                              "appear in the output as the first column if "
-                             "--include-f0-output is specified.  It defaults "
+                             "--include-f0-column is specified.  It defaults "
                              "to %(default)s.")
     parser.add_argument('--formants', default='praatFormants',
                         choices=_valid_formants,
                         help="The algorithm to use to compute formants for "
                              "use as input to the other measurements.  It will "
                              "appear in the output as the first column if "
-                             "--include-f0-output is specified.  It defaults "
+                             "--include-formant-cols is specified.  It defaults "
                              "to %(default)s.")
     parser.add_argument('--frame-shift', default=1, type=int,
-                        help="Number of milliseonds the analysis frame is"
-                             " shifted between computed data points.  Default"
-                             " is %(default)s milliseconds.")
+                        help="Number of milliseconds the analysis frame is "
+                             "shifted between computed data points (global "
+                             "parameter).  Default is %(default)s "
+                             "milliseconds.")
     parser.add_argument('--window-size', default=25, type=int,
-                        help="Width of each analysis frame in milliseconds."
-                             " Default is %(default)s milliseconds.")
+                        help="Width of each analysis frame in milliseconds "
+                             "(global parameter).  Default is %(default)s "
+                             "milliseconds.")
     parser.add_argument('--frame-precision', default=1, type=int,
                         help="Frame precision for interpolating measurement "
-                             "vectors, in multiples of frame shift. "
-                             "Default is %(default)s")
-    parser.add_argument('--include-empty-labels', default=False,
-                        action='store_true',
-                        help="Include TextGrid entries with empty or blank"
-                             " labels in the analysis and output.  Default"
-                             " is %(default)s.")
-    parser.add_argument('--ignore-label', action='append', default=[],
-                        help="A TextGrid label to exclude from the analysis"
-                             " and output.  May be specified more than once.")
+                             "vectors, in multiples of frame shift (global "
+                             "parameter).  Default is %(default)s.")
     # These options control the Snack analysis
     parser.add_argument('--snack-method', default=default_snack_method,
                         choices=valid_snack_methods,
-                        help="Method to use in calling Snack.  The default is "
-                             "'tcl'.")
+                        help="Method to use in calling Snack (Snack F0 and "
+                             "Snack formants parameter). "
+                             "The default is '%(default)s'.")
     parser.add_argument('--tcl-cmd', default=default_tcl_shell_cmd,
                         help="Command to use when calling Tcl shell for Snack "
-                             "F0 analysis.  On OS X, the default is "
+                             "F0 analysis (Snack F0 and Snack formants "
+                             "parameter).  On OS X, the default is "
                              "'tclsh8.4'.  On Linux and Windows, the default "
                              "is 'tclsh'.")
     parser.add_argument('--snack-min-f0', '--snack-min-F0', default=40, type=int,
                         help="Lowest frequency considered in Snack F0 "
-                             "analysis. "
+                             "analysis (Snack F0 parameter). "
                              "Default is %(default)s Hz.")
     parser.add_argument('--snack-max-f0', '--snack-max-F0', default=500, type=int,
                         help="Highest frequency considered in Snack F0 "
-                             "analysis."
+                             "analysis (Snack F0 parameter). "
                              "Default is %(default)s Hz.")
     parser.add_argument('--pre-emphasis', default=0.96, type=float,
-                        help="Pre-emphasis factor for Snack formant analysis. "
+                        help="Pre-emphasis factor for Snack formant analysis "
+                             "(Snack formants parameter). "
                              "Default is %(default)s")
     parser.add_argument('--lpc-order', default=12, type=int,
-                        help="LPC order used in Snack formant analysis. "
-                             "Default is %(default)s")
+                        help="LPC order used in Snack formant analysis "
+                             "(Snack formants parameter). "
+                             "Default is %(default)s.")
     # These options control the SHR analysis
     parser.add_argument('--shr-min-f0', '--shr-min-F0', default=40, type=int,
                         help="Lowest frequency considered in SHR F0 "
-                             "analysis. "
+                             "analysis (SHR and SHR F0 parameter). "
                              "Default is %(default)s Hz.")
     parser.add_argument('--shr-max-f0', '--shr-max-F0', default=500, type=int,
                         help="Highest frequency considered in SHR F0 "
-                             "analysis."
+                             "analysis (SHR and SHR F0 parameter). "
                              "Default is %(default)s Hz.")
     # These options control the Praat analysis
     parser.add_argument('--praat-path', default=default_praat_path,
-                        help="Path to Praat program executable.  On OS X, "
+                        help="Path to Praat program executable (Praat F0 "
+                             "and Praat formants parameter).  On OS X, "
                              "the default is "
                              "'/Applications/Praat.app/Contents/MacOS/Praat'. "
                              "On Windows, the default is "
-                             "'C:\Program Files\Praat.exe'. On Linux, the "
-                             "default is '/usr/bin/praat'.")
+                             "'C:\Program Files\Praat\Praat.exe'. On Linux, "
+                             "the default is '/usr/bin/praat'.")
     parser.add_argument('--praat-f0-method', '--praat-F0-method', default='cc',
                         choices=valid_praat_f0_methods,
                         help="Method to use in calculating Praat F0, either "
-                             "autocorrelation 'ac' or cross-correlation 'cc'. "
-                             "Default is %(default)s")
+                             "autocorrelation 'ac' or cross-correlation 'cc' "
+                             "(Praat F0 parameter). "
+                             "Default is %(default)s.")
     parser.add_argument('--praat-min-f0', '--praat-min-F0', default=40, type=int,
                         help="Lowest frequency considered in Praat F0 "
-                             "analysis. "
+                             "analysis (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
     parser.add_argument('--praat-max-f0', '--praat-max-F0', default=500, type=int,
                         help="Highest frequency considered in Praat F0 "
-                             "analysis."
+                             "analysis (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
     parser.add_argument('--silence-threshold', default=0.03, type=float,
                         help="Relative silence threshold for Praat F0 "
-                              "analysis. "
+                              "analysis (Praat F0 parameter). "
                              "Default is %(default)s")
     parser.add_argument('--voice-threshold', default=0.45, type=float,
                         help="Strength of unvoiced candidate for Praat F0 "
-                              "analysis. "
+                              "analysis (Praat F0 parameter). "
                              "Default is %(default)s")
     parser.add_argument('--octave-cost', default=0.01, type=float,
                         help="Degree of favoring of high-frequency candidates "
-                             "for Praat F0 analysis. "
+                             "for Praat F0 analysis (Praat F0 parameter). "
                              "Default is %(default)s")
     parser.add_argument('--octave-jumpcost', default=0.35, type=float,
                         help="Degree of disfavoring of pitch changes "
-                             "for Praat F0 analysis. "
+                             "for Praat F0 analysis (Praat F0 parameter). "
                              "Default is %(default)s")
     parser.add_argument('--voiced-unvoiced-cost', default=0.14, type=float,
                         help="Degree of disfavouring of voiced/unvoiced "
-                             "transitions for Praat F0 analysis. "
+                             "transitions for Praat F0 analysis (Praat F0 "
+                             "parameter). "
                              "Default is %(default)s")
     parser.add_argument('--kill-octave-jumps', default=False,
                         action="store_true",
                         help="Remove pitch halving and doubling in "
-                             "post-processing for Praat F0 analysis.")
+                             "post-processing for Praat F0 analysis (Praat "
+                             "F0 parameter). "
+                             "Default is %(default)s.")
     parser.add_argument('--interpolate', default=False,
                         action="store_true",
                         help="Interpolate missing pitch values in "
-                             "post-processing for Praat F0 analysis.")
+                             "post-processing for Praat F0 analysis (Praat "
+                             "F0 parameter). "
+                             "Default is %(default)s.")
     parser.add_argument('--smooth', default=False,
                         action="store_true",
                         help="Smooth pitch in post-processing of Praat F0 "
                              "analysis using bandwidth specified by "
-                             "--smooth-bandwidth argument.")
+                             "--smooth-bandwidth argument (Praat F0 "
+                             "parameter). "
+                             "Default is %(default)s.")
     parser.add_argument('--smooth-bandwidth', default=5, type=int,
                         help="Bandwidth in Hz to use for smoothing if smooth "
-                             "is set to True. "
-                             "Default is %(default)s")
+                             "is set to True (Praat F0 parameter). "
+                             "Default is %(default)s Hz.")
     parser.add_argument('--num-formants', default=4, type=int,
                         help="Number of formants to extract, usually an "
-                             "integer but half-integer values are allowed. "
-                             "Default is %(default)s")
+                             "integer but half-integer values are allowed "
+                             "(Praat formants parameter). "
+                             "Default is %(default)s.")
     parser.add_argument('--max-formant-freq', default=6000, type=int,
                         help="Maximum allowed frequency for formant search "
-                             "range in Hz. "
-                             "Default is %(default)s")
+                             "range in Hz (Praat formants parameter). "
+                             "Default is %(default)s.")
 
 
 if __name__ == '__main__':
