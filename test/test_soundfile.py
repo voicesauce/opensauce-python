@@ -54,6 +54,30 @@ class TestSoundFile(TestCase):
         self.assertEqual(len(y_rs), s.ns_rs)
         self.assertAllClose(y_rs * 32768, np.int16(s.wavdata_rs * 32768))
 
+    def test_raw_resample_data(self):
+        for fn in wav_fns:
+            t = self.tmpdir()
+            tmp_path = os.path.join(t, os.path.basename(fn))
+            shutil.copy(fn, tmp_path)
+            s = SoundFile(tmp_path, resample_freq=16000)
+            resample_fn = os.path.splitext(os.path.basename(fn))[0] + '-raw-resample-16kHz.txt'
+            data = np.loadtxt(data_file_path(os.path.join('soundfile', 'resample', resample_fn)))
+            self.assertEqual(len(s.wavdata_rs), len(data))
+            self.assertAllClose(s.wavdata_rs, data, rtol=1e-05, atol=1e-08)
+
+    def test_resample_wav(self):
+        for fn in wav_fns:
+            t = self.tmpdir()
+            tmp_path = os.path.join(t, os.path.basename(fn))
+            shutil.copy(fn, tmp_path)
+            s = SoundFile(tmp_path, resample_freq=16000)
+            data, fs = wavread(s.wavpath_rs)
+            resample_fn = os.path.splitext(os.path.basename(fn))[0] + '-resample-16kHz.wav'
+            data_test, fs_test = wavread(data_file_path(os.path.join('soundfile', 'resample', resample_fn)))
+            self.assertEqual(fs, fs_test)
+            self.assertEqual(len(data), len(data_test))
+            self.assertAllClose(data, data_test, rtol=1e-05, atol=1e-08)
+
     @unittest.expectedFailure
     def test_resample_data_against_matlab(self):
         # XXX: This test fails because SciPy is using a different algorithm
@@ -67,7 +91,7 @@ class TestSoundFile(TestCase):
             shutil.copy(fn, tmp_path)
             s = SoundFile(tmp_path, resample_freq=16000)
             resample_fn = os.path.splitext(os.path.basename(fn))[0] + '-matlab-resample'
-            data = load_json(os.path.join('soundfile', resample_fn))
+            data = load_json(os.path.join('soundfile', 'resample', resample_fn))
             self.assertEqual(len(s.wavdata_rs), len(data['y_rs']))
             self.assertAllClose(s.wavdata_rs, data['y_rs'], rtol=1e-01)
 
@@ -154,7 +178,7 @@ class TestSoundFile(TestCase):
         t = self.tmpdir()
         tmp_path = os.path.join(t, wav_fn)
         shutil.copy(sound_file_path(wav_fn), tmp_path)
-        shutil.copy(data_file_path(os.path.join('soundfile', basename + '.TextGrid')), os.path.join(t, 'beijing_f3_50_a.TextGrid'))
+        shutil.copy(data_file_path(os.path.join('soundfile', 'textgrid', basename + '.TextGrid')), os.path.join(t, 'beijing_f3_50_a.TextGrid'))
 
         s = SoundFile(tmp_path)
         actual = s.textgrid_intervals
