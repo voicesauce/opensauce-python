@@ -387,6 +387,11 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 33)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
         # Cleanup
         os.remove('stdout.settings')
 
@@ -406,6 +411,11 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 33)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
 
     def test_no_output_settings_stdout(self):
         if os.path.isfile('stdout.settings'):
@@ -445,6 +455,11 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 33)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
 
     def test_output_settings_path_with_output_filepath(self):
         tmp = self.tmpdir()
@@ -464,6 +479,11 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 33)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
 
     def test_output_settings_check_consistency(self):
         # Output from using the generated settings file should match
@@ -490,6 +510,12 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 33)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--use-textgrid')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--no-labels')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
         # Check consistency of output using generated settings file
         self.assertEqual(lines_sfile, lines_stdout)
 
@@ -524,6 +550,15 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 37)
             self.assertEqual(slines[0].strip(), '--measurements praatFormants snackF0')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 37)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--no-textgrid')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--time-starts-at-frameshift')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-interval-endpoint')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 2)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth-bandwidth')]), 1)
         # Check consistency of output using generated settings file
         self.assertEqual(lines_sfile, lines_stdout)
 
@@ -553,6 +588,12 @@ class TestCommandIO(TestCase):
             self.assertEqual(len(slines), 34)
             self.assertEqual(slines[0].strip(), '--measurements snackF0 praatFormants')
             self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 34)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-formant-cols')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--use-textgrid')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
         # Check consistency of output using generated settings file
         self.assertEqual(lines_sfile, lines_stdout)
 
