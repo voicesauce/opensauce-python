@@ -35,7 +35,8 @@ SciPy's resample function.
 
 The `*-raw-resample-16kHz.txt` files contain the raw data from resampling the
 data read in from the corresponding `.wav` file.  Resampling was done at
-16kHz.
+16kHz on Manjaro Linux.
 
 The `*-resample-16kHz.wav` files are the wav files created from the resampled
-data in `*-raw-resample-16kHz.txt`.  Resampling was done at 16kHz.
+data in `*-raw-resample-16kHz.txt` on Manjaro Linux.  Resampling was done at
+16kHz.
