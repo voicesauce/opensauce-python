@@ -179,6 +179,10 @@ class CLI(object):
                 if isinstance(val, list) and (not val):
                     # Case of empty list
                     continue
+                if (a == 'smooth_bandwidth') and (not args_dict['smooth']):
+                    # Don't put --smooth-bandwidth in settings output
+                    # unless --smooth is set to True
+                    continue
 
                 # Print argument in output settings file
                 if isinstance(val, list):
@@ -230,11 +234,10 @@ class CLI(object):
                             print('--smooth', file=oset)
                     else: # pragma: no cover
                         raise ValueError('Unknown Boolean argument {} while writing settings file'.format(a))
+                elif a == 'praat_path':
+                    # Put quotes around path, in case the path contains spaces
+                    print('--{} \"{}\"'.format(a.replace('_', '-'), val), file=oset)
                 else:
-                    # Don't put --smooth-bandwidth in settings output
-                    # unless --smooth is set to True
-                    if (a == 'smooth_bandwidth') and (not args_dict['smooth']):
-                        continue
                     # Generic case
                     print('--{} {}'.format(a.replace('_', '-'), val), file=oset)
 
