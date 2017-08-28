@@ -236,6 +236,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 * Documentation: someday
 * [OpenSauce](https://github.com/voicesauce/opensauce)
 * [VoiceSauce](http://www.seas.ucla.edu/spapl/voicesauce/)
+* [STRAIGHT speech software](http://www.wakayama-u.ac.jp/~kawahara/STRAIGHTadv/index_e.html)
 
 # Questions
 
