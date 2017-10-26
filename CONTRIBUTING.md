@@ -82,8 +82,15 @@ To contribute code, edit, etc:
         $ pyflakes /path/to/python_file
 
 8. To make sure you've written enough tests to cover the code you've written,
-   run the test coverage script `run_coverage.sh` if you have a bash shell on
-   your machine, or run the following commands:
+   run a coverage check.  You need to install the Python package `coverage`.
+   This can be done using pip (`pip install coverage`), or if you are using
+   Linux, there may be a system package for it (on Ubuntu, do `sudo apt-get
+   install python-coverage` for Python 2 or `sudo apt-get install
+   python3-coverage` for Python 3).
+
+   Once you have the Python `coverage` package installed, run the test coverage
+   script `run_coverage.sh` if you have a bash shell on your machine, or run
+   the following commands:
 
         $ coverage run -m unittest test
         $ coverage report -m --include=opensauce/*

@@ -25,7 +25,8 @@ opensauce-python.
 
         $ sudo apt-get install python-numpy python-scipy
 
-    (For Python 3, instead use `python3-numpy` and `python3-scipy`.)
+    (For Python 3, instead use `python3-numpy` and `python3-scipy`.  You may
+    also need to install the package `python3-tk`.)
 
     If you have trouble, look at the
     [SciPy documentation](https://www.scipy.org/install.html).

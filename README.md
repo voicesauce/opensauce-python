@@ -24,10 +24,12 @@ If you want to use Snack to estimate parameters:
 
 If you want to use Praat to estimate parameters, you need to download the
 Praat software
-* [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.03+)
+* [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.20+)
 
 and specify the path where OpenSauce can find the Praat executable.  OpenSauce
-has only been tested with Praat v6.0.29.
+has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible that
+OpenSauce may work with Praat version 6.0.03 or higher, but that has not been
+tested.
 
 *Note: Currently, the only input files supported are WAV files in 16-bit PCM
 format.  Praat can only read certain file types described
