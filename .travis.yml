@@ -10,11 +10,11 @@ script: coverage run --branch --source=opensauce --omit=opensauce/textgrid.py -m
 install:
   - sudo apt-get -qq update
   - sudo apt-get install -y tk8.4 libsnack2
-  - wget http://www.fon.hum.uva.nl/praat/praat6029_linux64barren.tar.gz -O /tmp/praat.tar.gz
+  - wget http://www.fon.hum.uva.nl/praat/praat6035_linux64barren.tar.gz -O /tmp/praat.tar.gz
   - tar -xzvf /tmp/praat.tar.gz
-  - sudo cp praat /usr/bin/praat
+  - sudo cp praat_barren /usr/bin/praat
   - pip install --upgrade pip setuptools wheel
-  - pip install --only-binary=numpy,scipy numpy scipy
+  - pip install --only-binary=numpy,scipy numpy scipy==0.19.1
   - pip install coverage codecov
 after_success:
   - codecov
