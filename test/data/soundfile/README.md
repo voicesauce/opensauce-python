@@ -40,3 +40,7 @@ data read in from the corresponding `.wav` file.  Resampling was done at
 The `*-resample-16kHz.wav` files are the wav files created from the resampled
 data in `*-raw-resample-16kHz.txt` on Manjaro Linux.  Resampling was done at
 16kHz.
+
+Note that in order for the tests that use resampled data to pass, you need
+SciPy version 1.0+.  The resampled test data was generated using SciPy 1.0,
+and previous versions of SciPy generate different resampled values.

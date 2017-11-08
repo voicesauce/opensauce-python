@@ -56,6 +56,10 @@ To contribute code, edit, etc:
 
         $ python -m unittest -h
 
+   Note that in order for the tests that use resampled data to pass, you need
+   SciPy version 1.0+.  The resampled test data was generated using SciPy 1.0,
+   and previous versions of SciPy generate different resampled values.
+
 6. Write code, edit code, test code.  Ideally, add tests to the set of
    unit tests in the tests directory to cover any new or changed code.
    New tests will be automatically picked up by the test runner if
