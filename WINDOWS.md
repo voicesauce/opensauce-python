@@ -5,7 +5,12 @@ Here are specific instructions on how to setup your Windows machine to run
 opensauce-python.  On Windows, it is recommended to install Anaconda's Python
 distribution, not the release from the official Python organization.
 
-# Recommended setup: Call Snack in Tcl shell
+* [Recommended Snack setup](#tcl)
+* [Alternate Snack setup using Python/Tkinter](#python)
+* [Alternate Snack setup using binary executable](#exe)
+* [REAPER setup](#reaper)
+
+# <A NAME="tcl">Recommended Snack setup</A>: Call Snack in Tcl shell
 
 1. Install Anaconda as described in the previous section.  Either 32-bit or
    64-bit versions should work.
@@ -22,7 +27,7 @@ distribution, not the release from the official Python organization.
 
 We have successfully run Snack in Tcl using Active Tcl version 8.5, 32-bit.
 
-# Alternate setup: Allows Snack to be called from Python
+# <A NAME="python">Alternate Snack setup</A>: Allows Snack to be called from Python
 
 *Note: Please take a look at
 [#26](https://github.com/voicesauce/opensauce-python/issues/26), so you are
@@ -61,7 +66,7 @@ Python, the steps are more complicated.
     program.  You should see a command line prompt, where you can now run
     commands like `> python -m opensauce -h`
 
-# Alternate setup: Call Snack using binary executable
+# <A NAME="exe">Alternate Snack setup</A>: Call Snack using binary executable
 
 When opensauce-python is asked to estimate parameters using Snack, it can use
 a stand-alone binary executable `snack.exe`.  This allows the user to skip
@@ -82,3 +87,22 @@ details, see
 2.  From your Windows start menu, search for "Anaconda Prompt" and run this
     program.  You should see a command line prompt, where you can now run
     commands like `> python -m opensauce -h`
+
+# <A NAME="reaper">REAPER setup</A>
+
+1.  Install [Cygwin](https://www.cygwin.com/)
+2.  Install the Cygwin packages `git`, `make`, `cmake`, `gcc-core`, `gcc-g++`.
+3.  Run the Cygwin program, so that you see a terminal window.
+3.  Follow the instructions in the REAPER Git repository
+    [README](https://github.com/google/REAPER) and type the following commands
+    in the terminal window:
+
+        $ git clone https://github.com/google/REAPER.git
+        $ cd REAPER
+        $ mkdir build
+        $ cd build
+        $ cmake ..
+        $ make
+
+    Now the executable file `reaper.exe` will be in the folder
+    [your Cygwin home directory]/REAPER/build

@@ -56,3 +56,11 @@ opensauce-python.
     Snack from Python/Tkinter because of
     [#26](https://github.com/voicesauce/opensauce-python/issues/26).
 
+4. Install REAPER
+
+    Install [REAPER](https://github.com/google/REAPER) via the
+    [pyreaper Python package](https://github.com/r9y9/pyreaper), by using the
+    Python package manager pip.
+
+        $ pip install pyreaper
+

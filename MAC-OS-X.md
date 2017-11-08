@@ -4,7 +4,11 @@ Mac OS X instructions
 Here are some specific instructions on how to setup your Mac OS X machine to
 run opensauce-python.
 
-# Recommended setup: Run Snack commands through Tcl interpreter
+* [Recommended Snack setup](#recommended)
+* [Alternate Snack setup](#alternate)
+* [REAPER setup](#reaper)
+
+# <A NAME="recommended">Recommended Snack setup</A>: Run Snack commands through Tcl interpreter
 
 It appears that Mac OS X ships with Tcl/Tk 8.4 by default, and Apple's version
 of Tcl/Tk8.4 comes with Snack 2.2
@@ -56,7 +60,7 @@ Python frequently, a package manager like Homebrew or Conda (Anaconda) is
 recommended.  Installing Anaconda requires the least amount of technical
 knowledge.
 
-# Alternate setup: Allows Snack to be called from Python
+# <A NAME="alternate">Alternate Snack setup</A>: Allows Snack to be called from Python
 
 Note: We do not currently recommend calling Snack from Python/Tkinter because
 of [#26](https://github.com/voicesauce/opensauce-python/issues/26).
@@ -117,3 +121,11 @@ Python, the steps are more complicated.  Thanks to Shinya Fujie for this
         export LANG=C
 
     This solution comes from this [StackOverflow answer](https://stackoverflow.com/questions/19242275/re-error-illegal-byte-sequence-on-mac-os-x).
+
+# <A NAME="reaper">REAPER</A> setup
+
+Install [REAPER](https://github.com/google/REAPER) via the
+[pyreaper Python package](https://github.com/r9y9/pyreaper), by using the
+Python package manager pip.
+
+    $ pip install pyreaper
