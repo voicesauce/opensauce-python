@@ -14,7 +14,7 @@ install:
   - tar -xzvf /tmp/praat.tar.gz
   - sudo cp praat_barren /usr/bin/praat
   - pip install --upgrade pip setuptools wheel
-  - pip install --only-binary=numpy,scipy numpy scipy==0.19.1
+  - pip install --only-binary=numpy,scipy numpy scipy
   - pip install coverage codecov
 after_success:
   - codecov
