@@ -856,6 +856,8 @@ class TestCommandF0(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
+    @unittest.skipIf(platform == 'darwin',
+                     'Not supported on Mac OS X')
     def test_snackF0_method_python(self):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
@@ -1087,6 +1089,8 @@ class TestCommandFormants(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
+    @unittest.skipIf(platform == 'darwin',
+                     'Not supported on Mac OS X')
     def test_snackFormants_method_python(self):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
