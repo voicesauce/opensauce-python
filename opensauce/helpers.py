@@ -14,13 +14,14 @@ from scipy.io import wavfile
 
 
 def wavread(fn):
-    """Read in a WAV file for processing
+    """Read in a 16-bit integer PCM WAV file for processing
 
     Args:
         fn - filename of WAV file [string]
 
     Returns:
-         y - Audio samples [NumPy vector]
+         y_float - Audio samples in float format [NumPy vector]
+         y_int - Audio samples in int format [NumPy vector]
         Fs - Sampling frequency in Hz [integer]
 
     Emulate the parts of the Matlab wavread function that we need.
@@ -34,14 +35,23 @@ def wavread(fn):
     default and voicesauce uses the default).  Consequently, after reading the
     data using scipy's io.wavfile, we convert to float by dividing each integer
     by 32768.
+
+    Also, save the 16-bit integer data in another NumPy vector.
+
+    The input WAV file is assumed to be in 16-bit integer PCM format.
     """
     # For reference, I figured this out from:
     # http://mirlab.org/jang/books/audiosignalprocessing/matlab4waveRead.asp?title=4-2%20Reading%20Wave%20Files
     # XXX: if we need to handle 8 bit files we'll need to detect them and
     # special case them here.
-    Fs, y = wavfile.read(fn)
+    try:
+        Fs, y = wavfile.read(fn)
+    except ValueError:
+        raise
+    if y.dtype != 'int16':
+        raise IOError('Input WAV file must be in 16-bit integer PCM format')
 
-    return y/np.float64(32768.0), Fs
+    return y/np.float64(32768.0), y, Fs
 
 
 def round_half_away_from_zero(x):

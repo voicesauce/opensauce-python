@@ -40,12 +40,15 @@ class SoundFile(object):
             wavpath                 The original path specified in the
                                         constructor.
             wavfn                   The filename component of wavpath.
-            wavdata                 An ndarray of the wavfile samples
+            wavdata                 An ndarray of wavfile samples (float)
+            wavdata_int             An ndarray of wavfile sample (16-bit int)
             fs                      The number of samples per second
             ns                      Total number of samples
             wavpath_rs              Path for wav file corresponding to
                                     resampled data
-            wavdata_rs              An ndarray of the wavfile samples after
+            wavdata_rs              An ndarray of wavfile float samples after
+                                    resampling (None if resample_freq = None)
+            wavdata_rs_int          An ndarray of wavfile 16-bit int samples after
                                     resampling (None if resample_freq = None)
             fs_rs                   The number of samples per second after
                                     resampling (None if resample_freq = None)
@@ -89,17 +92,21 @@ class SoundFile(object):
         return self._wavdata()[0]
 
     @property
-    def fs(self):
+    def wavdata_int(self):
         return self._wavdata()[1]
+
+    @property
+    def fs(self):
+        return self._wavdata()[2]
 
     @property
     def ns(self):
         return len(self.wavdata)
 
     def _wavdata(self):
-        data, fs = wavread(self.wavpath)
+        data, data_int, fs = wavread(self.wavpath)
         self.__dict__['wavdata'], self.__dict__['fs'] = data, fs
-        return data, fs
+        return data, data_int, fs
 
     @property
     def wavpath_rs(self):
@@ -110,8 +117,12 @@ class SoundFile(object):
         return self._wavdata_rs()[1]
 
     @property
-    def ns_rs(self):
+    def wavdata_rs_int(self):
         return self._wavdata_rs()[2]
+
+    @property
+    def ns_rs(self):
+        return self._wavdata_rs()[3]
 
     def _wavdata_rs(self):
         if self.fs_rs is not None:
@@ -125,13 +136,14 @@ class SoundFile(object):
             wavpath_rs = self.wavpath.split('.')[0] + '-resample-' + str(self.fs_rs) + 'Hz.wav'
             # Write resampled data to wav file
             # Convert data from 32-bit floating point to 16-bit PCM
-            wavfile.write(wavpath_rs, self.fs_rs, np.int16(data_rs * 32768))
+            data_rs_int = np.int16(data_rs * 32768)
+            wavfile.write(wavpath_rs, self.fs_rs, data_rs_int)
             # XXX: Was worried that Python might continue executing code
             #      before the file write is finished, but it seems like it's
             #      not an issue.
-            return wavpath_rs, data_rs, ns_rs
+            return wavpath_rs, data_rs, data_rs_int, ns_rs
         else:
-            return None, None, None
+            return None, None, None, None
 
     @property
     def ms_len(self):

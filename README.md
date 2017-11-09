@@ -34,14 +34,13 @@ has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible that
 OpenSauce may work with Praat version 6.0.03 or higher, but that has not been
 tested.
 
-*Note: Currently, the only input files supported are WAV files in 16-bit PCM
-format.  Praat can only read certain file types described
-in their
+*Note: Currently, the only input files supported are WAV files in 16-bit
+integer PCM format.  Praat can only read certain file types described in their
 [documentation](http://www.fon.hum.uva.nl/praat/manual/Sound_files_3__Files_that_Praat_can_read.html).
 Snack can only read the file types described in their
 [documentation](http://www.speech.kth.se/snack/man/snack2.2/tcl-man.html#sound).
-If you would like to see other file types supported, please let us
-know in the issue tracker!*
+REAPER only supports 16-bit integer PCM input files.  If you would like to see
+other file types supported, please let us know in the issue tracker!*
 
 # Installation
 

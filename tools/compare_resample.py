@@ -28,7 +28,7 @@ def main(wav_dir, fs_rs):
     for wav_file in wav_files:
         print('Processing wav file {}'.format(wav_file))
         # y is data points, fs is sampling frequency
-        y, fs = wavread(wav_file)
+        y, y_int, fs = wavread(wav_file)
         # ns is number of samples
         ns = len(y)
         period = 1.0 / fs

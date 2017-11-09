@@ -166,7 +166,7 @@ class Test_shr_pitch(TestCase):
 
     def test_with_matlab_data(self):
         data = load_json(os.path.join('shrp', 'shr_pitch_data'))
-        wav_data, fps = wavread(sound_file_path('beijing_f3_50_a.wav'))
+        wav_data, wavdata_int, fps = wavread(sound_file_path('beijing_f3_50_a.wav'))
         shr, f0 = shr_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
         np.testing.assert_array_almost_equal(f0, data['F0'])
         np.testing.assert_array_almost_equal(shr, data['SHR'])
