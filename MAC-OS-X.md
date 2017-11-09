@@ -37,15 +37,22 @@ several ways to do this.
     For example, you can add the line `export PATH="/usr/local/bin:$PATH"` to
     your `.bash_profile`.
 
-    Then install Python 2.7, NumPy, and Scipy using
+    Then install Python 2 and its corresponding pip package manager using
 
-        $ brew install python numpy scipy
+        $ brew install python2 pip2
+        $ pip2 install --upgrade pip setuptools
+        $ pip2 install numpy scipy
 
     If you want to install the Python 3 versions, use
 
-        $ brew install python3
-        $ brew install numpy --with-python3
-        $ brew install matplotlib --with-python3
+        $ brew install python3 pip3
+        $ pip3 install --upgrade pip setuptools wheel
+        $ pip3 install numpy scipy
+
+    You can install both the Python 2 and Python 3 versions alongside each
+    other.  To run the Homebrew's Python (not the pre-installed version on OS
+    X), use `$ python2` or `$ python3` depending on which Python version you
+    want to run.
 
     Now the Homebrew package versions of Python, NumPy, and SciPy are
     installed.
@@ -54,11 +61,10 @@ several ways to do this.
     directions on the [Anaconda website](https://www.continuum.io) and install
     Python.  NumPy and SciPy come pre-installed.
 
-If you only want to play with the software and don't use Python very often,
-using the pre-installed Python (Method 1) might be appropriate.  If you use
-Python frequently, a package manager like Homebrew or Conda (Anaconda) is
-recommended.  Installing Anaconda requires the least amount of technical
-knowledge.
+We recommend that you avoid the pre-installed Python (Method 1) and use a
+package manager like Homebrew or Conda (Anaconda) instead.  Installing Anaconda
+requires the least amount of technical knowledge, though Homebrew is not too
+difficult to learn.
 
 # <A NAME="alternate">Alternate Snack setup</A>: Allows Snack to be called from Python
 
@@ -129,3 +135,11 @@ Install [REAPER](https://github.com/google/REAPER) via the
 Python package manager pip.
 
     $ pip install pyreaper
+
+If you are using Homebrew, for Python 2, run
+
+    $ pip2 install pyreaper
+
+or for Python 3, run
+
+    $ pip3 install pyreaper
