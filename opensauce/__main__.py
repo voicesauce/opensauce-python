@@ -37,6 +37,12 @@ class MyArgumentParser(argparse.ArgumentParser):
             self.prog = os.path.split(os.path.split(__file__)[0])[1]
         self.exit(2, "{}: error: {}\n".format(self.prog, message))
 
+    # Check that type is positive integer
+    def positive_int(self, value):
+        ivalue = int(value)
+        if ivalue <= 0:
+            raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
+        return ivalue
 
 class CLI(object):
 
@@ -695,7 +701,7 @@ class CLI(object):
                              "if the output file is 'output.txt', the settings "
                              "file path used is 'output.settings').")
     # These options are general settings for the analysis
-    parser.add_argument('--resample-freq', type=int,
+    parser.add_argument('--resample-freq', type=parser.positive_int,
                         help="Resample sound files at specified frequency in"
                              " Hz.")
     parser.add_argument('-f', '--f0', '--F0', default='snackF0',
@@ -712,16 +718,17 @@ class CLI(object):
                              "appear in the output as the first column if "
                              "--include-formant-cols is specified.  It defaults "
                              "to %(default)s.")
-    parser.add_argument('--frame-shift', default=1, type=int,
+    parser.add_argument('--frame-shift', default=1, type=parser.positive_int,
                         help="Number of milliseconds the analysis frame is "
                              "shifted between computed data points (global "
                              "parameter).  Default is %(default)s "
                              "milliseconds.")
-    parser.add_argument('--window-size', default=25, type=int,
+    parser.add_argument('--window-size', default=25, type=parser.positive_int,
                         help="Width of each analysis frame in milliseconds "
                              "(global parameter).  Default is %(default)s "
                              "milliseconds.")
-    parser.add_argument('--frame-precision', default=1, type=int,
+    parser.add_argument('--frame-precision', default=1,
+                        type=parser.positive_int,
                         help="Frame precision for interpolating measurement "
                              "vectors, in multiples of frame shift (global "
                              "parameter).  Default is %(default)s.")
@@ -737,11 +744,13 @@ class CLI(object):
                              "parameter).  On OS X, the default is "
                              "'tclsh8.4'.  On Linux and Windows, the default "
                              "is 'tclsh'.")
-    parser.add_argument('--snack-min-f0', '--snack-min-F0', default=40, type=int,
+    parser.add_argument('--snack-min-f0', '--snack-min-F0', default=40,
+                        type=parser.positive_int,
                         help="Lowest frequency considered in Snack F0 "
                              "analysis (Snack F0 parameter). "
                              "Default is %(default)s Hz.")
-    parser.add_argument('--snack-max-f0', '--snack-max-F0', default=500, type=int,
+    parser.add_argument('--snack-max-f0', '--snack-max-F0', default=500,
+                        type=parser.positive_int,
                         help="Highest frequency considered in Snack F0 "
                              "analysis (Snack F0 parameter). "
                              "Default is %(default)s Hz.")
@@ -749,16 +758,18 @@ class CLI(object):
                         help="Pre-emphasis factor for Snack formant analysis "
                              "(Snack formants parameter). "
                              "Default is %(default)s")
-    parser.add_argument('--lpc-order', default=12, type=int,
+    parser.add_argument('--lpc-order', default=12, type=parser.positive_int,
                         help="LPC order used in Snack formant analysis "
                              "(Snack formants parameter). "
                              "Default is %(default)s.")
     # These options control the SHR analysis
-    parser.add_argument('--shr-min-f0', '--shr-min-F0', default=40, type=int,
+    parser.add_argument('--shr-min-f0', '--shr-min-F0', default=40,
+                        type=parser.positive_int,
                         help="Lowest frequency considered in SHR F0 "
                              "analysis (SHR and SHR F0 parameter). "
                              "Default is %(default)s Hz.")
-    parser.add_argument('--shr-max-f0', '--shr-max-F0', default=500, type=int,
+    parser.add_argument('--shr-max-f0', '--shr-max-F0', default=500,
+                        type=parser.positive_int,
                         help="Highest frequency considered in SHR F0 "
                              "analysis (SHR and SHR F0 parameter). "
                              "Default is %(default)s Hz.")
@@ -777,11 +788,13 @@ class CLI(object):
                              "autocorrelation 'ac' or cross-correlation 'cc' "
                              "(Praat F0 parameter). "
                              "Default is %(default)s.")
-    parser.add_argument('--praat-min-f0', '--praat-min-F0', default=40, type=int,
+    parser.add_argument('--praat-min-f0', '--praat-min-F0', default=40,
+                        type=parser.positive_int,
                         help="Lowest frequency considered in Praat F0 "
                              "analysis (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
-    parser.add_argument('--praat-max-f0', '--praat-max-F0', default=500, type=int,
+    parser.add_argument('--praat-max-f0', '--praat-max-F0', default=500,
+                        type=parser.positive_int,
                         help="Highest frequency considered in Praat F0 "
                              "analysis (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
@@ -825,7 +838,8 @@ class CLI(object):
                              "--smooth-bandwidth argument (Praat F0 "
                              "parameter). "
                              "Default is %(default)s.")
-    parser.add_argument('--smooth-bandwidth', default=5, type=int,
+    parser.add_argument('--smooth-bandwidth', default=5,
+                        type=parser.positive_int,
                         help="Bandwidth in Hz to use for smoothing if smooth "
                              "is set to True (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
@@ -834,7 +848,8 @@ class CLI(object):
                              "integer but half-integer values are allowed "
                              "(Praat formants parameter). "
                              "Default is %(default)s.")
-    parser.add_argument('--max-formant-freq', default=6000, type=int,
+    parser.add_argument('--max-formant-freq', default=6000,
+                        type=parser.positive_int,
                         help="Maximum allowed frequency for formant search "
                              "range in Hz (Praat formants parameter). "
                              "Default is %(default)s.")

@@ -784,12 +784,14 @@ class TestCommandIO(TestCase):
         self.assertEqual(lines[-1][-3:], ['mylabel', 'mylabel', 'mylabel'])
 
     def test_resample_negative_integer(self):
-        with self.assertRaisesRegex(ValueError, 'Resample frequency must be positive'):
+        with self.assertRaises(SystemExit) as cm:
             lines = CLI_output(self, '\t', [
                 sound_file_path('beijing_f3_50_a.wav'),
                 '--measurements', 'snackF0',
                 '--resample-freq', '-5',
                 ])
+
+        self.assertEqual(cm.exception.code, 2)
 
     def test_resample_output(self):
         spath = sound_file_path('beijing_f3_50_a.wav')
