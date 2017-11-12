@@ -1122,6 +1122,41 @@ class TestCommandFormants(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
+    def test_praatFormants_num_formants(self):
+        lines = CLI_output(self, '\t', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'praatFormants',
+            '--num-formants', '3',
+            ])
+        formant_col_names = ['pF1', 'pF2', 'pF3',
+                             'pB1', 'pB2', 'pB3']
+        self.assertEqual(len(lines), 585)
+        self.assertEqual(len(lines[1]), 11)
+        self.assertListEqual(lines[0][-6:], formant_col_names)
+
+        lines = CLI_output(self, '\t', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'praatFormants',
+            '--num-formants', '3.5',
+            ])
+        formant_col_names = ['pF1', 'pF2', 'pF3', 'pF4',
+                             'pB1', 'pB2', 'pB3', 'pB4']
+        self.assertEqual(len(lines), 585)
+        self.assertEqual(len(lines[1]), 13)
+        self.assertListEqual(lines[0][-8:], formant_col_names)
+
+        with self.assertArgparseError(['error: argument --num-formants: -2 is an invalid positive half integer value']):
+            lines = CLI([sound_file_path('beijing_f3_50_a.wav'),
+                         '--measurements', 'praatFormants',
+                         '--num-formants', '-2',
+                        ])
+
+        with self.assertArgparseError(['error: argument --num-formants: 1.7 is an invalid positive half integer value']):
+            lines = CLI([sound_file_path('beijing_f3_50_a.wav'),
+                         '--measurements', 'praatFormants',
+                         '--num-formants', '1.7',
+                        ])
+
     line100_prefix = ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865']
 
     def _check_algos(self, algo_list):

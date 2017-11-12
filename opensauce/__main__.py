@@ -37,12 +37,32 @@ class MyArgumentParser(argparse.ArgumentParser):
             self.prog = os.path.split(os.path.split(__file__)[0])[1]
         self.exit(2, "{}: error: {}\n".format(self.prog, message))
 
-    # Check that type is positive integer
     def positive_int(self, value):
+        """Check that type is positive integer
+        """
         ivalue = int(value)
         if ivalue <= 0:
             raise argparse.ArgumentTypeError("%s is an invalid positive integer value" % value)
+
         return ivalue
+
+    def pos_half_int(self, value):
+        """Check that type is positive half integer
+        """
+        fvalue = float(value)
+        if (fvalue <= 0):
+            # Not positive
+            raise argparse.ArgumentTypeError("%s is an invalid positive half integer value" % value)
+        if ('.' in value) and (value[-2:] != '.5'):
+            # Not half integer
+            raise argparse.ArgumentTypeError("%s is an invalid positive half integer value" % value)
+
+        if ('.' in value):
+            # Half integer given, return float
+            return fvalue
+        else:
+            # Whole integer given, return integer
+            return int(value)
 
 
 class CLI(object):
@@ -844,7 +864,7 @@ class CLI(object):
                         help="Bandwidth in Hz to use for smoothing if smooth "
                              "is set to True (Praat F0 parameter). "
                              "Default is %(default)s Hz.")
-    parser.add_argument('--num-formants', default=4, type=int,
+    parser.add_argument('--num-formants', default=4, type=parser.pos_half_int,
                         help="Number of formants to extract, usually an "
                              "integer but half-integer values are allowed "
                              "(Praat formants parameter). "
