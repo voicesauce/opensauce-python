@@ -41,8 +41,9 @@ class MyArgumentParser(argparse.ArgumentParser):
     def positive_int(self, value):
         ivalue = int(value)
         if ivalue <= 0:
-            raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
+            raise argparse.ArgumentTypeError("%s is an invalid positive integer value" % value)
         return ivalue
+
 
 class CLI(object):
 

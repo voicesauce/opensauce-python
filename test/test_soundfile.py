@@ -24,6 +24,8 @@ class TestSoundFile(TestCase):
         self.assertEqual(s.wavpath, spath)
         data, data_int, fs = wavread(spath)
         self.assertAllClose(data, s.wavdata)
+        self.assertTrue(s.wavdata_int.dtype == 'int16')
+        self.assertAllClose(data, s.wavdata_int/np.float64(32768.0), rtol=1e-05, atol=1e-08)
         self.assertEqual(fs, s.fs)
         self.assertEqual(s.fs, 22050)
         self.assertEqual(s.ns, 51597)
@@ -36,6 +38,11 @@ class TestSoundFile(TestCase):
         with self.assertRaisesRegex(ValueError, 'Resample frequency must be an integer'):
             spath = sound_file_path('beijing_f3_50_a.wav')
             s = SoundFile(spath, resample_freq='string')
+
+    def test_resample_negative_value(self):
+        with self.assertRaisesRegex(ValueError, 'Resample frequency must be positive'):
+            spath = sound_file_path('beijing_f3_50_a.wav')
+            s = SoundFile(spath, resample_freq=-4)
 
     def test_resample_properties(self):
         fn = 'beijing_f3_50_a.wav'
@@ -64,6 +71,8 @@ class TestSoundFile(TestCase):
             data = np.loadtxt(data_file_path(os.path.join('soundfile', 'resample', resample_fn)))
             self.assertEqual(len(s.wavdata_rs), len(data))
             self.assertAllClose(s.wavdata_rs, data, rtol=1e-05, atol=1e-08)
+            self.assertTrue(s.wavdata_rs_int.dtype == 'int16')
+            self.assertAllClose(np.int16(data * 32768), s.wavdata_rs_int, rtol=1e-05, atol=1e-08)
 
     def test_resample_wav(self):
         for fn in wav_fns:
