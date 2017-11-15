@@ -37,3 +37,6 @@ nosetests.xml
 
 # vim
 *.swp
+
+# Python library coverage
+htmlcov
