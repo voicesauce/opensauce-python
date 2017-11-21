@@ -384,9 +384,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open('stdout.settings') as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 33)
+            self.assertEqual(len(slines), 38)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
             self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
@@ -408,9 +408,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 33)
+            self.assertEqual(len(slines), 38)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
             self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
@@ -452,9 +452,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 33)
+            self.assertEqual(len(slines), 38)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
             self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
@@ -476,9 +476,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 33)
+            self.assertEqual(len(slines), 38)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
             self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
@@ -507,9 +507,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 33)
+            self.assertEqual(len(slines), 38)
             self.assertEqual(slines[0].strip(), '--measurements snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 33)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
             self.assertEqual(sum([1 for l in slines if l.startswith('--use-textgrid')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--no-labels')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
@@ -534,6 +534,8 @@ class TestCommandIO(TestCase):
             '--interpolate',
             '--smooth',
             '--smooth-bandwidth', '10',
+            '--no-high-pass',
+            '--use-hilbert-transform',
             '--output-settings-path', settings_path,
             sound_file_path('beijing_f3_50_a.wav'),
             ])
@@ -547,9 +549,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 37)
+            self.assertEqual(len(slines), 44)
             self.assertEqual(slines[0].strip(), '--measurements praatFormants snackF0')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 37)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 44)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-f0-column')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--no-textgrid')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--time-starts-at-frameshift')]), 1)
@@ -559,6 +561,8 @@ class TestCommandIO(TestCase):
             self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 2)
             self.assertEqual(sum([1 for l in slines if l.startswith('--smooth-bandwidth')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--no-high-pass')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--use-hilbert-transform')]), 1)
         # Check consistency of output using generated settings file
         self.assertEqual(lines_sfile, lines_stdout)
 
@@ -585,9 +589,9 @@ class TestCommandIO(TestCase):
         # Check generated settings file
         with open(settings_path) as f:
             slines = f.readlines()
-            self.assertEqual(len(slines), 34)
+            self.assertEqual(len(slines), 39)
             self.assertEqual(slines[0].strip(), '--measurements snackF0 praatFormants')
-            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 34)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 39)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-formant-cols')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--use-textgrid')]), 1)
             self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 1)
@@ -903,7 +907,7 @@ class TestCommandF0(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
-    def test_praat_f0_empty_output_file(self):
+    def test_praatF0_empty_output_file(self):
         err_msg = 'Praat error -- pitch calculation failed, check input parameters'
         with self.assertRaisesRegex(OSError, err_msg):
             lines = CLI_output(self, '\t', [
@@ -914,7 +918,7 @@ class TestCommandF0(TestCase):
 
     # XXX There is as yet no confirmation that the values being tested against
     # here are accurate; these tests just prove the options have *some* effect.
-    def test_praat_F0_alternate_method(self):
+    def test_praatF0_alternate_method(self):
         lines = CLI_output(self, '\t', [
             '--measurements', 'praatF0',
             '--praat-f0-method', 'ac',
@@ -928,15 +932,65 @@ class TestCommandF0(TestCase):
             ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865',
              '216.620'])
 
+    def test_reaperF0_default_parameters(self):
+        lines = CLI_output(self, '\t', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'reaperF0',
+            '--no-output-settings',
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertEqual(lines[0][-1:], ['reaperF0'])
+        self.assertEqual(len(lines[1]), 6)
+        self.assertEqual(len([x for x in lines if 'C1' in x]), 100)
+        self.assertEqual(len([x for x in lines if 'V1' in x]), 208)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
+        self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
+
+    @unittest.skipIf(platform == 'win32' or platform == 'cygwin',
+                         'No Windows support for pyreaper package')
+    def test_reaperF0_using_pyreaper(self):
+        lines = CLI_output(self, '\t', [
+            sound_file_path('beijing_f3_50_a.wav'),
+            '--measurements', 'reaperF0',
+            '--use-pyreaper',
+            '--no-output-settings',
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertEqual(lines[0][-1:], ['reaperF0'])
+        self.assertEqual(len(lines[1]), 6)
+        self.assertEqual(len([x for x in lines if 'C1' in x]), 100)
+        self.assertEqual(len([x for x in lines if 'V1' in x]), 208)
+        self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
+        self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
+
+    # XXX There is as yet no confirmation that the values being tested against
+    # here are accurate; these tests just prove the options have *some* effect.
+    def test_reaperF0_alternate_parameter_vals(self):
+        lines = CLI_output(self, '\t', [
+            '--measurements', 'reaperF0',
+            '--no-high-pass',
+            '--use-hilbert-transform',
+            '--inter-mark', '5',
+            '--no-output-settings',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertEqual(lines[0][-1:], ['reaperF0'])
+        self.assertEqual(len(lines[1]), 6)
+        self.assertEqual(lines[100],
+            ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865',
+             '220.500'])
+
     line100_prefix = ['beijing_f3_50_a.wav', 'C1', '766.062', '865.632', '865']
 
     def _check_algos(self, algo_list):
         self.assertEqual(sorted(algo_list), sorted(CLI._valid_f0), "Tests we have do not match tests we need")
 
     pitch_algo1_params = {
-        'snackF0': ('snackF0', 585, '219.992'),
         'praatF0': ('praatF0', 585, '224.726'),
+        'reaperF0': ('reaperF0', 585, '222.727'),
         'shrF0': ('shrF0', 585, '222.251'),
+        'snackF0': ('snackF0', 585, '219.992'),
         }
 
     def test_have_default_settings_tests(self):
@@ -965,9 +1019,10 @@ class TestCommandF0(TestCase):
         self.assertEqual(len(lines), 293)
 
     pitch_algo3_params = {
-        'snackF0': ('snackF0', '221.386'),
         'praatF0': ('praatF0', '224.726'),
+        'reaperF0': ('reaperF0', '222.727'),
         'shrF0': ('shrF0', '238.159'),
+        'snackF0': ('snackF0', '221.386'),
         }
 
     # Note that Praat F0 doesn't use window size as a parameter
@@ -985,9 +1040,10 @@ class TestCommandF0(TestCase):
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo4_params = {
-        'snackF0': ('snackF0', '--snack-min-f0', '0.000'),
         'praatF0': ('praatF0', '--praat-min-f0', '229.865'),
+        'reaperF0': ('reaperF0', '--reaper-min-f0', '222.727'),
         'shrF0': ('shrF0', '--shr-min-f0', '222.251'),
+        'snackF0': ('snackF0', '--snack-min-f0', '0.000'),
         }
 
     def test_have_min_f0_tests(self):
@@ -1004,9 +1060,10 @@ class TestCommandF0(TestCase):
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo5_params = {
-        'snackF0': ('snackF0', '--snack-max-f0', '108.907'),
         'praatF0': ('praatF0', '--praat-max-f0', '112.061'),
+        'reaperF0': ('reaperF0', '--reaper-max-f0', '111.364'),
         'shrF0': ('shrF0', '--shr-max-f0', '112.172'),
+        'snackF0': ('snackF0', '--snack-max-f0', '108.907'),
         }
 
     def test_have_max_f0_tests(self):
@@ -1023,9 +1080,10 @@ class TestCommandF0(TestCase):
         self.assertEqual(lines[100], self.line100_prefix + [v100])
 
     pitch_algo6_params = {
-        'snackF0': ('snackF0', 585, '216.709'),
         'praatF0': ('praatF0', 585, '224.755'),
+        'reaperF0': ('reaperF0', 585, '222.222'),
         'shrF0': ('shrF0', 585, '219.583'),
+        'snackF0': ('snackF0', 585, '216.709'),
         }
 
     def test_f0_resample_tests(self):

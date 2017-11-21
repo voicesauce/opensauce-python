@@ -17,7 +17,7 @@ import sys
 import numpy as np
 
 # Import user-defined global configuration variables
-from conf.userconf import user_default_snack_method, user_tcl_shell_cmd, user_praat_path
+from conf.userconf import user_default_snack_method, user_tcl_shell_cmd, user_praat_path, user_reaper_path
 
 # Import from soundfile.py in opensauce package
 from .soundfile import SoundFile
@@ -91,7 +91,10 @@ class CLI(object):
                            'voice_threshold', 'octave_cost', 'octave_jumpcost',
                            'voiced_unvoiced_cost', 'kill_octave_jumps',
                            'interpolate', 'smooth', 'smooth_bandwidth',
-                           'num_formants', 'max_formant_freq']
+                           'num_formants', 'max_formant_freq', 'use_pyreaper',
+                           'reaper_path', 'reaper_min_f0', 'reaper_max_f0',
+                           'no_high_pass', 'use_hilbert_transform',
+                           'inter_mark']
     excluded_args = ['wavfiles', 'settings', 'output_filepath',
                      'output_settings', 'output_settings_path']
 
@@ -259,6 +262,17 @@ class CLI(object):
                     elif a == 'smooth':
                         if val:
                             print('--smooth', file=oset)
+                    elif a == 'use_pyreaper':
+                        if val:
+                            print('--use-pyreaper', file=oset)
+                        else:
+                            print('--use-creaper', file=oset)
+                    elif a == 'no_high_pass':
+                        if val:
+                            print('--no-high-pass', file=oset)
+                    elif a == 'use_hilbert_transform':
+                        if val:
+                            print('--use-hilbert-transform', file=oset)
                     else: # pragma: no cover
                         raise ValueError('Unknown Boolean argument {} while writing settings file'.format(a))
                 elif a == 'praat_path':
@@ -485,13 +499,25 @@ class CLI(object):
                             datalen=self.data_len,
                             frame_precision=self.args.frame_precision,
                             )
+
         self._cached_results['shrF0'] = F0
         self._cached_results['SHR'] = SHR
         return F0
 
-    def DO_SHR(self, soundfile):
-        self.DO_shrF0(soundfile)
-        return self._cached_results['SHR']
+    def DO_reaperF0(self, soundfile):
+        from .reaper import reaper_pitch
+        F0 = reaper_pitch(soundfile, self.data_len,
+                          use_pyreaper=self.args.use_pyreaper,
+                          reaper_path=self.args.reaper_path,
+                          frame_shift=self.args.frame_shift,
+                          max_pitch=self.args.reaper_max_f0,
+                          min_pitch=self.args.reaper_min_f0,
+                          high_pass=not self.args.no_high_pass,
+                          hilbert_transform=self.args.use_hilbert_transform,
+                          inter_mark=self.args.inter_mark)
+
+        self._cached_results['reaperF0'] = F0
+        return F0
 
     def DO_snackFormants(self, soundfile):
         from .snack import snack_formants
@@ -535,6 +561,10 @@ class CLI(object):
 
         return estimates
 
+    def DO_SHR(self, soundfile):
+        self.DO_shrF0(soundfile)
+        return self._cached_results['SHR']
+
     _valid_measurements = [x[3:] for x in list(locals()) if x.startswith('DO_')]
     _valid_f0 = [x for x in _valid_measurements if x.endswith('F0')]
     _valid_formants = [x for x in _valid_measurements if x.endswith('Formants')]
@@ -572,6 +602,11 @@ class CLI(object):
         default_praat_path = 'C:\Program Files\Praat\Praat.exe'
     else: # pragma: no cover
         default_praat_path = '/usr/bin/praat'
+
+    if user_reaper_path is not None:
+        default_reaper_path = user_reaper_path
+    else: # pragma: no cover
+        default_reaper_path = None
 
     #
     # Parsing Declarations
@@ -874,6 +909,51 @@ class CLI(object):
                         help="Maximum allowed frequency for formant search "
                              "range in Hz (Praat formants parameter). "
                              "Default is %(default)s.")
+    # These options control the REAPER analysis
+    parser.add_argument('--use-pyreaper', action="store_true",
+                        dest='use_pyreaper', default=False,
+                        help="Use Python package pyreaper to estimate REAPER "
+                             "F0 measurements (Reaper F0 parameter). Default "
+                             "value is %(default)s.")
+    parser.add_argument('--use-creaper', action="store_false",
+                        dest='use_pyreaper',
+                        help="Use executable built from C code to estimate "
+                             "REAPER F0 measurements (Reaper F0 parameter). "
+                             "Must also use the command line option "
+                             "--reaper-path to specify the path to the "
+                             "executable. The default is to use this "
+                             "executable.")
+    parser.add_argument('--reaper-path', default=default_reaper_path,
+                        help="Path to REAPER program executable (Reaper F0 "
+                             "parameter).")
+    parser.add_argument('--reaper-min-f0', '--reaper-min-F0', default=40,
+                        type=parser.positive_int,
+                        help="Lowest frequency considered in REAPER F0 "
+                             "analysis (REAPER F0 parameter). "
+                             "Default is %(default)s Hz.")
+    parser.add_argument('--reaper-max-f0', '--reaper-max-F0', default=500,
+                        type=parser.positive_int,
+                        help="Highest frequency considered in REAPER F0 "
+                             "analysis (REAPER F0 parameter). "
+                             "Default is %(default)s Hz.")
+    parser.add_argument('--no-high-pass', default=False,
+                        action="store_true",
+                        help="Do *not* use high pass filter before processing "
+                             "input for REAPER F0 analysis (REAPER F0 "
+                             "parameter). "
+                             "Default is %(default)s.")
+    parser.add_argument('--use-hilbert-transform', default=False,
+                        action="store_true",
+                        help="Use Hilbert transform to try reducing phase "
+                             "distortion in REAPER F0 analysis (REAPER F0 "
+                             "parameter). "
+                             "Default is %(default)s.")
+    parser.add_argument('--inter-mark', default=10,
+                        type=parser.positive_int,
+                        help="Specify inter-mark interval in milliseconds to "
+                             "use in unvoiced pitchmark regions during REAPER "
+                             "F0 analysis (REAPER F0 parameter). "
+                             "Default is %(default)s milliseconds.")
 
 
 if __name__ == '__main__':
