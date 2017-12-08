@@ -134,12 +134,15 @@ Install [REAPER](https://github.com/google/REAPER) via the
 [pyreaper Python package](https://github.com/r9y9/pyreaper), by using the
 Python package manager pip.
 
-    $ pip install pyreaper
+    $ pip install cython
+    $ pip install git+https://github.com/voicesauce/pyreaper
 
 If you are using Homebrew, for Python 2, run
 
-    $ pip2 install pyreaper
+    $ pip2 install cython
+    $ pip2 install git+https://github.com/voicesauce/pyreaper
 
 or for Python 3, run
 
-    $ pip3 install pyreaper
+    $ pip3 install cython
+    $ pip3 install git+https://github.com/voicesauce/pyreaper

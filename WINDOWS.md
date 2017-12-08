@@ -93,7 +93,7 @@ details, see
 1.  Install [Cygwin](https://www.cygwin.com/)
 2.  Install the Cygwin packages `git`, `make`, `cmake`, `gcc-core`, `gcc-g++`.
 3.  Run the Cygwin program, so that you see a terminal window.
-3.  Follow the instructions in the REAPER Git repository
+4.  Follow the instructions in the REAPER Git repository
     [README](https://github.com/google/REAPER) and type the following commands
     in the terminal window:
 
@@ -106,3 +106,7 @@ details, see
 
     Now the executable file `reaper.exe` will be in the folder
     [your Cygwin home directory]/REAPER/build
+5.  Add `C:\cygwin\bin` (32-bit Cygwin) or `C:\cygwin64\bin` (64-bit Cygwin)
+    to your environment variable named `PATH`.  This step is needed, so that
+    when `reaper.exe` is called on the command line, the operating system can
+    find the `cygwin1.dll` file it needs.

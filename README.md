@@ -34,6 +34,17 @@ has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible that
 OpenSauce may work with Praat version 6.0.03 or higher, but that has not been
 tested.
 
+If you want to use REAPER to estimate F0, you need to either install the
+corresponding Python package pyreaper or build it using a C compiler.
+
+* Python packages [Cython](http://cython.org/) and
+  [pyreaper](https://github.com/voicesauce/pyreaper)
+  (Note: Cython and NumPy are requirements for pyreaper)
+
+OR
+
+* Build REAPER from [source](https://github.com/google/REAPER)
+
 *Note: Currently, the only input files supported are WAV files in 16-bit
 integer PCM format.  Praat can only read certain file types described in their
 [documentation](http://www.fon.hum.uva.nl/praat/manual/Sound_files_3__Files_that_Praat_can_read.html).
@@ -44,7 +55,7 @@ other file types supported, please let us know in the issue tracker!*
 
 # Installation
 
-1.  Install Python, the Pythons package NumPy and SciPy, and Snack Sound
+1.  Install Python, the Python packages NumPy / SciPy / Reaper, and Snack Sound
     Toolkit, if you don't already have them. Installing Snack can be
     non-trivial, so we recommend that you follow the recommendations in the
     instructions below for this step.
@@ -246,3 +257,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 Please feel free to post a question on the Issue tracker (use the label
 'question').
+
+# Acknowledgments
+
+Thanks to Ryuichi Yamamoto for his help getting pyreaper working.

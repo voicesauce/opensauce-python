@@ -59,8 +59,8 @@ opensauce-python.
 4. Install REAPER
 
     Install [REAPER](https://github.com/google/REAPER) via the
-    [pyreaper Python package](https://github.com/r9y9/pyreaper), by using the
-    Python package manager pip.
+    [pyreaper Python package](https://github.com/voicesauce/pyreaper), by using
+    the Python package manager pip.
 
-        $ pip install pyreaper
-
+        $ pip install cython
+        $ pip install git+https://github.com/voicesauce/pyreaper
