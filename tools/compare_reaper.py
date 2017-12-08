@@ -1,10 +1,12 @@
+from __future__ import division
+
 import os
 import sys
 import glob
+import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 
-from subprocess import call
 from scipy.io import wavfile
 from pyreaper import reaper
 
@@ -18,6 +20,8 @@ def main(wav_dir, reaper_path):
     for fn in wav_files:
         # Run pyreaper on wavfile
         fs, y = wavfile.read(fn)
+        ns = len(y)
+        duration = ns / fs
         pm_times, pm, F0_times, F0, corr = reaper(y, fs, minf0=40,
                                                   maxf0=500,
                                                   do_high_pass=True,
@@ -45,7 +49,7 @@ def main(wav_dir, reaper_path):
         cmd.extend(['-u', '0.01'])
         cmd.extend(['-a'])
         
-        return_code = call(cmd)
+        return_code = subprocess.call(cmd, stdout=subprocess.PIPE)
         
         rF0_times, x, rF0 = np.loadtxt(reaper_f0_fn, skiprows=7, unpack=True)
         rF0_found = x.astype(int)
@@ -55,7 +59,7 @@ def main(wav_dir, reaper_path):
         rcorr_found = z.astype(int)
     
         bname = os.path.basename(fn)
-        print('{}: pyreaper length {} ms, REAPER length {} ms'.format(bname, F0_times[-1]*1000, rF0_times[-1]*1000))
+        print('{}: file {} ms, pyreaper {} ms, REAPER {} ms'.format(bname, duration, F0_times[-1]*1000, rF0_times[-1]*1000))
         
         plt.figure()
         plt.plot(rF0_times*1000, rF0, 'bo', markersize=6, fillstyle='none')
