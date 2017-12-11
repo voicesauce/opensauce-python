@@ -31,7 +31,7 @@ def reaper_pitch(soundfile, data_len, use_pyreaper=True,
         hilbert_transform - Whether to apply Hilbert transform that may reduce
                             phase distortion [Boolean] (default = False)
         inter_mark        - Regular inter-mark interval to use in unvoiced
-                            pitchmark regions given in milliseconds [integer] 
+                            pitchmark regions given in milliseconds [integer]
                             (default = 10)
     Returns:
         F0                - F0 estimates [NumPy vector]
@@ -82,7 +82,7 @@ def pyreaper_pitch(wavdata_int, fs, frame_shift, max_pitch, min_pitch,
         hilbert_transform - Whether to apply Hilbert transform that may reduce
                             phase distortion [Boolean]
         inter_mark        - Regular inter-mark interval to use in unvoiced
-                            pitchmark regions given in milliseconds [integer] 
+                            pitchmark regions given in milliseconds [integer]
     Returns:
         F0_times          - Times corresponding to F0 estimates [NumPy vector]
         F0                - F0 estimates [NumPy vector]
@@ -119,7 +119,7 @@ def creaper_pitch(wav_fn, reaper_path, frame_shift, max_pitch, min_pitch,
         hilbert_transform - Whether to apply Hilbert transform that may reduce
                             phase distortion [Boolean]
         inter_mark        - Regular inter-mark interval to use in unvoiced
-                            pitchmark regions given in milliseconds [integer] 
+                            pitchmark regions given in milliseconds [integer]
     Returns:
         F0_times          - Times corresponding to F0 estimates [NumPy vector]
         F0                - F0 estimates [NumPy vector]
@@ -131,7 +131,7 @@ def creaper_pitch(wav_fn, reaper_path, frame_shift, max_pitch, min_pitch,
     #      But they may be useful in the future
     reaper_pitchmarks_fn = os.path.join(wav_dir, 'reaper-pitchmarks.txt')
     reaper_corr_fn = os.path.join(wav_dir, 'reaper-corr.txt')
-        
+
     # Run REAPER command
     cmd = [reaper_path, '-i', wav_fn]
     cmd.extend(['-f', reaper_f0_fn])
@@ -154,7 +154,7 @@ def creaper_pitch(wav_fn, reaper_path, frame_shift, max_pitch, min_pitch,
     else:
         if return_code != 0: # pragma: no cover
             raise OSError('Error when trying to call REAPER')
-       
+
     # XXX: I think flag is 1 when the measurement is in a voiced region,
     #      and flag is 0 when the measurement is an unvoiced region
     F0_times, flag, F0 = np.loadtxt(reaper_f0_fn, skiprows=7, unpack=True)
