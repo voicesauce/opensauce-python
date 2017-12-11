@@ -159,7 +159,7 @@ def creaper_pitch(wav_fn, reaper_path, frame_shift, max_pitch, min_pitch,
     #      and flag is 0 when the measurement is an unvoiced region
     F0_times, flag, F0 = np.loadtxt(reaper_f0_fn, skiprows=7, unpack=True)
 
-    # Replace valid measurements with NaN
+    # Replace invalid measurements with NaN
     F0[F0 < 0] = np.nan
 
     os.remove(reaper_f0_fn)
