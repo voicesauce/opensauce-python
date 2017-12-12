@@ -1,33 +1,33 @@
-language: python
 sudo: enabled
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
+language: python
+
+matrix:
+  include:
+    - os: linux
+      python: 2.7
+    - os: linux
+      python: 3.4
+    - os: linux
+      python: 3.5
+    - os: linux
+      python: 3.6
+    - os: osx
+      language: generic
+      env: TOXENV=py27
+    - os: osx
+      language: generic
+      env: TOXENV=py36
+before_install:
+  - ./.travis/before_install.sh
 
 install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y tk8.4 libsnack2 git
-  - wget http://www.fon.hum.uva.nl/praat/praat6036_linux64barren.tar.gz -O /tmp/praat.tar.gz
-  - tar -xzvf /tmp/praat.tar.gz
-  - sudo cp praat_barren /usr/bin/praat
-  - git clone https://github.com/google/REAPER.git /tmp/REAPER
-  - mkdir /tmp/REAPER/build
-  - cd /tmp/REAPER/build
-  - cmake ..
-  - make
-  - sudo cp /tmp/REAPER/build/reaper /usr/bin/reaper
-  - cd
-  - pip install --upgrade pip setuptools wheel
-  - pip install --only-binary=numpy,scipy numpy scipy
-  - pip install cython
-  - pip install git+https://github.com/voicesauce/pyreaper
-  - pip install coverage codecov
+  - ./.travis/install.sh
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
-  - cp conf/ciconf.py conf/userconf.py
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cp conf/ciconf_linux.py conf/userconf.py; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp conf/ciconf_osx.py conf/userconf.py; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then git lfs pull; fi
 # command to run tests
 script: coverage run --branch --source=opensauce --omit=opensauce/textgrid.py -m unittest test
 after_success:
