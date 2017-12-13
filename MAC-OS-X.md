@@ -39,13 +39,13 @@ several ways to do this.
 
     Then install Python 2 and its corresponding pip package manager using
 
-        $ brew install python2 pip2
+        $ brew install python2
         $ pip2 install --upgrade pip setuptools
         $ pip2 install numpy scipy
 
     If you want to install the Python 3 versions, use
 
-        $ brew install python3 pip3
+        $ brew install python3
         $ pip3 install --upgrade pip setuptools wheel
         $ pip3 install numpy scipy
 

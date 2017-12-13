@@ -37,7 +37,7 @@ opensauce-python.
     these commands:
 
         $ sudo apt-get install tk8.4
-        $ sudo apt-get install libsnack2
+        $ sudo apt-get install tcl-snack
 
     This will install both Tcl/Tk version 8.4 and Snack 2.2.
 
