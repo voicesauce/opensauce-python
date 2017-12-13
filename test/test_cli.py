@@ -395,6 +395,36 @@ class TestCommandIO(TestCase):
         # Cleanup
         os.remove('stdout.settings')
 
+    @unittest.skipIf(platform == 'win32' or platform == 'cygwin',
+                     'No Windows support for pyreaper package')
+    def test_output_settings_stdout_using_pyreaper(self):
+        # Make sure there isn't already a settings file
+        # If so, remove it
+        if os.path.isfile('stdout.settings'):
+            os.remove('stdout.settings')
+        lines = CLI_output(self, '\t', [
+            '--measurements', 'reaperF0',
+            '--use-pyreaper',
+            sound_file_path('beijing_f3_50_a.wav'),
+            ])
+        self.assertEqual(len(lines), 585)
+        self.assertTrue(os.path.isfile('stdout.settings'))
+        # Check generated settings file
+        with open('stdout.settings') as f:
+            slines = f.readlines()
+            self.assertEqual(len(slines), 38)
+            self.assertEqual(slines[0].strip(), '--measurements reaperF0')
+            self.assertEqual(sum([1 for l in slines if l.startswith('--')]), 38)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--use-pyreaper')]), 1)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--use-creaper')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--include-empty-labels')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--kill-octave-jumps')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--interpolate')]), 0)
+            self.assertEqual(sum([1 for l in slines if l.startswith('--smooth')]), 0)
+        # Cleanup
+        os.remove('stdout.settings')
+
+
     def test_output_settings_with_output_filepath(self):
         tmp = self.tmpdir()
         outfile = os.path.join(tmp, 'output.txt')
