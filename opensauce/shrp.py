@@ -302,7 +302,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
             # "-1 indicates a possibly unvoiced frame, if CHECK_VOICING, set f0
             # to 0, otherwise uses previous value"
             if peak_index == -1:
-                if CHECK_VOICING:
+                if CHECK_VOICING: # pragma: no cover
                     curf0 = 0
                     cur_cand1 = 0
                     cur_cand2 = 0
@@ -320,7 +320,7 @@ def shrp(Y, Fs, F0MinMax=[50, 500], frame_length=40, timestep=10,
                     cur_cand1 = cur_cand1 / 2
                 if cur_cand2 > maxf0:
                     cur_cand2 = cur_cand2 / 2
-                if CHECK_VOICING:
+                if CHECK_VOICING: # pragma: no cover
                     raise NotImplementedError
                     #voicing(n)=postvda(segment,curf0,Fs);
                     #if (voicing(n)==0)

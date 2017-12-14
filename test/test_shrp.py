@@ -2,7 +2,8 @@ import os
 import numpy as np
 
 from opensauce.shrp import (window, toframes, two_max, compute_shr,
-                            get_log_spectrum, shrp, shr_pitch)
+                            get_log_spectrum, shrp, shr_pitch, vda,
+                            ethreshold, postvda, zcr)
 from opensauce.helpers import wavread
 
 from test.support import TestCase, parameterize, load_json, sound_file_path
@@ -161,6 +162,33 @@ class Test_shrp(TestCase):
         np.testing.assert_array_almost_equal(f0_candidates,
                                              data['f0_candidates'])
 
+    def test_check_voicing(self):
+        data = load_json(os.path.join('shrp', 'shrp_data'))
+        with self.assertRaises(NotImplementedError):
+            f0_time, f0_value, shr, f0_candidates = shrp(
+                data['Y'],
+                int(data['Fs']),
+                [int(x) for x in data['F0MinMax']],
+                int(data['frame_length']),
+                int(data['timestep']),
+                data['SHR_Threshold'],
+                data['ceiling'],
+                data['med_smooth'],
+                CHECK_VOICING=True)
+
+    def test_med_smooth_greater_than_zero(self):
+        data = load_json(os.path.join('shrp', 'shrp_data'))
+        with self.assertRaises(NotImplementedError):
+            f0_time, f0_value, shr, f0_candidates = shrp(
+                data['Y'],
+                int(data['Fs']),
+                [int(x) for x in data['F0MinMax']],
+                int(data['frame_length']),
+                int(data['timestep']),
+                data['SHR_Threshold'],
+                data['ceiling'],
+                med_smooth=5,
+                CHECK_VOICING=False)
 
 class Test_shr_pitch(TestCase):
 
@@ -170,3 +198,31 @@ class Test_shr_pitch(TestCase):
         shr, f0 = shr_pitch(wav_data, fps, 25, 1, 50, 550, 0.4, 5, 200)
         np.testing.assert_array_almost_equal(f0, data['F0'])
         np.testing.assert_array_almost_equal(shr, data['SHR'])
+
+    def test_with_min_max_pitch_not_specified(self):
+        data = load_json(os.path.join('shrp', 'shr_pitch_data'))
+        wav_data, wavdata_int, fps = wavread(sound_file_path('beijing_f3_50_a.wav'))
+
+        with self.assertRaisesRegex(ValueError, 'none or both of min_pitch, max_pitch must be specified'):
+            shr, f0 = shr_pitch(wav_data, fps, min_pitch=50, datalen=200)
+
+        with self.assertRaisesRegex(ValueError, 'none or both of min_pitch, max_pitch must be specified'):
+            shr, f0 = shr_pitch(wav_data, fps, max_pitch=550, datalen=200)
+
+class Test_not_implemented(TestCase):
+
+    def test_vda(self):
+        with self.assertRaises(NotImplementedError):
+            vda(None, None, None, None)
+
+    def test_ethreshold(self):
+        with self.assertRaises(NotImplementedError):
+            ethreshold(None)
+
+    def test_postvda(self):
+        with self.assertRaises(NotImplementedError):
+            postvda(None, None, None, None)
+
+    def test_zcr(self):
+        with self.assertRaises(NotImplementedError):
+            zcr(None, None)
