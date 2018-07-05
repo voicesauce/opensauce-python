@@ -33,16 +33,16 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     cmake ..
     make
     # Install Praat
-    curl http://www.fon.hum.uva.nl/praat/praat6036_mac64.dmg -o praat6036_mac64.dmg
-    hdiutil attach praat6036_mac64.dmg
-    cp -R /Volumes/Praat64_6036/Praat.app /Applications
+    curl http://www.fon.hum.uva.nl/praat/praat6040_mac64.dmg -o praat6040_mac64.dmg
+    hdiutil attach praat6040_mac64.dmg
+    cp -R /Volumes/Praat64_6040/Praat.app /Applications
     ls /Applications/Praat.app
 else
     # Ubuntu
     sudo apt-get -qq update
     sudo apt-get install -y tk8.4 tcl-snack git
     # Install Praat
-    wget http://www.fon.hum.uva.nl/praat/praat6036_linux64barren.tar.gz -O /tmp/praat.tar.gz
+    wget http://www.fon.hum.uva.nl/praat/praat6040_linux64barren.tar.gz -O /tmp/praat.tar.gz
     tar -xzvf /tmp/praat.tar.gz
     sudo cp praat_barren /usr/bin/praat
     # Download and build REAPER

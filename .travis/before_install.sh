@@ -8,16 +8,20 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     case "${TOXENV}" in
         py27)
         # Python 2
-            brew install python2
-            python2 -m pip install --upgrade setuptools
-            python2 -m pip install --upgrade pip
+            brew upgrade python # Python 3, needed to fix linking issues
+            brew install python@2
+            pip2 install --upgrade setuptools
+            pip2 install --upgrade pip
+            pip2 install --upgrade virtualenv
             virtualenv venv -p python2
             ;;
         py36)
         # Python 3
-            brew install python3
-            python3 -m pip install --upgrade setuptools
-            python3 -m pip install --upgrade pip
+            brew upgrade python
+            brew install python@2 # Need Python 2 for dependencies
+            pip3 install --upgrade setuptools
+            pip3 install --upgrade pip
+            pip3 install --upgrade virtualenv
             virtualenv venv -p python3
             ;;
     esac
