@@ -15,7 +15,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
             pip2 install --upgrade virtualenv
             virtualenv venv -p python2
             ;;
-        py36)
+        py37)
         # Python 3
             brew upgrade python
             brew install python@2 # Need Python 2 for dependencies

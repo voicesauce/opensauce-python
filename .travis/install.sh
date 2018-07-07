@@ -14,7 +14,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
             # Install coverage
             pip2 install coverage codecov
             ;;
-        py36)
+        py37)
         # Python 3
             pip3 install numpy scipy
             pip3 install --upgrade numpy
