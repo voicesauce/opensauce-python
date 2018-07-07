@@ -29,10 +29,9 @@ If you want to use Praat to estimate parameters, you need to download the
 Praat software
 * [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.20+)
 
-and specify the path where OpenSauce can find the Praat executable.  OpenSauce
-has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible that
-OpenSauce may work with Praat version 6.0.03 or higher, but that has not been
-tested.
+OpenSauce has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible
+that OpenSauce may work with Praat version 6.0.03 or higher, but that has not
+been tested.
 
 If you want to use REAPER to estimate F0, you need to either install the
 corresponding Python package pyreaper or build it using a C compiler.
@@ -106,33 +105,43 @@ or alternatively:
     $ python -m opensauce --h
 
 Here's an example of how to use the command line interface.  To process a sound
-file and get the snackF0 and SHR measurements written to a CSV file, do:
+file and get the SHR measurements written to a CSV file, do:
 
-    $ python -m opensauce --measurements snackF0 SHR -o out.csv /path/to/file.wav
+    $ python -m opensauce --measurements SHR -o out.csv /path/to/file.wav
 
 Or alternatively, you can put file path to the sound file first.
 
-    $ python -m opensauce /path/to/file.wav --measurements snackF0 SHR -o out.csv
+    $ python -m opensauce /path/to/file.wav --measurements SHR -o out.csv
 
 The default output format used is Excel tab delimited.  You can also output
 files that are comma delimited using the option `--output-delimiter`.
+
+You can list multiple measurements in a single command. To process a sound file
+and get the PraatF0 and SHR measurements written to a CSV file, do:
+
+    $ python -m opensauce --measurements praatF0 SHR -o out.csv /path/to/file.wav
+
+(Note that if a Snack, Praat, or REAPER command doesn't appear to be working
+even though you installed the program, you may need to move the Snack / Praat
+/ REAPER executable to the default location or set the correct path by using a
+settings file or passing the correct path through a parameter. See next
+section for details.)
 
 You can process multiple wav files by using shell wildcards.  Suppose
 your wav files are in the directory `data/sample1`.  You can process
 all of them by typing:
 
-    $ python -m opensauce --measurements snackF0 SHR -o out.csv data/sample1/*.wav
+    $ python -m opensauce --measurements SHR -o out.csv data/sample1/*.wav
 
 If you want to write the output to stdout (that is, displayed on the terminal)
 instead of writing to a file, leave off the `-o` optional argument.  For
-example, this command writes the snackF0 and SHR measurements to stdout and
+example, this command writes the SHR measurements to stdout and
 does not use TextGrid information.
 
-    $ python -m opensauce --measurements snackF0 SHR --no-textgrid /path/to/file.wav
+    $ python -m opensauce --measurements SHR --no-textgrid /path/to/file.wav
 
-Currently only the snackF0, shrF0, and SHR measurements are supported. (Again,
-you can run `$ python -m opensauce --help` to see which measurements are
-available.)
+To view other measurement options, run `$ python -m opensauce --help` to see
+which measurements are available.)
 
 The command line interface has default values for all the different options.
 To see the default values, run the help command: `python -m opensauce -h`.
@@ -160,12 +169,32 @@ or specify the sound file at the beginning.
 
     $ python -m opensauce /path/to/file.wav --measurements SHR
 
-# Adjusting settings for Snack and Praat
+# Adjusting settings for Snack, Praat, and REAPER
 
-OpenSauce tries to use default values for the Tcl shell command and the path
-to the Praat executable based on your operating system.  If the default values
-don't match your installation, you will need to explicitly specify the correct
-ones.
+Snack, Praat, and REAPER are all external programs, outside of OpenSauce.
+OpenSauce calls these programs when the corresponding measurements (Snack /
+Praat / REAPER) are requested by the user.
+
+When Snack measurements are requested, OpenSauce tries to use default values
+for the Tcl shell command. When Praat measurements are requested, OpenSauce
+calls the Praat executable. When REAPER measurements are requested with the
+`use-creaper` parameter, OpenSauce calls the REAPER executable. If the default
+values don't match your installation, you will need to either move the
+executables to the default locations or explicitly specify the path to the
+executable location on your system.
+
+(Note, if you install the pyreaper Python package and request REAPER
+measurements with the `use-pyreaper` parameter, you don't need to worry about
+setting the path to the REAPER executable.)
+
+For Snack, the default Tcl shell command is `tclsh8.4` on Mac OS X, and `tclsh`
+on Windows and Linux.
+
+For Praat, the default path is `/Applications/Praat.app/Contents/MacOS/Praat`
+on Mac OS X, `C:\Program Files\Praat.exe` on Windows, and `/usr/bin/praat` on
+Linux.
+
+For REAPER, the default path to the REAPER executable is `/usr/bin/reaper`.
 
 If you are calling Snack via the Tcl shell, you can set the command that runs
 the Tcl shell interpreter using the `--tcl-cmd` command line option.  For
@@ -184,9 +213,16 @@ To specify your own path for the Praat executable, use the command line option
 
 will run the Praat executable located at `/home/username/praat`.
 
-Since you will probably be running Snack and Praat the same way every time you
-use OpenSauce, it is best to set these preferences automatically through a
-settings file, as described in the next section.
+To specify your own path for the REAPER executable, use the command line option
+`--reaper-path`.  For example,
+
+    $ python -m opensauce --measurements reaperF0 --reaper-path /home/username/reaper /path/to/file.wav
+
+will run the REAPER executable located at `/home/username/reaper`.
+
+Since you will probably be running Snack / Praat / REAPER the same way every
+time you use OpenSauce, it is best to set these preferences automatically
+through a settings file, as described in the next section.
 
 # Settings and measurement files
 
@@ -197,11 +233,11 @@ Any options you can specify on the command line you can put into a settings
 file, one option and its arguments per line.  On the command line, you can
 specify a settings file to use, with a command like
 
-    $ python -m opensauce -s my_settings /path/to/file.wav
+    $ python -m opensauce -s /path/to/my_settings /path/to/file.wav
 
 or alternatively,
 
-    $ python -m opensauce --settings my_settings /path/to/file.wav
+    $ python -m opensauce --settings /path/to/my_settings /path/to/file.wav
 
 To run your favorite settings by default, you can copy your settings file to
 one of the locations `./opensauce.settings`, `~/.config/opensauce/settings`,

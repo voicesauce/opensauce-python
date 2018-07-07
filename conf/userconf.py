@@ -25,6 +25,8 @@ user_tcl_shell_cmd = None
 user_praat_path = None
 
 # Path for REAPER executable
+# If the variable is set to None, the default is used. The default is
+# '/usr/bin/reaper'.
 # An example for setting the path on Linux and Mac OS X:
 # user_reaper_path = '/home/myusername/REAPER/build/reaper'
 # On Windows, backslashes need to be doubled, for example:

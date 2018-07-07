@@ -246,8 +246,28 @@ okay if our version is more recent.  One should check the commit log on the
 nltk version to see if there are more recent changes to be pulled into our
 version, rather than simply relying on the `check_vendored_software` script.
 
+## Monitor changes in external software
+
+If the tests fail, it's often because there have been changes to external
+software (Snack, Praat, REAPER).
+
+* Check Snack is still available as a Debian / Ubuntu package
+* Check Snack is still available pre-installed in Mac OS X
+* For the continuous integration tests on GitHub, check that the download links
+  for Praat point to the latest versions.
+
+In addition:
+
+* Check for updates in the
+  [Google REAPER repository](https://github.com/google/REAPER).
+* Check for updates in Ryuichi Yamamoto's
+  [pyreaper package](https://github.com/r9y9/pyreaper)
+
+We maintain our own pyreaper package, so changes in these repositories don't
+affect us, but if there are updates, we may want to incorporate these changes.
+New Google REAPER commits can be incorporated by updating the REAPER submodule
+in our [pyreaper repository](https://github.com/voicesauce/pyreaper).
+
 ## Projects
 
 Check the Issue tracker and TODO.md for ideas.
-
-

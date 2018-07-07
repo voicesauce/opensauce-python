@@ -606,7 +606,7 @@ class CLI(object):
     if user_reaper_path is not None:
         default_reaper_path = user_reaper_path
     else: # pragma: no cover
-        default_reaper_path = None
+        default_reaper_path = '/usr/bin/reaper'
 
     #
     # Parsing Declarations

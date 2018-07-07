@@ -56,7 +56,7 @@ opensauce-python.
     Snack from Python/Tkinter because of
     [#26](https://github.com/voicesauce/opensauce-python/issues/26).
 
-4. Install REAPER
+4.  Install REAPER
 
     Install [REAPER](https://github.com/google/REAPER) via the
     [pyreaper Python package](https://github.com/voicesauce/pyreaper), by using
@@ -64,3 +64,12 @@ opensauce-python.
 
         $ pip install cython
         $ pip install git+https://github.com/voicesauce/pyreaper
+
+    Installing the Python package is easiest, but alternatively, you can
+    build the REAPER executable as described in the
+    [REAPER README](https://github.com/google/REAPER/README.md)
+
+    We try to maintain pyreaper to stay up-to-date with the official Google
+    [REAPER](https://github.com/google/REAPER) repository, but if it's not
+    up-to-date, you can build the REAPER executable on the latest code in
+    the Google repository.

@@ -5,15 +5,14 @@ Here are specific instructions on how to setup your Windows machine to run
 opensauce-python.  On Windows, it is recommended to install Anaconda's Python
 distribution, not the release from the official Python organization.
 
-* [Recommended Snack setup](#tcl)
-* [Alternate Snack setup using Python/Tkinter](#python)
-* [Alternate Snack setup using binary executable](#exe)
+* [Recommended Python / Snack setup](#tcl)
+* [Alternate Python / Snack setup using Tkinter](#python)
 * [REAPER setup](#reaper)
 
-# <A NAME="tcl">Recommended Snack setup</A>: Call Snack in Tcl shell
+# <A NAME="tcl">Recommended Python / Snack setup</A>: Call Snack in Tcl shell
 
-1. Install Anaconda as described in the previous section.  Either 32-bit or
-   64-bit versions should work.
+1. Install [Anaconda](https://www.continuum.io/). It comes with the NumPy and
+   SciPy packages pre-installed. Either 32-bit or 64-bit versions should work.
 
 2. Install ActiveState's [ActiveTcl](https://www.activestate.com/activetcl).
    Be sure to pick the 32-bit version.  The 64-bit version will not work with
@@ -27,7 +26,7 @@ distribution, not the release from the official Python organization.
 
 We have successfully run Snack in Tcl using Active Tcl version 8.5, 32-bit.
 
-# <A NAME="python">Alternate Snack setup</A>: Allows Snack to be called from Python
+# <A NAME="python">Alternate Python / Snack setup</A>: Allows Snack to be called via Tkinter
 
 *Note: Please take a look at
 [#26](https://github.com/voicesauce/opensauce-python/issues/26), so you are
@@ -66,28 +65,6 @@ Python, the steps are more complicated.
     program.  You should see a command line prompt, where you can now run
     commands like `> python -m opensauce -h`
 
-# <A NAME="exe">Alternate Snack setup</A>: Call Snack using binary executable
-
-When opensauce-python is asked to estimate parameters using Snack, it can use
-a stand-alone binary executable `snack.exe`.  This allows the user to skip
-installing and setting up Tcl/Tk and Snack.
-
-*Note: Currently, we don't recommend using the binary executable.  For
-details, see
-[#27](https://github.com/voicesauce/opensauce-python/issues/27).*
-
-1.  Install [Anaconda](https://www.continuum.io/) and pick the Python version
-    you would like, either Python 2.7 or Python 3.4+.  Anaconda comes with the
-    NumPy and SciPy packages pre-installed.
-
-    Be sure to select the option to make Anaconda your default Python by
-    setting the system environment variables accordingly.  (This option is
-    selected by default.)
-
-2.  From your Windows start menu, search for "Anaconda Prompt" and run this
-    program.  You should see a command line prompt, where you can now run
-    commands like `> python -m opensauce -h`
-
 # <A NAME="reaper">REAPER setup</A>
 
 1.  Install [Cygwin](https://www.cygwin.com/)
@@ -110,3 +87,6 @@ details, see
     to your environment variable named `PATH`.  This step is needed, so that
     when `reaper.exe` is called on the command line, the operating system can
     find the `cygwin1.dll` file it needs.
+
+Currently, there is no Python package for REAPER available on Windows, so if
+you want to use REAPER, you have to build the executable.

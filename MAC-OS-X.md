@@ -4,22 +4,17 @@ Mac OS X instructions
 Here are some specific instructions on how to setup your Mac OS X machine to
 run opensauce-python.
 
-* [Recommended Snack setup](#recommended)
-* [Alternate Snack setup](#alternate)
+* [Python setup](#python)
+* [Snack setup](#snack)
 * [REAPER setup](#reaper)
 
-# <A NAME="recommended">Recommended Snack setup</A>: Run Snack commands through Tcl interpreter
+# <A NAME="python">Python setup</A>
 
-It appears that Mac OS X ships with Tcl/Tk 8.4 by default, and Apple's version
-of Tcl/Tk8.4 comes with Snack 2.2
-
-So we can simply run Snack commands through the Tcl interpreter using `tclsh`.
-
-Then it only remains to install Python 2.7 or 3.4+ and the Python packages
+You need to install Python 2.7 or 3.4+ and the Python packages
 [NumPy](http://www.numpy.org/) and [Scipy](https://www.scipy.org/).  There are
 several ways to do this.
 
-*   Mac OS X comes with Python 2.7 pre-installed. If you choose to use this
+1.  Mac OS X comes with Python 2.7 pre-installed. If you choose to use this
     pre-installed Python, you only need to install Numpy and Scipy.
 
     The standard way to install these packages is using the
@@ -28,7 +23,7 @@ several ways to do this.
         $ python -m pip install --upgrade pip
         $ pip install --user numpy scipy
 
-*   You can use the Homebrew package manager.  Follow the instructions on the
+2.  You can use the Homebrew package manager.  Follow the instructions on the
     [Homebrew website](https://brew.sh/) to install it.  Then run
 
         $ brew doctor
@@ -37,96 +32,56 @@ several ways to do this.
     For example, you can add the line `export PATH="/usr/local/bin:$PATH"` to
     your `.bash_profile`.
 
-    Then install Python 2 and its corresponding pip package manager using
+    If you want Python 2, do
 
-        $ brew install python2
-        $ pip2 install --upgrade pip setuptools
+        $ brew install python
+        $ brew upgrade python
+        $ brew install python@2
+        $ pip2 install --upgrade pip setuptools virtualenv
+        $ virtualenv osvenv -p python2 # create virtualenv
+        $ source osvenv/bin/activate # activate virtualenv
         $ pip2 install numpy scipy
 
     If you want to install the Python 3 versions, use
 
-        $ brew install python3
-        $ pip3 install --upgrade pip setuptools wheel
+        $ brew install python
+        $ brew upgrade python
+        $ brew install python@2
+        $ pip3 install --upgrade pip setuptools virtualenv
+        $ virtualenv osvenv -p python3 # create virtualenv
+        $ source osvenv/bin/activate # activate virtualenv
         $ pip3 install numpy scipy
 
-    You can install both the Python 2 and Python 3 versions alongside each
-    other.  To run the Homebrew's Python (not the pre-installed version on OS
-    X), use `$ python2` or `$ python3` depending on which Python version you
-    want to run.
+    In the above, we suggest using virtual environments as this is standard
+    practice. To learn more about Python virtual environments, see the
+    [virtualenv documentation](https://virtualenv.pypa.io/en/stable/).
+
+    (Note that Homebrew now uses Python 3 as the default, so you need to
+    install both Python 2 and Python 3. Apparently, there are some
+    dependencies or linking issues that are resolved by doing this.)
+
+    To run the Homebrew's Python (not the pre-installed version on OS X), use
+    `$ python2` or `$ python3` depending on which Python version you want to
+    run.
 
     Now the Homebrew package versions of Python, NumPy, and SciPy are
     installed.
 
-*   You can install the Anaconda distribution of Python.  Follow the
+3   You can install the Anaconda distribution of Python.  Follow the
     directions on the [Anaconda website](https://www.continuum.io) and install
     Python.  NumPy and SciPy come pre-installed.
 
 We recommend that you avoid the pre-installed Python (Method 1) and use a
-package manager like Homebrew or Conda (Anaconda) instead.  Installing Anaconda
+package manager like Homebrew or Anaconda instead.  Installing Anaconda
 requires the least amount of technical knowledge, though Homebrew is not too
 difficult to learn.
 
-# <A NAME="alternate">Alternate Snack setup</A>: Allows Snack to be called from Python
+# <A NAME="snack">Snack setup</A>: Run Snack commands through Tcl interpreter
 
-Note: We do not currently recommend calling Snack from Python/Tkinter because
-of [#26](https://github.com/voicesauce/opensauce-python/issues/26).
+It appears that Mac OS X ships with Tcl/Tk 8.4 by default, and Apple's version
+of Tcl/Tk8.4 comes with Snack 2.2
 
-If you want to setup your machine so that opensauce-python can call Snack from
-Python, the steps are more complicated.  Thanks to Shinya Fujie for this
-[guide on setting up Mac machines to run Snack in Python](http://qiita.com/fujie/items/afa463275a5e581667e9).
-
-1.  Install the Homebrew package manager.  Follow the instructions on the
-    [Homebrew website](https://brew.sh/) to install it.  Then run
-
-        $ brew doctor
-
-    to see how you can configure your system so that Homebrew is in your path.
-    For example, you can add the line `export PATH="/usr/local/bin:$PATH"` to
-    your `.bash_profile`.
-
-2.  Install Tcl/Tk with Homebrew.
-
-        $ brew install tcl-tk
-
-3.  Install Python and link it to the Tcl-tk package you just installed by
-    running the command
-
-        $ brew install python --with-brewed-tk
-
-4.  Install the Homebrew packages for Numpy and Scipy.
-
-        $ brew install numpy scipy
-
-5.  Download the [Snack Sound Toolkit](http://www.speech.kth.se/snack/).  Get
-    the Snack 2.2.10 "Source release for all platforms"
-    [version](http://www.speech.kth.se/snack/dist/snack2.2.10.tar.gz) and
-    extract the archive.
-
-6.  We need to change one line of the source code, to ensure that Snack will
-    compile.  Go into the `generic` directory of the archive and open the file
-    `jkCanvSpeg.c`.  Navigate to line 39 `#ifndef Solaris`.  On the following
-    line, change the code
-
-        #  ifndef TkPutImage
-
-    to
-
-        #  if 0
-
-7.  Now compile Snack with the Tcl/Tk Homebrew package by running the following
-    commands.
-
-        $ ./configure --with-tcl=/usr/local/opt/tcl-tk/lib --with-tk=/usr/local/opt/tcl-tk/lib LDFLAGS=-L/usr/local/opt/tcl-tk/lib CPPFLAGS=-I/usr/local/opt/tcl-tk/include --disable-stubs
-        $ make
-        $ make DESTDIR=/usr/local/opt/tcl-tk install
-
-    If the compilation fails because of a sed error, try adding the following
-    lines to your `.bash_profile`:
-
-        export LC_CTYPE=C
-        export LANG=C
-
-    This solution comes from this [StackOverflow answer](https://stackoverflow.com/questions/19242275/re-error-illegal-byte-sequence-on-mac-os-x).
+So we can simply run Snack commands through the Tcl interpreter using `tclsh`.
 
 # <A NAME="reaper">REAPER</A> setup
 
@@ -139,10 +94,21 @@ Python package manager pip.
 
 If you are using Homebrew, for Python 2, run
 
+    $ source osenv/bin/activate # activate previous virtualenv, if needed
     $ pip2 install cython
     $ pip2 install git+https://github.com/voicesauce/pyreaper
 
 or for Python 3, run
 
+    $ source osenv/bin/activate # activate previous virtualenv, if needed
     $ pip3 install cython
     $ pip3 install git+https://github.com/voicesauce/pyreaper
+
+    Installing the Python package is easiest, but alternatively, you can
+    build the REAPER executable as described in the
+    [REAPER README](https://github.com/google/REAPER/README.md)
+
+    We try to maintain pyreaper to stay up-to-date with the official Google
+    [REAPER](https://github.com/google/REAPER) repository, but if it's not
+    up-to-date, you can build the REAPER executable on the latest code in
+    the Google repository.
