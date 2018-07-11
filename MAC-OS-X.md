@@ -35,25 +35,30 @@ several ways to do this.
     If you want Python 2, do
 
         $ brew install python
-        $ brew upgrade python
         $ brew install python@2
         $ pip2 install --upgrade pip setuptools virtualenv
-        $ virtualenv osvenv -p python2 # create virtualenv
-        $ source osvenv/bin/activate # activate virtualenv
+        $ virtualenv osvenv -p python2
+        $ source osvenv/bin/activate
         $ pip2 install numpy scipy
 
     If you want to install the Python 3 versions, use
 
         $ brew install python
-        $ brew upgrade python
         $ brew install python@2
         $ pip3 install --upgrade pip setuptools virtualenv
-        $ virtualenv osvenv -p python3 # create virtualenv
-        $ source osvenv/bin/activate # activate virtualenv
+        $ virtualenv osvenv -p python3
+        $ source osvenv/bin/activate
         $ pip3 install numpy scipy
 
     In the above, we suggest using virtual environments as this is standard
-    practice. To learn more about Python virtual environments, see the
+    practice. The command beginning with `virtualenv` creates a new virtual
+    environment named `osenv`. The command beginning with `source` activates
+    the virtual environment, so that when you install `numpy` and `scipy` in
+    the next command, these packages are installed into the virtual
+    environment. To exit the virtual environment, run `deactivate` on the
+    command line.
+
+    To learn more about Python virtual environments, see the
     [virtualenv documentation](https://virtualenv.pypa.io/en/stable/).
 
     (Note that Homebrew now uses Python 3 as the default, so you need to
