@@ -2,6 +2,7 @@ import contextlib
 import os
 import sys
 import textwrap
+import re
 import unittest
 import numpy as np
 from sys import platform
@@ -13,6 +14,8 @@ from opensauce.__main__ import CLI
 from opensauce.snack import sformant_names
 
 from test.support import TestCase, data_file_path, sound_file_path, py2, parameterize, CLI_output
+
+using_conda = (re.match('.*Anaconda.*', sys.version) is not None) or (re.match('.*Continuum.*', sys.version) is not None)
 
 
 class TestCommandIO(TestCase):
@@ -889,8 +892,8 @@ class TestCommandF0(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
-    @unittest.skipIf(platform == 'darwin',
-                     'Not supported on Mac OS X')
+    @unittest.skipIf((platform == 'darwin') or using_conda,
+                     'Method to call Snack through Tkinter not supported')
     def test_snackF0_method_python(self):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),
@@ -1176,8 +1179,8 @@ class TestCommandFormants(TestCase):
         self.assertEqual(len([x for x in lines if 'C2' in x]), 118)
         self.assertEqual(len([x for x in lines if 'V2' in x]), 158)
 
-    @unittest.skipIf(platform == 'darwin',
-                     'Not supported on Mac OS X')
+    @unittest.skipIf((platform == 'darwin') or using_conda,
+                     'Method to call Snack through Tkinter not supported')
     def test_snackFormants_method_python(self):
         lines = CLI_output(self, '\t', [
             sound_file_path('beijing_f3_50_a.wav'),

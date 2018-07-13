@@ -4,19 +4,58 @@ language: python
 matrix:
   include:
     - os: linux
+      dist: trusty
       python: 2.7
+      env: TOXENV=ubuntu_py27
     - os: linux
+      dist: trusty
       python: 3.4
+      env: TOXENV=ubuntu_py34
     - os: linux
+      dist: trusty
       python: 3.5
+      env: TOXENV=ubuntu_py35
     - os: linux
+      dist: trusty
       python: 3.6
-    - os: osx
+      env: TOXENV=ubuntu_py36
+    - os: linux
+      dist: trusty
       language: generic
-      env: TOXENV=py27
-    - os: osx
+      env:
+        - TOXENV=conda_ubuntu_py2
+        - CONDA_PYTHON_VERSION=2.7
+        - CONDA_HOME='/home/travis'
+    - os: linux
+      dist: trusty
       language: generic
-      env: TOXENV=py37
+      env:
+        - TOXENV=conda_ubuntu_py3
+        - CONDA_PYTHON_VERSION=3.6
+        - CONDA_HOME='/home/travis'
+    - os: osx
+      osx_image: xcode8.3
+      language: generic
+      env: TOXENV=osx_py2
+    - os: osx
+      osx_image: xcode8.3
+      language: generic
+      env: TOXENV=osx_py3
+    - os: osx
+      osx_image: xcode8.3
+      language: generic
+      env:
+        - TOXENV=conda_osx_py2
+        - CONDA_PYTHON_VERSION=2.7
+        - CONDA_HOME='/Users/travis'
+    - os: osx
+      osx_image: xcode8.3
+      language: generic
+      env:
+        - TOXENV=conda_osx_py3
+        - CONDA_PYTHON_VERSION=3.6
+        - CONDA_HOME='/Users/travis'
+
 before_install:
   - ./.travis/before_install.sh
 
@@ -25,11 +64,34 @@ install:
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cp conf/ciconf_linux.py conf/userconf.py; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp conf/ciconf_osx.py conf/userconf.py; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then git lfs pull; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      case "${TOXENV}$" in
+        conda*)
+          cp conf/ciconf_conda_linux.py conf/userconf.py;
+          source $CONDA_HOME/miniconda/bin/activate;
+          conda activate test-environment;
+          ;;
+        ubuntu*)
+          cp conf/ciconf_linux.py conf/userconf.py;
+          ;;
+      esac
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      case "${TOXENV}$" in
+        conda*)
+          source $CONDA_HOME/miniconda/bin/activate;
+          conda activate test-environment;
+          ;;
+      esac
+
+      cp conf/ciconf_osx.py conf/userconf.py;
+      git lfs pull;
+    fi
+
 # command to run tests
-script: coverage run --branch --source=opensauce --omit=opensauce/textgrid.py -m unittest test
+script:
+  - coverage run --branch --source=opensauce --omit=opensauce/textgrid.py -m unittest test
+
 after_success:
   - codecov
 
