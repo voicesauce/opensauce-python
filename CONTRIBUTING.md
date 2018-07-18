@@ -23,12 +23,15 @@ To contribute code, edit, etc:
 
 2. Install [Git LFS](https://git-lfs.github.com/) for managing large files.
 
+   Don't forget to run `git lfs install` to initialize Git LFS.
+
 3. Make a GitHub account.
 
 4. Clone the repo:
 
         $ git clone https://github.com/voicesauce/opensauce-python.git
         $ cd opensauce-python
+        $ git lfs pull
 
 5. To run unit tests, run the Python standard testing library `unittest` as a
    module on the command line.
@@ -267,6 +270,22 @@ We maintain our own pyreaper package, so changes in these repositories don't
 affect us, but if there are updates, we may want to incorporate these changes.
 New Google REAPER commits can be incorporated by updating the REAPER submodule
 in our [pyreaper repository](https://github.com/voicesauce/pyreaper).
+
+## Check for updates in operating system and Python versions
+
+In the future, there will be new versions of operating systems and Python. It
+is important to update the continuous integration testing, so that we test
+these new versions. For example, if Ubuntu 16.04 becomes available on Travis
+CI, we should make sure that our continuous integration framework is testing
+the new version. Similarly, if Python 3.7 is available and we were previously
+testing on Python 3.6, we should try testing Python 3.7.
+
+To change the versions being tested, simply revise the according environment
+variable in `.travis.yml`. For Linux testing, the variable `python` sets the
+Python version and the variable `dist` sets the Ubuntu operating system
+version. For Mac OS X, the variable `osx_image` sets the version of the OS X
+operating system. For Anaconda testing, the variable `CONDA_PYTHON_VERSION`
+sets the Python version.
 
 ## Projects
 

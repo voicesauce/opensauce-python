@@ -19,14 +19,17 @@ from audio recordings.
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
 
 OpenSauce has been successfully tested on Ubuntu 14.04 and 16.04,
-Manjaro 17.0, Windows 7 64-bit, and Mac OS X 10.11 El Capitan.
+Manjaro 17.0, Windows 7 64-bit, and Mac OS X 10.11 El Capitan. We have also
+successfully tested OpenSauce using the Anaconda distribution of Python on
+Windows, Mac OS X, and Linux.
 
-If you want to use Snack to estimate parameters:
+If you want to use Snack to estimate parameters, you need to install the
+following:
 * Tcl/Tk 8.4+ (needed to run Snack Sound Toolkit)
 * [Snack Sound Toolkit](http://www.speech.kth.se/snack/) (v2.2)
 
 If you want to use Praat to estimate parameters, you need to download the
-Praat software
+Praat software.
 * [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.20+)
 
 OpenSauce has been tested with Praat v6.0.20 - v6.0.35 on Linux.  It's possible
@@ -60,13 +63,10 @@ other file types supported, please let us know in the issue tracker!*
     instructions below for this step.
 
     * [Windows specific instructions](WINDOWS.md)
-    * [Mac OS X specific instructions](MAC-OS-X.md)
-    * [Linux specific instructions](LINUX.md)
-
-    Technical note: If you setup your machine and opensauce-python to run
-    Snack from Python, there may be an error message `cannot open /dev/mixer`
-    on the console if you don't have a `/dev/mixer`.  You don't *need* a mixer
-    for opensauce-python, so it is okay to ignore that message.
+    * Mac OS X specific instructions ([Homebrew](MAC-OS-X.md),
+      [Anaconda Python](MAC-OS-X-CONDA.md))
+    * Linux specific instructions ([Standard Python](LINUX.md),
+      [Anaconda Python](LINUX-CONDA.md))
 
 2.  Download Praat, if you don't already have it.  On Linux, if you have
     trouble with the full featured Praat executable, you can download and use
@@ -183,9 +183,9 @@ values don't match your installation, you will need to either move the
 executables to the default locations or explicitly specify the path to the
 executable location on your system.
 
-(Note, if you install the pyreaper Python package and request REAPER
+Note, if you install the pyreaper Python package and request REAPER
 measurements with the `use-pyreaper` parameter, you don't need to worry about
-setting the path to the REAPER executable.)
+setting the path to the REAPER executable.
 
 For Snack, the default Tcl shell command is `tclsh8.4` on Mac OS X, and `tclsh`
 on Windows and Linux.
