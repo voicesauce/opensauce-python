@@ -62,11 +62,11 @@ other file types supported, please let us know in the issue tracker!*
     non-trivial, so we recommend that you follow the recommendations in the
     instructions below for this step.
 
-    * [Windows specific instructions](WINDOWS.md)
-    * Mac OS X specific instructions ([Homebrew](MAC-OS-X.md),
-      [Anaconda Python](MAC-OS-X-CONDA.md))
-    * Linux specific instructions ([Standard Python](LINUX.md),
-      [Anaconda Python](LINUX-CONDA.md))
+    * [Windows specific instructions](doc/WINDOWS.md)
+    * Mac OS X specific instructions ([Homebrew](doc/MAC-OS-X.md),
+      [Anaconda Python](doc/MAC-OS-X-CONDA.md))
+    * Linux specific instructions ([Standard Python](doc/LINUX.md),
+      [Anaconda Python](doc/LINUX-CONDA.md))
 
 2.  Download Praat, if you don't already have it.  On Linux, if you have
     trouble with the full featured Praat executable, you can download and use
