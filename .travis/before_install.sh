@@ -12,6 +12,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
             brew install python@2
             pip2 install --upgrade setuptools
             pip2 install --upgrade pip
+            pip2 install --upgrade wheel
             pip2 install --upgrade virtualenv
             virtualenv venv -p python2
             source venv/bin/activate
@@ -22,6 +23,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
             brew install python@2 # Need Python 2 for dependencies
             pip3 install --upgrade setuptools
             pip3 install --upgrade pip
+            pip2 install --upgrade wheel
             pip3 install --upgrade virtualenv
             virtualenv venv -p python3
             source venv/bin/activate
