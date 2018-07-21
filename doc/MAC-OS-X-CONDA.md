@@ -75,6 +75,32 @@ On many versions of OS X, Tcl/Tk 8.4 and Snack 2.2 are installed by default. If
 this is the case, we can simply run Snack commands through the Tcl interpreter
 using `tclsh8.4`.
 
-However, for Mac OS X High Sierra (Mac OS X 10.13), Tcl/Tk8.4 and Snack 2.2
-are
+However, for Mac OS X High Sierra (Mac OS X 10.13), Tcl/Tk8.4 and Snack are
 [not installed by default](https://github.com/voicesauce/opensauce-python/issues/33).
+
+If Snack is not pre-installed on OS X, there are two solutions.
+
+1.  Compile the Snack Tcl library from source. Follow the instructions for
+    building Snack on Mac OS X [here](MAC-OS-X-SNACK.md).
+
+2.  If your Mac OS X operating system has Tcl8.5 pre-installed, you can
+    download the Snack Tcl 8.5 binaries which we have pre-built, then place
+    the Snack library files in the standard Tcl library directory where Tcl
+    looks for packages.
+
+    First, download the
+    [Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
+    Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks
+    for packages in `/System/Library/Tcl/8.5`.
+
+        $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
+
+    Check that Tcl can find the Snack library, by running the Tclsh shell.
+
+        $ tclsh8.5
+        % package require snack
+        % exit
+
+    When you run the tclsh command package require snack, it should output
+    `2.2` if the Snack library has been installed correctly. If instead it
+    output `can't find package snack`, then the install failed.

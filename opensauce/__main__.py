@@ -14,6 +14,7 @@ import csv
 import os
 import shlex
 import sys
+import platform
 import numpy as np
 
 # Import user-defined global configuration variables
@@ -590,7 +591,11 @@ class CLI(object):
     if user_tcl_shell_cmd is not None: # pragma: no cover
         default_tcl_shell_cmd = user_tcl_shell_cmd
     elif sys.platform == 'darwin': # pragma: no cover
-        default_tcl_shell_cmd = 'tclsh8.4'
+        mac_version = platform.mac_ver()[0]
+        if mac_version[:5] == '10.13':
+            default_tcl_shell_cmd = 'tclsh8.5'
+        else:
+            default_tcl_shell_cmd = 'tclsh8.4'
     else: # pragma: no cover
         default_tcl_shell_cmd = 'tclsh'
 
@@ -798,8 +803,9 @@ class CLI(object):
                         help="Command to use when calling Tcl shell for Snack "
                              "F0 analysis (Snack F0 and Snack formants "
                              "parameter).  On OS X, the default is "
-                             "'tclsh8.4'.  On Linux and Windows, the default "
-                             "is 'tclsh'.")
+                             "'tclsh8.5' for High Sierra and 'tclsh8.4' for "
+                             "other versions of OS X.  On Linux and Windows, "
+                             "the default is 'tclsh'.")
     parser.add_argument('--snack-min-f0', '--snack-min-F0', default=40,
                         type=parser.positive_int,
                         help="Lowest frequency considered in Snack F0 "

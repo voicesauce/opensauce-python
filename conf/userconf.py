@@ -9,6 +9,14 @@
 # Setting it to None, uses the default which is 'tcl'
 user_default_snack_method = None
 
+# Snack library path
+# HACK: This is only meant for use in continuous integration testing
+#       See HACK notes in opensauce/snack.py
+# Set this path to the location of the Snack library if library is not in the
+# standard library location
+# Default is None
+user_snack_lib_path = None
+
 # Tcl shell command name (equivalent to --tcl-cmd CLI option)
 # Typically, something like 'tclsh', 'tclsh8.4', 'wish', 'wish8.4', etc.
 # This can be useful for calling a particular version of Tcl, e.g. call Tcl8.5

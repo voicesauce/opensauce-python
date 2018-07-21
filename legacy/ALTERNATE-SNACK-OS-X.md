@@ -45,6 +45,10 @@ Python, the steps are more complicated.  Thanks to Shinya Fujie for this
 
         #  if 0
 
+    Alternatively, you can use sed to do the text replacement in one command.
+
+        $ sed -e '40s/.*/#   if 0/' -i '' generic/jkCanvSpeg.c
+
 7.  Now compile Snack with the Tcl/Tk Homebrew package by running the following
     commands.
 

@@ -18,10 +18,10 @@ from audio recordings.
 * Python 2.7 or 3.4+
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
 
-OpenSauce has been successfully tested on Ubuntu 14.04 and 16.04,
-Manjaro 17.0, Windows 7 64-bit, and Mac OS X 10.11 El Capitan. We have also
-successfully tested OpenSauce using the Anaconda distribution of Python on
-Windows, Mac OS X, and Linux.
+OpenSauce has been successfully tested on Ubuntu 14.04 / 16.04, Manjaro 17.0,
+Windows 7 64-bit, and Mac OS X 10.11 El Capitan / 10.12 Sierra / 10.13 High
+Sierra. We have also successfully tested OpenSauce using the Anaconda
+distribution of Python on Windows, Mac OS X, and Linux.
 
 If you want to use Snack to estimate parameters, you need to install the
 following:

@@ -42,6 +42,18 @@ matrix:
       language: generic
       env: TOXENV=osx_py3
     - os: osx
+      osx_image: xcode9.4
+      language: generic
+      env:
+        - TOXENV=osx_py3_high_sierra
+        - TCL_BINARY=no
+    - os: osx
+      osx_image: xcode9.4
+      language: generic
+      env:
+        - TOXENV=osx_py3_high_sierra_binary
+        - TCL_BINARY=yes
+    - os: osx
       osx_image: xcode8.3
       language: generic
       env:
@@ -64,19 +76,18 @@ install:
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
+      cp conf/ciconf_linux.py conf/userconf.py;
+
       case "${TOXENV}$" in
         conda*)
-          cp conf/ciconf_conda_linux.py conf/userconf.py;
+          sed -i "26s/.*/user_tcl_shell_cmd = 'tclsh8.4'/" conf/userconf.py;
           source $CONDA_HOME/miniconda/bin/activate;
           conda activate test-environment;
           ;;
-        ubuntu*)
-          cp conf/ciconf_linux.py conf/userconf.py;
-          ;;
       esac
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
       case "${TOXENV}$" in
         conda*)
           source $CONDA_HOME/miniconda/bin/activate;
@@ -84,8 +95,15 @@ before_script:
           ;;
       esac
 
-      cp conf/ciconf_osx.py conf/userconf.py;
       git lfs pull;
+      cp conf/ciconf_osx.py conf/userconf.py;
+
+      case "${TRAVIS_OSX_IMAGE}" in
+        xcode9*)
+          sed -e "18s~.*~user_snack_lib_path = '/Users/travis/lib/snack2.2'~" -i '' conf/userconf.py;
+          sed -e "26s/.*/user_tcl_shell_cmd = 'tclsh8.5'/" -i '' conf/userconf.py;
+          ;;
+      esac
     fi
 
 # command to run tests

@@ -3,9 +3,8 @@ from __future__ import division
 import random
 import unittest
 import sys
+import platform
 import numpy as np
-
-from sys import platform
 
 # Import user-defined global configuration variables
 from conf.userconf import user_default_snack_method, user_tcl_shell_cmd
@@ -19,16 +18,16 @@ from test.support import TestCase, wav_fns, get_sample_data, get_raw_data
 # Figure out appropriate method to use, for calling Snack
 if user_default_snack_method is not None:
     if user_default_snack_method in valid_snack_methods:
-        if user_default_snack_method == 'exe' and (platform != 'win32' and platform != 'cygwin'):
+        if user_default_snack_method == 'exe' and (sys.platform != 'win32' and sys.platform != 'cygwin'):
             raise ValueError("Cannot use 'exe' as Snack calling method, when using non-Windows machine")
         snack_method = user_default_snack_method
     else:
         raise ValueError("Invalid Snack calling method. Choices are 'exe', 'python', and 'tcl'")
-elif platform == 'win32' or platform == 'cygwin':
+elif sys.platform == 'win32' or sys.platform == 'cygwin':
     snack_method = 'tcl'
-elif platform.startswith('linux'):
+elif sys.platform.startswith('linux'):
     snack_method = 'tcl'
-elif platform == 'darwin':
+elif sys.platform == 'darwin':
     snack_method = 'tcl'
 else:
     snack_method = 'tcl'
@@ -36,8 +35,12 @@ else:
 # Figure out Tcl shell command to use
 if user_tcl_shell_cmd is not None:
     tcl_cmd = user_tcl_shell_cmd
-elif platform == "darwin":
-    tcl_cmd = 'tclsh8.4'
+elif sys.platform == "darwin":
+    mac_version = platform.mac_ver()[0]
+    if mac_version[:5] == '10.13':
+        tcl_cmd = 'tclsh8.5'
+    else:
+        tcl_cmd = 'tclsh8.4'
 else:
     tcl_cmd = 'tclsh'
 

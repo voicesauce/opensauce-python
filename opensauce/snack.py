@@ -17,6 +17,8 @@ from __future__ import division
 from sys import platform
 from subprocess import call
 
+from conf.userconf import user_snack_lib_path
+
 import os
 import sys
 import inspect
@@ -245,6 +247,15 @@ def snack_raw_pitch_tcl(wav_fn, frame_shift, window_size, max_pitch, min_pitch, 
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
     script += 'exec {} "$0" "$@"\n\n'.format(tcl_shell_cmd)
+    # HACK: The variable user_snack_lib_path is a hack we use in continous
+    #       integration testing. The reason is that we may not have the
+    #       permissions to copy the Snack library to the standard Tcl library
+    #       location. This is a workaround to load the Snack library from a
+    #       different location, where the location is given by
+    #       user_snack_lib_path.
+    if user_snack_lib_path is not None:
+        script += 'pkg_mkIndex {} snack.tcl libsnack.dylib libsound.dylib\n'.format(user_snack_lib_path)
+        script += 'lappend auto_path {}\n\n'.format(user_snack_lib_path)
     script += 'package require snack\n\n'
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
@@ -516,6 +527,15 @@ def snack_raw_formants_tcl(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
     script = "#!/usr/bin/env bash\n"
     script += '# the next line restarts with tclsh \\\n'
     script += 'exec {} "$0" "$@"\n\n'.format(tcl_shell_cmd)
+    # HACK: The variable user_snack_lib_path is a hack we use in continous
+    #       integration testing. The reason is that we may not have the
+    #       permissions to copy the Snack library to the standard Tcl library
+    #       location. This is a workaround to load the Snack library from a
+    #       different location, where the location is given by
+    #       user_snack_lib_path.
+    if user_snack_lib_path is not None:
+        script += 'pkg_mkIndex {} snack.tcl libsnack.dylib libsound.dylib\n'.format(user_snack_lib_path)
+        script += 'lappend auto_path {}\n\n'.format(user_snack_lib_path)
     script += 'package require snack\n\n'
     script += 'snack::sound s\n\n'
     script += 's read {}\n\n'.format(in_file)
