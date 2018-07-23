@@ -11,6 +11,7 @@ from audio recordings.
 
 [![Travis CI build status](https://travis-ci.org/voicesauce/opensauce-python.svg?branch=master)](https://travis-ci.org/voicesauce/opensauce-python)
 [![codecov status](https://codecov.io/gh/voicesauce/opensauce-python/branch/master/graph/badge.svg)](https://codecov.io/gh/voicesauce/opensauce-python)
+[![Appveyor build status](https://ci.appveyor.com/api/projects/status/x62fa6695n4jbcm1?svg=true)](https://ci.appveyor.com/project/voicesauce/opensauce-python)
 
 # Requirements
 

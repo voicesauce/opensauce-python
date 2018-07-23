@@ -1,0 +1,68 @@
+# Based on appveyor.yml from https://github.com/Anaconda-Platform/anaconda-project
+
+matrix:
+  fast_finish: true
+
+image:
+  - Visual Studio 2015
+#  - Visual Studio 2017
+
+environment:
+  global:
+    PYTHON: "C:\\conda"
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\ci-helpers\\appveyor\\windows_sdk.cmd"
+    PYTHON_ARCH: "64" # needs to be set for CMD_IN_ENV to succeed. If a mix
+                      # of 32 bit and 64 bit builds are needed, move this
+                      # to the matrix section.
+  matrix:
+    - PYTHON_VERSION: "2.7"
+#    - PYTHON_VERSION: "3.6"
+
+platform:
+  -x64
+
+install:
+  - if "%PYTHON_VERSION%" == "3.6" set "BASE_PYTHON_VERSION=3"
+  - if "%PYTHON_ARCH%" == "64" set "ARCH_LABEL=-x64"
+  # These are already installed on appveyor.  Update them.
+  - set "CONDA_ROOT=C:\Miniconda%BASE_PYTHON_VERSION%%ARCH_LABEL%"
+  # we can't "activate root" with sufficiently-old conda which appveyor has (?)
+  # - "%CONDA_ROOT%\\Scripts\\activate root"
+  - set "PATH=%CONDA_ROOT%;%CONDA_ROOT%\Scripts;%CONDA_ROOT%\Library\bin;%PATH%"
+  - set PATH
+  - echo CONDA_PREFIX %CONDA_PREFIX%
+  - conda config --set always_yes yes
+  # Use the latest conda
+  - conda install -n root -q conda --no-pin
+  # activate with newer conda, may set different variables
+  - "%CONDA_ROOT%\\Scripts\\activate root"
+  - echo CONDA_PREFIX %CONDA_PREFIX%
+  - conda info -a
+  - conda create -q -n test-environment python=%PYTHON_VERSION%
+  - activate test-environment
+  - conda install cython numpy scipy coverage
+  - conda install -c conda-forge codecov
+
+  # Install Praat
+  - ps: Start-FileDownload 'http://www.fon.hum.uva.nl/praat/praat6040_win64.zip'
+
+  # Install REAPER
+
+  # Install ActiveTcl
+  # This is currently failing
+  #- cinst activetcl
+
+# Not a .NET project, we build in the install step instead
+build: false
+
+test_script:
+  - echo CONDA_PREFIX %CONDA_PREFIX%
+  - "%CONDA_ROOT%\\Scripts\\activate test-environment"
+  - echo CONDA_PREFIX %CONDA_PREFIX%
+  - echo PATH %PATH%
+  - conda list
+  - conda info -a
+  - python -c "import sys; print(sys.version)"
+  - python -c "import sys; print(sys.executable)"
+  - python -c "import sys; print(sys.prefix)"
+  - python --version
