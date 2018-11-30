@@ -16,13 +16,20 @@ from audio recordings.
 # Requirements
 
 * Windows, Mac OS X, or Linux operating system
-* Python 2.7 or 3.4+
+* Python 2.7 or 3.6+
 * Python packages [NumPy](http://www.numpy.org/) and [SciPy](http://www.scipy.org/)
 
-OpenSauce has been successfully tested on Ubuntu 14.04 / 16.04, Manjaro 17.0,
-Windows 7 64-bit, and Mac OS X 10.11 El Capitan / 10.12 Sierra / 10.13 High
-Sierra. We have also successfully tested OpenSauce using the Anaconda
-distribution of Python on Windows, Mac OS X, and Linux.
+We do continuous integration testing on the following:
+
+* Python 2.7, 3.6, and 3.7 on Ubuntu 16.04
+* Anaconda Python 2.7 and 3.6 on Ubuntu 16.04
+* Homebrew Python 2.7 and 3.6 on Mac OS X 10.12 Sierra
+* Anaconda Python 2.7 and 3.6 on Mac OS X 10.12 Sierra
+* Homebrew Python 2.7 and 3.6 on Mac OS X 10.13 High Sierra
+
+Previously, we have tested OpenSauce successfully tested on Ubuntu 14.04,
+Manjaro 17.0, Windows 7 64-bit, and Mac OS X 10.11 El Capitan. However, these
+are not part of the current continuous integration testing setup.
 
 If you want to use Snack to estimate parameters, you need to install the
 following:

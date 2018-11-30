@@ -4,30 +4,26 @@ language: python
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       python: 2.7
       env: TOXENV=ubuntu_py27
     - os: linux
-      dist: trusty
-      python: 3.4
-      env: TOXENV=ubuntu_py34
-    - os: linux
-      dist: trusty
-      python: 3.5
-      env: TOXENV=ubuntu_py35
-    - os: linux
-      dist: trusty
+      dist: xenial
       python: 3.6
       env: TOXENV=ubuntu_py36
     - os: linux
-      dist: trusty
+      dist: xenial
+      python: 3.7
+      env: TOXENV=ubuntu_py36
+    - os: linux
+      dist: xenial
       language: generic
       env:
         - TOXENV=conda_ubuntu_py2
         - CONDA_PYTHON_VERSION=2.7
         - CONDA_HOME='/home/travis'
     - os: linux
-      dist: trusty
+      dist: xenial
       language: generic
       env:
         - TOXENV=conda_ubuntu_py3
