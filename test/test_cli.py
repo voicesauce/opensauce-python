@@ -15,7 +15,7 @@ from opensauce.snack import sformant_names
 
 from test.support import TestCase, data_file_path, sound_file_path, py2, parameterize, CLI_output
 
-using_conda = (re.match('.*Anaconda.*', sys.version) is not None) or (re.match('.*Continuum.*', sys.version) is not None)
+using_conda = (re.match('.*conda.*', sys.version) is not None) or (re.match('.*Continuum.*', sys.version) is not None)
 
 
 class TestCommandIO(TestCase):
