@@ -92,36 +92,49 @@ you may need to install `cmake` via Homebrew, i.e. run `brew install cmake`.
 
 # <A NAME="snack">Snack setup</A>: Run Snack commands through Tcl interpreter
 
-On many versions of OS X, Tcl/Tk 8.4 and Snack 2.2 are installed by default. If
-this is the case, we can simply run Snack commands through the Tcl interpreter
-using `tclsh8.4`.
+On many versions of OS X, Snack is installed by default as a Tcl/Tk 8.4
+library. If this is the case, we can simply run Snack commands through the Tcl
+interpreter using `tclsh8.4`.
 
-However, for Mac OS X High Sierra (Mac OS X 10.13), Tcl/Tk8.4 and Snack are
-[not installed by default](https://github.com/voicesauce/opensauce-python/issues/33). On Mac OS X Mojave (Mac OS X 10.14), Tcl/Tk8.5 is pre-installed so you can follow Solution 2 and use the pre-built Snack Tcl 8.5 binary.
+However, for Mac OS X High Sierra, Mojave, and later versions
+(Mac OS X 10.13+), Tcl/Tk8.4 and Snack are
+[not installed by default](https://github.com/voicesauce/opensauce-python/issues/33).
 
-If Snack is not pre-installed on OS X, there are two solutions.
+Mac OS X High Sierra and Mojave come with Tcl/Tk8.5 pre-installed. We have
+compiled a Snack Tcl 8.5 binary that you can download and use, in order to run
+Snack calculations.  The binary has been successfully tested on both Mac OS X
+High Sierra (Mac OS X 10.13) and Mac OS X Mojave (Mac OS X 10.14).
 
-1.  Compile the Snack Tcl library from source. Follow the instructions for
-    building Snack on Mac OS X [here](MAC-OS-X-SNACK.md).
+The instructions below explain how you can download the Snack Tcl 8.5 binaries
+which we have pre-built, then place the Snack library files in the standard Tcl
+library directory where Tcl looks for packages.
 
-2.  If your Mac OS X operating system has Tcl8.5 pre-installed, you can
-    download the Snack Tcl 8.5 binaries which we have pre-built, then place
-    the Snack library files in the standard Tcl library directory where Tcl
-    looks for packages.
+First, download the
+[Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
+Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks for
+packages in `/System/Library/Tcl/8.5`.
 
-    First, download the
-    [Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
-    Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks
-    for packages in `/System/Library/Tcl/8.5`. **Note: on Mac OS X El Capitan and later, [System Integrity Protection](https://support.apple.com/en-us/HT204899) is enabled by default and will prevent you from being able to modify anything in the /System directory. You need to first disable it, following instructions [here](https://totalfinder.binaryage.com/sip).**
+**Note: on Mac OS X El Capitan and later,
+[System Integrity Protection](https://support.apple.com/en-us/HT204899) is
+enabled by default and will prevent you from being able to modify anything in
+the /System directory. You need to first disable it, following instructions
+[here](https://totalfinder.binaryage.com/sip).**
 
-        $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
+Run the following command to unzip the Snack Tcl library files to the standard
+Tcl library directory:
 
-    Check that Tcl can find the Snack library, by running the Tclsh shell.
+    $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
 
-        $ tclsh8.5
-        % package require snack
-        % exit
+Check that Tcl can find the Snack library, by running the Tclsh shell.
 
-    When you run the tclsh command package require snack, it should output
-    `2.2` if the Snack library has been installed correctly. If instead it
-    output `can't find package snack`, then the install failed.
+    $ tclsh8.5
+    % package require snack
+    % exit
+
+When you run the tclsh command package require snack, it should output `2.2`
+if the Snack library has been installed correctly. If instead it output
+`can't find package snack`, then the install failed.
+
+If you want to compile the Snack Tcl library from source yourself or if the
+binary does not work, you can take a look at our notes for building Snack on
+Mac OS X [here](MAC-OS-X-SNACK.md).
