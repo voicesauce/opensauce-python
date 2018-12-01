@@ -97,7 +97,7 @@ this is the case, we can simply run Snack commands through the Tcl interpreter
 using `tclsh8.4`.
 
 However, for Mac OS X High Sierra (Mac OS X 10.13), Tcl/Tk8.4 and Snack are
-[not installed by default](https://github.com/voicesauce/opensauce-python/issues/33).
+[not installed by default](https://github.com/voicesauce/opensauce-python/issues/33). On Mac OS X Mojave (Mac OS X 10.14), Tcl/Tk8.5 is pre-installed so you can follow Solution 2 and use the pre-built Snack Tcl 8.5 binary.
 
 If Snack is not pre-installed on OS X, there are two solutions.
 
@@ -112,7 +112,7 @@ If Snack is not pre-installed on OS X, there are two solutions.
     First, download the
     [Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
     Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks
-    for packages in `/System/Library/Tcl/8.5`. **Note: on Mac OS X El Capitan and later, [System Integrity Protection[(https://support.apple.com/en-us/HT204899) is enabled by default and will prevent you from being able to modify anything in the /System directory. You need to first disable it, following instructions [here](https://totalfinder.binaryage.com/sip).**
+    for packages in `/System/Library/Tcl/8.5`. **Note: on Mac OS X El Capitan and later, [System Integrity Protection](https://support.apple.com/en-us/HT204899) is enabled by default and will prevent you from being able to modify anything in the /System directory. You need to first disable it, following instructions [here](https://totalfinder.binaryage.com/sip).**
 
         $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
 
