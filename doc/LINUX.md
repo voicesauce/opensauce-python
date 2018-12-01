@@ -39,7 +39,7 @@ opensauce-python, using standard Python.
 3.  Install the Python packages [NumPy](http://www.numpy.org/) and
     [SciPy](https://www.scipy.org/) into your virtual environment.
 
-       $ pip install numpy scipy
+        $ pip install numpy scipy
 
     (You may need to substitute `pip2` or `pip3` for `pip` in the above
     commands, depending on which version of Python you want to use and which
