@@ -52,6 +52,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
   case "${TRAVIS_OSX_IMAGE}" in
     xcode9*)
       if [[ $TCL_BINARY == 'no' ]]; then
+        # Try compiling Snack on OS X (Method 1)
         curl -O http://www.speech.kth.se/snack/dist/snack2.2.10.tar.gz
         tar -xzf snack2.2.10.tar.gz
         cd snack2.2.10/unix
@@ -62,6 +63,7 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
         make DESTDIR=/Users/travis install
         cd
       else
+        # Download pre-compiled Snack binary (Method 2)
         curl -LO https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip
         mkdir /Users/travis/lib
         unzip snack-tcl85.zip -d /Users/travis/lib
@@ -117,7 +119,7 @@ elif [[ $TRAVIS_OS_NAME == 'linux' ]]; then
   # Install Snack
   sudo apt-get install -y tk8.4 tcl8.4 tcl-snack
   # Install Praat
-  wget http://www.fon.hum.uva.nl/praat/praat6040_linux64barren.tar.gz -O /tmp/praat.tar.gz
+  wget http://www.fon.hum.uva.nl/praat/praat6043_linux64barren.tar.gz -O /tmp/praat.tar.gz
   tar -xzvf /tmp/praat.tar.gz
   sudo cp praat_barren /usr/bin/praat
   # Download and build REAPER
