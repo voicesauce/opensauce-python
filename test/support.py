@@ -103,6 +103,17 @@ def get_raw_data(fn, var, f0_alg, fmt_alg, bw_method):
 
     return var_data
 
+def get_harmonics_internal_test_data(fn, func_name):
+    """ Get VoiceSauce test data for function `func` calculated
+        on data in file `fn`
+
+    """
+    base_fn = os.path.splitext(os.path.basename(fn))[0]
+    data_dir = os.path.join(data_path, 'harmonics')
+    fn_path = os.path.join(data_dir, func_name + '_' + base_fn + '.txt')
+
+    return np.loadtxt(fn_path, dtype='float', delimiter=',')
+
 def get_test_data(fn, col_name, f0_base, sample):
     """Get frame and col_name data from output file named by f0_base and sample.
 
@@ -159,6 +170,10 @@ class TestCase(unittest.TestCase):
     def assertAllClose(self, first, second, rtol=1e-05, atol=1e-08, equal_nan=False, msg=None):
         """Fail if the two NumPy arrays are not close enough as determined by
         relative tolerance (rtol) and absolute tolerance (atol)
+
+        If equal_nan is set to True, the comparison will allow NaN to match
+        with NaN, i.e. when comparing arrays x and y, if x[23] = NaN and
+        y[23] = NaN, these entries are considered to be "close".
         """
         if not isinstance(first, np.ndarray):
             raise self.failureException('First object is not a NumPy array')
