@@ -13,8 +13,11 @@ def main(mat_dir, out_dir):
     """ Script to convert all .mat files in mat_dir into corresponding json files
         in out_dir
 
-    Any Matlab arrays are converted to lists of floats
+    Any Matlab arrays are converted to lists of floats.
     .json files have the same basename as the .mat files
+
+    This script is meant for data files containing data from
+    OpenSauce / VoiceSauce variables.
     """
     # Find all .mat files in mat_dir
     mat_files = glob.glob(os.path.join(mat_dir, '*.mat'))
