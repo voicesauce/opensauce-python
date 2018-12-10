@@ -109,31 +109,32 @@ The instructions below explain how you can download the Snack Tcl 8.5 binaries
 which we have pre-built, then place the Snack library files in the standard Tcl
 library directory where Tcl looks for packages.
 
-First, download the
-[Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
-Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks for
-packages in `/System/Library/Tcl/8.5`.
+1. First, download the
+   [Snack Tcl 8.5 zip file](https://github.com/voicesauce/opensauce-python/raw/master/opensauce/mac/snack-tcl85.zip).
 
-**Note: on Mac OS X El Capitan and later,
-[System Integrity Protection](https://support.apple.com/en-us/HT204899) is
-enabled by default and will prevent you from being able to modify anything in
-the /System directory. You need to first disable it, following instructions
-[here](https://totalfinder.binaryage.com/sip).**
+2. Then unzip the file to the Tcl library directory. On Mac OS X, Tcl8.5 looks
+   for packages in `/System/Library/Tcl/8.5`.
 
-Run the following command to unzip the Snack Tcl library files to the standard
-Tcl library directory:
+   **Note: on Mac OS X El Capitan and later,
+   [System Integrity Protection](https://support.apple.com/en-us/HT204899) is
+   enabled by default and will prevent you from being able to modify anything
+   in the /System directory. You need to first disable it, following
+   instructions [here](https://totalfinder.binaryage.com/sip).**
 
-    $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
+   Run the following command to unzip the Snack Tcl library files to the
+   standard Tcl library directory:
 
-Check that Tcl can find the Snack library, by running the Tclsh shell.
+       $ sudo unzip snack-tcl85.zip -d /System/Library/Tcl/8.5
 
-    $ tclsh8.5
-    % package require snack
-    % exit
+3. Check that Tcl can find the Snack library, by running the Tclsh shell.
 
-When you run the tclsh command package require snack, it should output `2.2`
-if the Snack library has been installed correctly. If instead it output
-`can't find package snack`, then the install failed.
+       $ tclsh8.5
+       % package require snack
+       % exit
+
+   When you run the tclsh command package require snack, it should output `2.2`
+   if the Snack library has been installed correctly. If instead it output
+   `can't find package snack`, then the install failed.
 
 If you want to compile the Snack Tcl library from source yourself or if the
 binary does not work, you can take a look at our notes for building Snack on
