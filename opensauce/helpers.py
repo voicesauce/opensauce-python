@@ -68,6 +68,11 @@ def round_half_away_from_zero(x):
        round_half_away_from_zero(3.2) = 3
        round_half_away_from_zero(-2.7) = -3
        round_half_away_from_zero(-4.3) = -4
+
+    The reason for writing our own rounding function is that NumPy uses the
+    round-half-to-even method. There is a Python round() function, but it
+    doesn't work on NumPy vectors. So we wrote our own
+    round-half-away-from-zero method here.
     """
     q = np.int_(np.sign(x) * np.floor(np.abs(x) + 0.5))
 

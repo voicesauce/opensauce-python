@@ -38,7 +38,7 @@ class SoundFile(object):
         The returned SoundFile object has the following useful attributes:
 
             wavpath                 The original path specified in the
-                                        constructor.
+                                    constructor.
             wavfn                   The filename component of wavpath.
             wavdata                 An ndarray of wavfile samples (float)
             wavdata_int             An ndarray of wavfile sample (16-bit int)
@@ -55,17 +55,17 @@ class SoundFile(object):
             ns_rs                   Total number of samples after resampling
                                     (None if resample_freq = None)
             tgpath                  Full path to the textgrid file.
-            textgrid                A TextGrid object loaded from tgpath if
-                                        a file exists at tgpath, else None.
+            textgrid                A TextGrid object loaded from tgpath if a
+                                    file exists at tgpath, else None.
             textgrid_intervals      A list of three tuples of the form
-                                        (label, start, stop), where label is a
-                                        text interval label and start and stop
-                                        are floating point numbers of seconds
-                                        from the start of the file of the
-                                        beginning and end of the interval.  The
-                                        list is a concatenation of all TextGrid
-                                        tiers of type 'intervaltier', in the
-                                        order they occur in the TextGrid.
+                                    (label, start, stop), where label is a
+                                    text interval label and start and stop
+                                    are floating point numbers of seconds
+                                    from the start of the file of the
+                                    beginning and end of the interval.  The
+                                    list is a concatenation of all TextGrid
+                                    tiers of type 'intervaltier', in the
+                                    order they occur in the TextGrid.
 
             The textgrid_intervals attribute exists if and only if the TextGrid
             file exists.
