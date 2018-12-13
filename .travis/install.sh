@@ -71,9 +71,9 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
       ;;
   esac
   # Install Praat
-  curl http://www.fon.hum.uva.nl/praat/praat6040_mac64.dmg -o praat6040_mac64.dmg
-  hdiutil attach praat6040_mac64.dmg
-  cp -R /Volumes/Praat64_6040/Praat.app /Applications
+  curl http://www.fon.hum.uva.nl/praat/praat6043_mac64.dmg -o praat6043_mac64.dmg
+  hdiutil attach praat6043_mac64.dmg
+  cp -R /Volumes/Praat64_6043/Praat.app /Applications
   # Download and build REAPER
   git clone https://github.com/google/REAPER.git /tmp/REAPER
   mkdir /tmp/REAPER/build
