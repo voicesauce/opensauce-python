@@ -239,6 +239,15 @@ To contribute code, edit, etc:
 
 9. XXX: A few more steps to come once the runtime framework is fleshed out.
 
+**NOTE on running VoiceSauce on Linux**: When computing Praat estimates, you may
+encounter the
+[bug reported here](https://www.mathworks.com/matlabcentral/answers/329796-issue-with-libstdc-so-6). You can run the following on the command line
+
+    $ alias matlab='LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.21 /usr/local/MATLAB/R2016b/bin/matlab -desktop'
+
+before running Matlab via `$ matlab &`. You can add it to your `.bashrc` or `.profile` for a
+more permanent solution.
+
 ## Check vendored software
 
 There is a script in the main repository that checks where our version of
