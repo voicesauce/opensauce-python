@@ -7,6 +7,27 @@ This is a Python port of
 It provides a set of command-line tools for taking automatic voice measurements
 from audio recordings.
 
+# How to cite this software
+Here is the BibTeX citation:
+
+    @misc{opensauce_2019_2638411,
+      author = {Terri M.~Yu and
+                R.~David Murray and
+                Kate Silverstein and
+                Kristine M.~Yu},
+      title  = {voicesauce/opensauce-python v0.1},
+      year   = 2019,
+      doi    = {10.5281/zenodo.2638411},
+      url    = {https://github.com/voicesauce/opensauce-python}
+    }
+
+Depending on the bibliography style file you're using, the DOI and URL fields
+might not appear. If your bibliography style file doesn't support DOI and URL
+fields, you may need to find a workaround, like using the note field.
+
+Here is the link to the DOI:
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2638411.svg)](https://doi.org/10.5281/zenodo.2638411)
+
 # Project status
 
 [![Travis CI build status](https://travis-ci.org/voicesauce/opensauce-python.svg?branch=master)](https://travis-ci.org/voicesauce/opensauce-python)
