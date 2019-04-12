@@ -71,9 +71,9 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
       ;;
   esac
   # Install Praat
-  curl http://www.fon.hum.uva.nl/praat/praat6043_mac64.dmg -o praat6043_mac64.dmg
-  hdiutil attach praat6043_mac64.dmg
-  cp -R /Volumes/Praat64_6043/Praat.app /Applications
+  curl http://www.fon.hum.uva.nl/praat/praat6050_mac64.dmg -o praat6050_mac64.dmg
+  hdiutil attach praat6050_mac64.dmg
+  cp -R /Volumes/Praat64_6050/Praat.app /Applications
   # Download and build REAPER
   git clone https://github.com/google/REAPER.git /tmp/REAPER
   mkdir /tmp/REAPER/build
@@ -119,7 +119,7 @@ elif [[ $TRAVIS_OS_NAME == 'linux' ]]; then
   # Install Snack
   sudo apt-get install -y tk8.4 tcl8.4 tcl-snack
   # Install Praat
-  wget http://www.fon.hum.uva.nl/praat/praat6043_linux64barren.tar.gz -O /tmp/praat.tar.gz
+  wget http://www.fon.hum.uva.nl/praat/praat6050_linux64barren.tar.gz -O /tmp/praat.tar.gz
   tar -xzvf /tmp/praat.tar.gz
   sudo cp praat_barren /usr/bin/praat
   # Download and build REAPER
