@@ -5,7 +5,7 @@ BibTeX citation
             R.~David Murray and
             Kate Silverstein and
             Kristine M.~Yu},
-  title  = {voicesauce/opensauce-python v0.1},
+  title  = {OpenSauce: Open source software for voice analysis, v0.1},
   year   = 2019,
   doi    = {10.5281/zenodo.2638411},
   url    = {https://github.com/voicesauce/opensauce-python}

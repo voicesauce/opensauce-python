@@ -15,7 +15,7 @@ Here is the BibTeX citation:
                 R.~David Murray and
                 Kate Silverstein and
                 Kristine M.~Yu},
-      title  = {voicesauce/opensauce-python v0.1},
+      title  = {OpenSauce: Open source software for voice analysis, v0.1},
       year   = 2019,
       doi    = {10.5281/zenodo.2638411},
       url    = {https://github.com/voicesauce/opensauce-python}
@@ -25,7 +25,12 @@ Depending on the bibliography style file you're using, the DOI and URL fields
 might not appear. If your bibliography style file doesn't support DOI and URL
 fields, you may need to find a workaround, like using the note field.
 
-Here is the link to the DOI:
+Alternatively, here's a sample plain text citation (your journal may differ in
+style):
+
+    Terri M. Yu, R. David Murray, Kate Silverstein and Kristine M. Yu. OpenSauce: Open source software for voice analysis, v0.1. (2019). doi:10.5281/zenodo.2638411
+
+Here is the link to the DOI on Zenodo:
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2638411.svg)](https://doi.org/10.5281/zenodo.2638411)
 
 # Project status
