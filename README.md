@@ -66,7 +66,7 @@ If you want to use Praat to estimate parameters, you need to download the
 Praat software.
 * [Praat](http://www.fon.hum.uva.nl/praat/) (version 6.0.20+)
 
-OpenSauce has been tested with Praat v6.0.20 - v6.0.43 on Linux.  It's possible
+OpenSauce has been tested with Praat v6.0.20 - v6.0.49 on Linux.  It's possible
 that OpenSauce may work with Praat versions 6.0.03 - 6.0.19, but those have not
 been tested.
 
