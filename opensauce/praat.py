@@ -186,7 +186,7 @@ def praat_raw_pitch(wav_fn, praat_path, frame_shift=1, method='cc',
         raise OSError('Praat error')
 
     # Path for Praat F0 output file corresponding to wav_fn
-    f0_fn = wav_fn.split('.')[0] + ext
+    f0_fn = os.path.splitext(wav_fn)[0] + ext
     # Load data from f0 file
     if os.path.isfile(f0_fn):
         # Check if file is empty
@@ -316,7 +316,7 @@ def praat_raw_formants(wav_fn, praat_path, frame_shift=1, window_size=25, num_fo
         raise OSError('Praat error')
 
     # Path for Praat output file corresponding to wav_fn
-    fmt_fn = wav_fn.split('.')[0] + '.pfmt'
+    fmt_fn = os.path.splitext(wav_fn)[0] + '.pfmt'
     # Load results from Praat file
     if os.path.isfile(fmt_fn):
         # Praat allows half integer values for num_formants

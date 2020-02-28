@@ -149,7 +149,7 @@ def snack_raw_pitch_exe(wav_fn, frame_shift, window_size, max_pitch, min_pitch):
         raise OSError('snack.exe error')
 
     # Path for f0 file corresponding to wav_fn
-    f0_fn = wav_fn.split('.')[0] + '.f0'
+    f0_fn = os.path.splitext(wav_fn)[0] + '.f0'
     # Load data from f0 file
     if os.path.isfile(f0_fn):
         F0_raw, V_raw = np.loadtxt(f0_fn, dtype=float, usecols=(0,1), unpack=True)
@@ -419,7 +419,7 @@ def snack_raw_formants_exe(wav_fn, frame_shift, window_size, pre_emphasis, lpc_o
         raise OSError('snack.exe error')
 
     # Path for frm file corresponding to wav_fn
-    frm_fn = wav_fn.split('.')[0] + '.frm'
+    frm_fn = os.path.splitext(wav_fn)[0] + '.frm'
     # Load data from frm file
     if os.path.isfile(frm_fn):
         frm_results = np.loadtxt(frm_fn, dtype=float)
